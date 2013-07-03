@@ -3,6 +3,8 @@ Pushing to https://johnmichaloski@github.com/johnmichaloski/CMSD.git
 
 mljjlm1955
 
+git push -f https://johnmichaloski@github.com/johnmichaloski/CMSD.git
+
 Pushing to https://github.com/johnmichaloski/CMSD.git
 To https://github.com/johnmichaloski/CMSD.git
  ! [rejected]        master -> master (non-fast-forward)

@@ -2,6 +2,7 @@ cmsdtools/
 Overview/
 Sql/
 Documentation/
+Github.txt
 *.obj
 *.ilk
 *.tlb
