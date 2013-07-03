@@ -1,0 +1,97 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="CMSDCommandCell.cpp" />
+    <ClCompile Include="CMSDCommandCellView.cpp" />
+    <ClCompile Include="MainFrm.cpp" />
+    <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="..\..\src\NIST\MTConnectDeviceParser.cpp" />
+    <ClCompile Include="..\..\src\NIST\MTConnectStreamsParser.cpp" />
+    <ClCompile Include="..\..\src\NIST\ShdrBackEnd.cpp" />
+    <ClCompile Include="..\..\src\NIST\SimpleReflection.cpp" />
+    <ClCompile Include="StateModel.cpp" />
+    <ClCompile Include="EquationSolver.cpp" />
+    <ClCompile Include="HtmlTable.cpp" />
+    <ClCompile Include="CmdCell.cpp" />
+    <ClCompile Include="WTLHtmlView.cpp" />
+    <ClCompile Include="CMSDIntegrator.cpp" />
+    <ClCompile Include="Utils.cpp" />
+    <ClCompile Include="..\..\src\CMSD\CMSD\XmlException.cpp">
+      <Filter>CMSD</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\CMSD\CMSD\xs-datetime.cpp">
+      <Filter>CMSD</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\CMSD\CMSD\AltovaException.cpp">
+      <Filter>CMSD</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\CMSD\CMSD\CMSD-typeinfo.cpp">
+      <Filter>CMSD</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\CMSD\CMSD\Node.cpp">
+      <Filter>CMSD</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\CMSD\CMSD\CMSD.cpp">
+      <Filter>CMSD</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\CMSD\CMSD\xs-types.cpp">
+      <Filter>CMSD</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\CMSD\CMSD\StructInfo.cpp">
+      <Filter>CMSD</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\CMSD\CMSD\SchemaTypes.cpp">
+      <Filter>CMSD</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="CMSDCommandCellView.h" />
+    <ClInclude Include="MainFrm.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="..\..\src\NIST\RunProcess.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="..\..\src\ListControl\dirent.h" />
+    <ClInclude Include="..\..\src\ListControl\dragdrop.h" />
+    <ClInclude Include="..\..\src\ListControl\TitleTip.h" />
+    <ClInclude Include="..\..\src\NIST\clogger.h" />
+    <ClInclude Include="..\..\src\NIST\Config.h" />
+    <ClInclude Include="..\..\src\NIST\dirent.h" />
+    <ClInclude Include="..\..\src\NIST\Logger.h" />
+    <ClInclude Include="..\..\src\NIST\MTConnectDeviceParser.h" />
+    <ClInclude Include="..\..\src\NIST\MTConnectStreamsParser.h" />
+    <ClInclude Include="..\..\src\NIST\ShdrBackEnd.h" />
+    <ClInclude Include="..\..\src\NIST\SimpleReflection.h" />
+    <ClInclude Include="StateModel.h" />
+    <ClInclude Include="Numerics.h" />
+    <ClInclude Include="EquationSolver.h" />
+    <ClInclude Include="HtmlTable.h" />
+    <ClInclude Include="CmdCell.h" />
+    <ClInclude Include="WTLHtmlView.h" />
+    <ClInclude Include="CMSDIntegrator.h" />
+    <ClInclude Include="StdStringFcn.h" />
+    <ClInclude Include="Utils.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="CMSDCommandCell.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\Add.bmp" />
+    <None Include="res\CMSDCommandCell.ico" />
+    <None Include="res\ExampleItems.bmp" />
+    <None Include="res\toolbar.bmp" />
+    <None Include="notes.txt" />
+    <None Include="..\..\..\..\..\..\..\..\Documents and Settings\michalos\My Documents\My Pictures\Merge.ico" />
+    <None Include="notes1.txt" />
+    <None Include="Todo.txt" />
+    <None Include="res\ListItems.bmp" />
+    <None Include="res\divider.cur" />
+    <None Include="res\hand.cur" />
+    <None Include="ClassDiagram11.cd" />
+    <None Include="ClassDiagram12.cd" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMSD">
+      <UniqueIdentifier>{c0aab071-9668-45e6-9dfe-299a23c2f9e8}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
