@@ -23,4 +23,9 @@ Github.txt
 *.exg
 *.dlx
 *.tlog
-
+*.xml
+Copy*.*
+*.docx
+*.exe
+*.opensdf
+*.sdf

@@ -14,8 +14,56 @@
 
 #define BOOST_CB_DISABLE_DEBUG // The Debug Support has to be disabled, otherwise the code produces a runtime error.
 #include <boost/circular_buffer.hpp>
+#include <map>
 
 using namespace boost::tuples;
+
+
+struct Stats
+{
+	Stats()
+	{	 
+		nTotalParts= nGoodParts=0;
+		dTotalTime=nDownTime=nProductionTime	=nBlockedTime=nStarvedTime=nOffTime=nRepairTime=nIdleTime=0.0;
+	}
+	int  nTotalParts;
+	int  nGoodParts;
+	double dTotalTime;
+	double nDownTime;
+	double nProductionTime;
+	double nBlockedTime;
+	double nStarvedTime;
+	double nOffTime;
+	double nRepairTime;
+	double nIdleTime;
+	std::map<std::string, double> vals;
+	std::map<std::string, std::string> props;
+
+	static  void Update(std::string state, double time, Stats &stats1)
+	{
+		stats1.vals[state]=stats1.vals[state]+time;
+	}
+	static  void Update(std::string state, double time, Stats &stats1, Stats &stats2)
+	{
+		Update( state, time, stats1);
+		Update( state, time, stats2);
+	}
+	static  void Update(std::string state, double time, Stats &stats1, Stats &stats2, Stats &stats3)
+	{
+		Update(state,  time, stats1, stats2);
+		Update(state,  time, stats3);
+	}
+	static void Update(std::string state, double time, Stats &stats1, Stats &stats2, Stats &stats3,Stats &stats4)
+	{
+		Update(state,  time, stats1, stats2,stats3);
+		Update(state,  time, stats4);
+	}
+	static double & Get(std::string state, Stats &stats1) { return stats1.vals[state]; }
+	double & Get(std::string state) { return vals[state]; }
+	std::string & Property(std::string state) { return props[state]; }
+	double & operator[] (const std::string state){ return vals[state]; }
+};
+
 
 // To do: 
 // RCS StateModel - use enum strings, add mutex cmd/status queue or shared mem use CONNECTOR to write
@@ -142,7 +190,7 @@ typedef boost::tuple<std::string, std::string, std::string, ControlThreadCondFnc
 // 0    , 1   ,  2  , 3           , 4        , 5
 typedef boost::tuple<std::string, std::string, std::string, std::string, double , double  > CostFcnTuple;
 
-	class ControlThread
+	class ControlThread : public Stats
 	{ 
 		//////
 		///////////////////////////////////////////////////////////////////////

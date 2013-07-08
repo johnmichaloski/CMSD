@@ -1,0 +1,53 @@
+<HTML>
+<HEAD>
+ <title>KPI Precision Sand Casting Saginaw MI</title>
+<STYLE>
+table.gridtable {
+  BACKGROUND-COLOR: #f0f0e0;
+ BORDER-BOTTOM: #ffffff 0px solid;
+ BORDER-COLLAPSE: collapse;
+ BORDER-LEFT: #ffffff 0px solid;
+ BORDER-RIGHT: #ffffff 0px solid;
+ BORDER-TOP: #ffffff 0px solid;
+ FONT-SIZE: 9pt;
+ MARGIN-LEFT: 10px
+  }
+table.gridtable td {
+ BACKGROUND-COLOR: #e7e7ce;
+ BORDER-BOTTOM: #ffffff 1px solid;
+ BORDER-LEFT: #ffffff 1px solid;
+ BORDER-RIGHT: #ffffff 1px solid;
+ BORDER-TOP: #ffffff 1px solid;
+ PADDING-LEFT: 3px
+  }
+table.gridtable th {
+ BACKGROUND-COLOR: #cecf9c;
+ BORDER-BOTTOM: #ffffff 1px solid;
+ BORDER-LEFT: #ffffff 1px solid;
+ BORDER-RIGHT: #ffffff 1px solid;
+ BORDER-TOP: #ffffff 1px solid;
+ COLOR: #000000;
+ FONT-WEIGHT: bold
+  }
+</STYLE>
+</HEAD><TABLE class="gridtable">
+<TR><TH>Abbrev</TH><TH>Term</TH><TH>Description</TH><TH>Formula</TH>
+</TR>
+<TR>
+<TD> POT</TD><TD> Order duration</TD><TD> The order duration is the scheduled time for executing a production task based on the work plan data. It iscalculated from the production time per unit multiplied by the order quantity plus the planned set-up time.</TD><TD> POT=OT+PSUT</TD></TR>
+<TR>
+<TD> OT</TD><TD> Operation Time</TD><TD> The operation time is that time in which a production unit can be used operational and personnel forproduction and maintenance. The operation time is a scheduled time.</TD><TD> OT=QuantityProducts*(Resource/TimePerUnit)+ Maintenance</TD></TR>
+<TR>
+<TD> PSUT</TD><TD> Planned set-up time</TD><TD> The planned set-up time is the scheduled time for the set-up of a production unit for an order.</TD><TD> PUST=0.0</TD></TR>
+<TR>
+<TD> PBT</TD><TD> Planned allocation time</TD><TD> The planned allocation time is the operating time minus the planned standstill (planned downtime). Theplanned standstill may be used for planned maintenance work. The planned allocation period is available forthe detailed planning of machine usage with production orders.</TD><TD> PBT=OT-PlannedStandstill</TD></TR>
+<TR>
+<TD> PTU</TD><TD> Production time per unit</TD><TD> The production time per unit is the scheduled time for producing one unit.</TD><TD> PTU=MTTP_partid</TD></TR>
+<TR>
+<TD> </TD><TD> Planned standstill</TD><TD> The planned standstill is the planned downtime</TD><TD> PlannedStandstill=0.0</TD></TR>
+</TABLE>
+<TABLE class="gridtable">
+<TR><TH>Machine</TH><TH>OT</TH><TH>PSUT</TH><TH>PBT</TH><TH>PTU</TH>
+</TR>
+</TABLE>
+</BODY></HTML>

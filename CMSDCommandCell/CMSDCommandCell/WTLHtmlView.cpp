@@ -528,6 +528,11 @@ void __stdcall CWtlHtmlView::OnBeforeNavigate2 (
 		_wndMain->_timeDivisor=1.0;
 		_wndMain->_bMinutes=false;
 	}	
+	if(url.find("KPIhost") != std::string::npos ) //  
+	{
+		_wndMain->_bKPISnapshot=true;
+
+	}	
 
 	// Return TRUE to cancel
 	*Cancel = VARIANT_TRUE;

@@ -8,6 +8,7 @@
 #include "StdAfx.h"
 #include "CmdCell.h"
 
+
 #include "NIST/Config.h"
 #include "NIST/StdStringFcn.h"
 //#include "NIST/CLogger.h"
@@ -16,6 +17,7 @@
 //#include "MTCAgentCmd.h"
 #include "MainFrm.h"
 #include "HtmlTable.h"
+#include "KPI.h"
 
 #include "EquationSolver.h"
 using namespace EquationHelper;
@@ -30,10 +32,11 @@ typedef EquationSolver ES;
 extern CLogger FurLogger;
 extern CMainFrame * _wndMain;
 
+#define DOCHECK(X,Y) ((X!=NULL) ? X : throw std::exception((fcnname+ #Y).c_str()) )
 
 
 int CJobCommands::MaxQueueSize=2;
-extern CMainFrame * _wndMain;
+
 static void trans_func( unsigned int u, EXCEPTION_POINTERS* pExp )
 {
 	std::string errmsg =  StdStringFormat("COpcAdapter In trans_func - Code = 0x%x\n",  pExp->ExceptionRecord->ExceptionCode);
@@ -116,7 +119,7 @@ Job *  CJobCommand::AddJob(CCMSDIntegrator * cmsd, int &job, std::string partid)
 	ajob->partQuantity.push_back("1");  // only ake 1 part at time for now
 	//asset.jobs->push_back(IObjectPtr((IObject *) ajob));
 
-	part = _cmsd->FindPartById( partid.c_str());
+	Part* part = _cmsd->FindPartById( partid.c_str());
 	if(part==NULL)
 	{
 		OutputDebugString(StdStringFormat("CJobCommand::AddPlan Error no part \n").c_str());
@@ -144,7 +147,7 @@ Job *  CJobCommand::AddJob(CCMSDIntegrator * cmsd, int &job, std::string partid)
 		Process *process = plan->processes[i];
 		processes.push_back(process);
 		bDone.push_back(false);
-		
+		statcoll.push_back(Stats());
 		// NOT WORKING
 			//Process* process = plan->FindProcess(steps[step]);
 		//CCellHandler * nextcell = _cmsd->FindCellById((LPCSTR) process->resourcesRequired[0]);
@@ -160,6 +163,8 @@ Job *  CJobCommand::AddJob(CCMSDIntegrator * cmsd, int &job, std::string partid)
 		if(i>0&& process!=NULL) operations+=","; operations+=(LPCSTR) process->description;
 
 	}
+
+	// Each processplan contains cell to do work, cell can have one or more resources per cell
 	for(int i=0; i < processes.size(); i++)
 	{
 		_ProcessPlanId.push_back(  (LPCSTR) plan->identifier );
@@ -180,26 +185,24 @@ Job *  CJobCommand::AddJob(CCMSDIntegrator * cmsd, int &job, std::string partid)
 	_currentstep=-1;  // signal not started
 	return ajob;
 }
-void CJobCommand::LoadResources(CResourceHandlers *resources)
+
+void CJobCommand::LoadResources(std::string partid)
 {
-	for(int i=0; i< _ResourceRequired.size();i++)
-	{
-		_ResourceHandlers.push_back(resources->Find(_ResourceRequired[i]));
-		_TimePerStep.push_back(CTimestamp());
-	}
+	std::vector<CResourceHandler * > & resources = Factory.GetJobResources(partid) ;
+	_ResourceHandlers= resources; 
+	_TimePerStep= std::vector<CTimestamp>(resources.size()); 
 
 }
+
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 CJobCommands::CJobCommands(CCMSDIntegrator * _cmsd) 
 {
-	//agentconfig= _agentconfig;
 	cmsd= _cmsd;
-	_resourceHandlers=NULL;
 	_dDeadline=3000;
 	_dUpdateRateSec=0;
-
 }
 
 CJobCommand *  CJobCommands::AddJob(CCMSDIntegrator * _cmsd, int &jobId, std::string partid)
@@ -240,13 +243,65 @@ void CJobCommands::InitAllJobs(Job *	job)
 
 	// Now randomize part making
 	std::random_shuffle ( random_part.begin(), random_part.end() );
-
 	// Get Properties that may change from job to job - These are GLOBALS
 	// Get KWH Cost
 	std::string kwh= job->GetPropertyValue("KWH"); // we will assume cost but should add description tag
 	ControlThread::globalCosts["KWH"] = ConvertString<double>(kwh,0.0);   // no cost if not found :(
 	GLogger << FATAL << ControlThread::globalCosts["KWH"] << std::endl;
 
+}
+void CJobCommands::InitJobsStats(Job *	job) 
+{
+	static std::string fcnname="CJobCommands::InitJobsStats(Job *	job)  ";
+
+	// For each part, dissect to each Ex resource used, time on each resource
+	std::vector<double> dOperationTimeForPart(job->partIds.size(),0.0); // operation time on this line to finish this job
+	
+	for(int k=0 ; k< cmsd->jobs->size(); k++)
+	{
+		ATLASSERT (cmsd->jobs->at(k)!=NULL);
+		Job * job = (Job *) cmsd->jobs->at(k).get();
+
+		// For each part, dissect to each Ex resource used, time on each resource
+		std::vector<double> dOperationTimeForPart(job->partIds.size(),0.0); // operation time on this line to finish this job
+
+		for(int i=0 ; i< job->partIds.size(); i++)
+		{
+			// This sums up how long a part is to take given a set of resources (using the resource MTTP)
+			std::string partid = job->partIds[i];
+			std::vector<CResourceHandler * > ResourceHandlers = Factory.GetJobResources(partid);
+			for(int k=0 ; k< ResourceHandlers.size(); k++)
+			{
+				dOperationTimeForPart[i]+= ResourceHandlers[k]->_statemachine->MTTP;
+				Stats::Update("PTU" , dOperationTimeForPart[i] , ResourceHandlers[k]->_partStats[partid]);
+			}
+		}
+		double dTotalOperationTime=0.0;
+		for(int i=0 ; i< job->partIds.size(); i++)
+		{
+			std::string partid = job->partIds[i];
+			dTotalOperationTime+=dOperationTimeForPart[i] * totnumparts[partid];  // total seconds for all parts
+
+			// each resource will take  # parts to make in job * time/part
+			std::vector<CResourceHandler * > ResourceHandlers = Factory.GetJobResources(partid);
+			for(int k=0 ; k< ResourceHandlers.size(); k++)
+			{
+				ResourceHandlers[k]->_partStats[partid].Property("name")= (LPCSTR) ResourceHandlers[k]->_resource->name;
+				ResourceHandlers[k]->_partStats[partid]["OT"]=ResourceHandlers[k]->_statemachine->MTTP * totnumparts[partid];
+				ResourceHandlers[k]->_partStats[partid]["PSUT"]= 0.0;
+				ResourceHandlers[k]->_partStats[partid]["PlannedStandstill"]= 0.0;
+				ResourceHandlers[k]->_partStats[partid].Get("PBT")= ResourceHandlers[k]->_partStats[partid]["OT"];
+				
+			}
+		}
+
+		stats.Property("name")="Factory Planned";
+		stats.vals["OT"]=dTotalOperationTime;
+		stats.vals["PSUT"]=0.0;
+		stats.vals["PlannedStandstill"]=0.0;
+		stats.vals["PBT"]=dTotalOperationTime;
+		
+	}
 }
 //
 void CJobCommands::IncPart(std::string partid)
@@ -283,7 +338,7 @@ void  CJobCommands::Newworkorder()
 			if(job == NULL || job->_ResourceHandlers.size() <=0)
 				break;
 
-			CResourceHandler * resource = at(this->size()-1)->_ResourceHandlers[0];
+			CResourceHandler * resource = job->_ResourceHandlers[0];//job->at(this->size()-1)->_ResourceHandlers[0];
 			if(resource == NULL)
 				break;
 			if(resource->_statemachine->GetState() == "blocked")
@@ -298,78 +353,22 @@ void  CJobCommands::Newworkorder()
 		if(job==NULL)
 			break;
 
-		job->LoadResources(_resourceHandlers);
+		//job->LoadResources(_resourceHandlers);
+		job->LoadResources(job->_partid);
 
 		//std::string d= back()->ToString();
 		//OutputDebugString(d.c_str());
 
 	}
 }
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-CResourceHandler::~CResourceHandler(void)
-{
-}
-CResourceHandler::CResourceHandler(Resource * r, CCMSDIntegrator * cmsd)
-{
-	job=NULL;
-	_cmsd=cmsd;
-	_resource=r;
-	_statemachine = new CDESMonitor;
-
-	std::string name = (LPCSTR) r->name;
-
-	std::string mtbf= r->GetPropertyValue("Mtbf");
-	std::string mttr= r->GetPropertyValue("Mttr");
-	std::string mttp= r->GetPropertyValue("Mttp");
-
-	std::string mtbfunits= r->GetPropertyUnits("Mtbf");
-	std::string mttrunits= r->GetPropertyUnits("Mttr");
-	std::string mttpunits= r->GetPropertyUnits("Mttp");
-
-	std::string inqMax= r->GetPropertyValue("InQueue");
-	_statemachine->MaxSize()= ConvertString<int>(inqMax,1); 
-
-	_statemachine->SetMTBF(ConvertString<double>(mtbf.c_str(), -1.0) * 60.0);// min to sec
-	_statemachine->SetMTTR(ConvertString<double>(mttr.c_str(), -1.0) * 60.0);// min to sec
-	_statemachine->SetMTTP(ConvertString<double>(mttp.c_str(), -1.0));// sec
-	_statemachine->Setup();
-
-	for(int i=0; i<  r->properties.size(); i++)
-	{
-		std::string name = r->GetPropertyName((LPCSTR) r->properties[i]);
-		
-		std::string sPropDesc= r->GetProperty(i, 3);  //r->GetPropertyDescription(name);
-		if(Trim(sPropDesc) == "COST")
-		{
-			// Error - can have multiple costs and properties with same name
-			std::string sPropUnit= r->GetProperty(i, 2); //GetPropertyUnits(name);
-			std::string sPropValue= r->GetProperty(i, 1);   // GetPropertyValue(name);
-			std::string  sCostFactor= sPropUnit.substr(0,sPropUnit.find(":"));
-			std::string  sCostState = sPropUnit.substr(sPropUnit.find(":")+1);
-
-			std::string solvedvalue=ES::solve(sPropValue, 4);
-			double value = ConvertString<double>(solvedvalue,0.0);
-			// skip costs < 0
-			if(value < 0.0)
-				continue;
-			_statemachine->AddCostFunction(CostFcnTuple(sCostState, name,sCostFactor, sPropDesc, 0.0, value));
-
-			//OutputDebugString(StdStringFormat("Property Name = %s\n", name.c_str()).c_str());
-		}
-	}
-
-
-	_statemachine->Trigger("init");
-	_statemachine->Trigger("run");
-}
-void CJobCommands::Run(CJobCommands * jobs, CResourceHandlers *  resourceHandlers)
+void CJobCommands::Run(CJobCommands * jobs)
 {
 	//MaxQueueSize=2;
 	_jobid=0;
 	m_bRunning=true;
 	serviceTime.Start();
-	m_Thread = boost::thread(&CJobCommands::process, this, jobs, resourceHandlers );
+	m_Thread = boost::thread(&CJobCommands::process, this, jobs);
 
 }
 std::string CJobCommands::GenerateHtmlReport()
@@ -385,17 +384,17 @@ std::string CJobCommands::GenerateHtmlReport()
 	html += "</HEAD>\n";
 
 	//std::string html = CHtmlTable()::CreateHtmlDocument();
-	std::string header = "Machine," + _resourceHandlers->at(0)->_statemachine->GenerateCSVHeader("Minutes") + ",Utility<BR>Costs</BR>,Description";
+	std::string header = "Machine," + Factory[0]->_statemachine->GenerateCSVHeader("Minutes") + ",Utility<BR>Costs</BR>,Description";
 	std::string alignment = ",right,right,right,right,right,right,right,";
 	htmlTable.SetAlignment(alignment);
 	htmlTable.SetHeaderColumns( header);
 
-	for(int i=0;i<_resourceHandlers->size() ; i++)
+	for(int i=0;i<Factory.size() ; i++)
 	{
-		std::string html1=_resourceHandlers->at(i)->_statemachine->Name() + ","; ///???
-		html1+= _resourceHandlers->at(i)->_statemachine->GenerateCSVTiming(60.00) + "," ;
-		html1+= _resourceHandlers->at(i)->_statemachine->GenerateTotalCosts("","");
-		html1+=  (LPCSTR) _resourceHandlers->at(i)->_resource->description;
+		std::string html1=Factory[i]->_statemachine->Name() + ","; ///???
+		html1+= Factory[i]->_statemachine->GenerateCSVTiming(60.00) + "," ;
+		html1+= Factory[i]->_statemachine->GenerateTotalCosts("","");
+		html1+=  (LPCSTR) Factory[i]->_resource->description;
 		htmlTable.AddRow(header, html1);
 	}
 
@@ -403,11 +402,11 @@ std::string CJobCommands::GenerateHtmlReport()
 	std::string headerRaw = "Machine,Blocked,Starved,Down,Production,Off";
 	htmlRawTable.SetHeaderColumns( headerRaw);
 	std::map<std::string,double> rawstates;
-	for(int i=0;i<_resourceHandlers->size() ; i++)
+	for(int i=0;i<Factory.size() ; i++)
 	{
 		std::string html3;
-		_resourceHandlers->at(i)->_statemachine->GenerateStateReport(rawstates,1.0 );
-		html3+=_resourceHandlers->at(i)->_statemachine->Name() + ",";
+		Factory[i]->_statemachine->GenerateStateReport(rawstates,1.0 );
+		html3+=Factory[i]->_statemachine->Name() + ",";
 		html3+=StdStringFormat("%8.4f,%8.4f,%8.4f,%8.4f,%8.4f\n",
 			rawstates["blocked"],rawstates["starved"],rawstates["down"],rawstates["production"],rawstates["off"]);
 		htmlRawTable.AddRows(headerRaw, html3);
@@ -416,22 +415,22 @@ std::string CJobCommands::GenerateHtmlReport()
 	CHtmlTable kpiTable; 
 	std::string kpiheader = "Machine,MTBF,MTTR,INQ, OUTQ";
 	kpiTable.SetHeaderColumns( kpiheader);
-	for(int i=0;i<_resourceHandlers->size() ; i++)
+	for(int i=0;i<Factory.size() ; i++)
 	{
-		std::string machine=_resourceHandlers->at(i)->_statemachine->Name() + ",";
-		machine+= StdStringFormat("%8.4f,",_resourceHandlers->at(i)->_statemachine->MTBF  );
-		machine+= StdStringFormat("%8.4f,",_resourceHandlers->at(i)->_statemachine->MTTR  );
-		machine+= StdStringFormat("%d,",_resourceHandlers->at(i)->_statemachine->MaxSize()  );
+		std::string machine=Factory[i]->_statemachine->Name() + ",";
+		machine+= StdStringFormat("%8.4f,",Factory[i]->_statemachine->MTBF  );
+		machine+= StdStringFormat("%8.4f,",Factory[i]->_statemachine->MTTR  );
+		machine+= StdStringFormat("%d,",Factory[i]->_statemachine->MaxSize()  );
 		kpiTable.AddRows(kpiheader, machine);
 	}
 
 	CHtmlTable htmlTable2; 
 	std::string header2 = "Machine,Units,Name,State,Time,Cost";
 	htmlTable2.SetHeaderColumns( header2);
-	for(int i=0;i<_resourceHandlers->size() ; i++)
+	for(int i=0;i<Factory.size() ; i++)
 	{
-		std::string machine=_resourceHandlers->at(i)->_statemachine->Name() + ",";
-		std::string html2= _resourceHandlers->at(i)->_statemachine->GenerateCosts(machine,"\n") ;
+		std::string machine=Factory[i]->_statemachine->Name() + ",";
+		std::string html2= Factory[i]->_statemachine->GenerateCosts(machine,"\n") ;
 		htmlTable2.AddRows(header2, html2);
 	}
 
@@ -467,11 +466,11 @@ std::string CJobCommands::GenerateHtmlReport()
 		//////////////////////////////////////////////////////////////////////////
 	// Make table of pie charts of performance states
 	HtmlTableMaker Table(3);
-	for(int i=0;i<_resourceHandlers->size() ; i++)
+	for(int i=0;i<Factory.size() ; i++)
 	{
-		std::string machine=_resourceHandlers->at(i)->_statemachine->Name() + ",";
+		std::string machine=Factory[i]->_statemachine->Name() + ",";
 		std::map<std::string,double> states;
-		 _resourceHandlers->at(i)->_statemachine->GenerateStateReport(states,1000.0 );;
+		Factory[i]->_statemachine->GenerateStateReport(states,1000.0 );;
 		Table.AppendTableCell(Raphael::InlinePieChart(states, machine + " State Use"));
 	}
 	html+=Table.MakeTable();
@@ -483,8 +482,9 @@ std::string CJobCommands::GenerateHtmlReport()
 }
 
 
-void CJobCommands::Update(CResourceHandlers * resourceHandlers)
+void CJobCommands::Update() // CResourceHandlers * resourceHandlers)
 {
+
 	for(int i=0; i < size() ; i++)
 	{
 		int _current = at(i)->_currentstep;
@@ -511,19 +511,19 @@ void CJobCommands::Update(CResourceHandlers * resourceHandlers)
 		// Check to see if job has not started as
 		if(_current < 0 ) 
 		{
-			if(  _resourceHandlers->size() >0 
-				&& _resourceHandlers->at(0)->_statemachine->CanPush()
-				&& _resourceHandlers->at(0)->_statemachine->GetStateName() != "faulted"
+			if(  job->_ResourceHandlers.size() >0 
+				&& job->_ResourceHandlers[0]->_statemachine->CanPush()
+				&& job->_ResourceHandlers[0]->_statemachine->GetStateName() != "faulted"
 				)
 			{ 
 				at(i)->_currentstep=0;
 				at(i)->factoryTime.Start();
-				_resourceHandlers->at(0)->_statemachine->Push(job);  // start job
-				job->_mttp=_resourceHandlers->at(0)->_statemachine->MTTP;  // reset time to finish - new job
+				job->_ResourceHandlers[0]->_statemachine->Push(job);  // start job
+				job->_mttp=job->_ResourceHandlers[0]->_statemachine->MTTP;  // reset time to finish - new job
 			}
 			continue; // maybe reset to zero - no more jobs?
 		}
-		CResourceHandler *  resource = resourceHandlers->FindResourceHandler(_current) ; 
+		CResourceHandler *  resource = job->_ResourceHandlers[_current] ; 
 		CResourceHandler *  resource1;
 		if(resource == NULL) 
 			continue;
@@ -539,7 +539,7 @@ void CJobCommands::Update(CResourceHandlers * resourceHandlers)
 				at(i)->_currentstep++; // increment current step
 				continue; // skip all processing
 			}
-			resource1 = resourceHandlers->FindResourceHandler(_current+1) ;
+			resource1 = job->_ResourceHandlers[_current+1] ;
 			if(resource1==NULL)  // should break if probem
 					continue;
 			if( resource1->_statemachine->CanPush() && resource1->_statemachine->GetStateName() != "faulted" )
@@ -555,20 +555,18 @@ void CJobCommands::Update(CResourceHandlers * resourceHandlers)
 }
 
 
-void CJobCommands::process(CJobCommands * jobs, CResourceHandlers *  resourceHandlers)
+void CJobCommands::process(CJobCommands * jobs)
 {
 	boost::mutex::scoped_lock lock(_wndMain->_access);
 
 	_dUpdateRateSec=0.0;
 	double _dSpeedupRateSec=0.0;
-	_resourceHandlers=resourceHandlers;
-	while(_resourceHandlers==NULL) ::Sleep(100);
 	while(m_bRunning)
 	{
 		ControlThread::RestartTimer();
 		Newworkorder();               // done with job - start new work order
-		Update(resourceHandlers);  // update queues to resource
-		resourceHandlers->UpdateResourceHandlers();  // update state machine
+		Update() ; // resourceHandlers);  // update job queues 
+		Factory.UpdateResourceHandlers();  // update state machine
 
 		// Good example specialized logging per Resource in FurLogger
 		//CResourceHandler * resourceHandler= _resourceHandlers->Find("LINE1_PS_CAST1_FUR1");
@@ -590,6 +588,7 @@ void CJobCommands::process(CJobCommands * jobs, CResourceHandlers *  resourceHan
 		//	_wndMain->cond.wait(lock);
 
 
+			AgentStatus(JobStatus, Jobs, DeviceStatus );
 		//		if(_wndMain->_nLoopCounter<0) 
 		if( (_dUpdateRateSec ) <= _dDeadline)
 		{
@@ -628,6 +627,20 @@ void CJobCommands::process(CJobCommands * jobs, CResourceHandlers *  resourceHan
 			::Sleep(500);
 
 		}
+		if(_wndMain->_bKPISnapshot==true)
+		{
+			_wndMain->_bKPISnapshot=false;
+			
+			std::string kpiReport = CHtmlTable::CreateHtmlSytlesheetFrontEnd("KPI Precision Sand Casting Saginaw MI")+"</HEAD>";
+			kpiReport += KPI::ReportingPlanned();
+			kpiReport += KPI::Reporting(stats);
+			kpiReport += "</BODY></HTML>\n";
+
+			::WriteFile(::ExeDirectory() + "JobsKpi.html", kpiReport);
+			::SendMessage(_wndMain->m_hWnd, DISPLAY_KPISNAPSHOT,0,0);
+			::Sleep(500);
+
+		}
 		if(AllFinished())
 			break;
 	}
@@ -644,4 +657,95 @@ void CJobCommands::process(CJobCommands * jobs, CResourceHandlers *  resourceHan
 
 	serviceTime.Stop();
 	GenerateHtmlReport();
+}
+
+void CJobCommands::AgentStatus(std::string &JobStatus, std::string &Jobs, std::string & DeviceStatus )
+{
+	CHtmlTable htmlJobsTable,htmlElapsedTable,htmlTable; 
+	JobStatus.clear();
+	Jobs.clear();
+	DeviceStatus.clear();
+
+	//Job* job = (Job *)  _cmsd->jobs->at(0).get(); // there may be multiple jobs - but only 1st counts in our world
+	std::string  elapsedHeader="Date,Time, Simulation<br>Seconds, Togo, Deadline";
+	htmlElapsedTable.SetHeaderColumns( elapsedHeader);
+	std::string  jobElapsed=serviceTime.GetCurrentDateTime() + "," ;
+	jobElapsed += serviceTime.ElapsedString() + ",";
+	jobElapsed += StdStringFormat("%d,", (int) TimeElapsed());
+	jobElapsed += StdStringFormat("%d,", (int) (Deadline()-TimeElapsed()));
+	jobElapsed += StdStringFormat("%d ", (int) Deadline());
+	htmlElapsedTable.AddRow(elapsedHeader, jobElapsed);
+
+	////////////////////////////////////////////////////////
+	std::string	jobsheader = "Job, Finished Parts, TotalParts" ;
+	htmlJobsTable.SetHeaderColumns( jobsheader);
+	std::string  jobHtml;
+	for(int i=0 ; i< parts.size(); i++)
+	{
+		jobHtml =  parts[i] +",";
+		jobHtml +=StdStringFormat("%6d,%6d", finishedparts[ parts[i]],totnumparts[parts[i]]); 
+		htmlJobsTable.AddRow(jobsheader, jobHtml);
+	}
+	JobStatus =  htmlElapsedTable.CreateHtmlTable() + "<BR>" + htmlJobsTable.CreateHtmlTable()+"<BR>\n";
+
+	//pHtmlView->SetElementId( "JobStatus", htmlElapsedTable.CreateHtmlTable() + "<BR>" + htmlJobsTable.CreateHtmlTable()+"<BR>\n");
+	////////////////////////////////////////////////////////
+	jobsheader = "JobId,PartId, Current, Operation, Machine,Max Steps,Order Time, Factory Time" ;
+	htmlJobsTable.ClearValues();
+	htmlJobsTable.SetHeaderColumns( jobsheader);
+	jobHtml.clear();
+	for(int i=0 ; i< size(); i++)
+	{
+		std::string step;
+		int k = at(i)->_currentstep;
+		if(k>=0 && k <  at(i)->steps.size())
+			step = at(i)->steps[k];
+		jobHtml =  at(i)->_jobId +",";
+		jobHtml +=  at(i)->_partid +",";
+		
+		jobHtml +=StdStringFormat("%6d,%s,", at(i)->_currentstep,step.c_str()); 
+		if(k>=0 && k <  at(i)->_ResourceHandlers.size())
+			jobHtml +=  at(i)->_ResourceHandlers[k]->_identifier + ",";
+		else
+			jobHtml += ",";
+		jobHtml +=StdStringFormat("%6d", at(i)->MaxStep())+ ","; 
+		jobHtml +=at(i)->orderTime.ElapsedString() + ",";
+		jobHtml +=at(i)->factoryTime.ElapsedString()  ;
+		htmlJobsTable.AddRow(jobsheader, jobHtml);
+	}
+
+	Jobs= htmlJobsTable.CreateHtmlTable()+"<BR>\n";
+	//pHtmlView->SetElementId( "Jobs", htmlJobsTable.CreateHtmlTable()+"<BR>\n");
+	////////////////////////////////////////////////////////////////
+	std::string units = _wndMain->_bMinutes ? "Minutes" : "Seconds";
+	double _timeDivisor = _wndMain->_bMinutes ? 60.0 : 1.0;
+	std::string	header = "#,Machine,State,InQ,InQMax,Current,MTP,Processing Left," + Factory[0]->_statemachine->GenerateCSVHeader(units);
+	htmlTable.SetHeaderColumns( header);
+
+	for(int i=0;i<Factory.size() ; i++)
+	{
+		std::string html1=StdStringFormat("%d,",i);
+
+		html1+= StdStringFormat("<A HREF=\"%s\">",(::ExeDirectory()+Factory[i]->_statemachine->Name()).c_str() );
+		html1+=Factory[i]->_statemachine->Name() + "</A>,";
+
+		//html1+=_resourceHandlers[i]->_statemachine->Name() + ",";
+		html1+=StateStr(Factory[i]->_statemachine->GetState())  + "," ;
+		html1+=StdStringFormat("%d", Factory[i]->_statemachine->size())  + "," ;
+		html1+=StdStringFormat("%d", Factory[i]->_statemachine->MaxSize())  + "," ;
+		if(Factory[i]->_statemachine->Current()!=NULL) 
+			html1+="*,"; 
+		else html1+="_,";  
+		html1+=StdStringFormat("%8.4f", Factory[i]->_statemachine->MTTP)  + "," ;
+		if(Factory[i]->_statemachine->Current()!=NULL)
+			html1+=StdStringFormat("%8.4f", Factory[i]->_statemachine->Current()->_mttp)  + "," ;
+		else html1+=" ,";
+		
+		html1+= Factory[i]->_statemachine->GenerateCSVTiming(_timeDivisor)  ;
+		htmlTable.AddRow(header, html1);
+	}
+
+	DeviceStatus= htmlTable.CreateHtmlTable();
+	//pHtmlView->SetElementId( "Device", htmlTable.CreateHtmlTable());
+//	return 0;
 }

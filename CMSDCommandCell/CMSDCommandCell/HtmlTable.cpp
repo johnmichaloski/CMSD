@@ -1,4 +1,4 @@
-//
+﻿//
 // HtmlTable.cpp
 //
 
@@ -390,3 +390,4 @@ std::string CHtmlTable::HtmlRaphaeleChartData(std::map<std::string,double> &stat
 
 	return tmp;
 }
+

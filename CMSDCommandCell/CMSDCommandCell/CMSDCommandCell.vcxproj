@@ -253,7 +253,9 @@
     <ClCompile Include="CMSDIntegrator.cpp" />
     <ClCompile Include="EquationSolver.cpp" />
     <ClCompile Include="HtmlTable.cpp" />
+    <ClCompile Include="KPI.cpp" />
     <ClCompile Include="MainFrm.cpp" />
+    <ClCompile Include="ResourceHandler.cpp" />
     <ClCompile Include="StateModel.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -274,10 +276,12 @@
     <ClInclude Include="CMSDIntegrator.h" />
     <ClInclude Include="EquationSolver.h" />
     <ClInclude Include="HtmlTable.h" />
+    <ClInclude Include="KPI.h" />
     <ClInclude Include="MainFrm.h" />
     <ClInclude Include="Numerics.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="..\..\src\NIST\RunProcess.h" />
+    <ClInclude Include="ResourceHandler.h" />
     <ClInclude Include="StateModel.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="..\..\src\ListControl\dirent.h" />

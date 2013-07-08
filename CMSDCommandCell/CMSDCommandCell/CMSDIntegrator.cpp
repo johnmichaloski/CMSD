@@ -826,7 +826,7 @@ Cell* CCMSDIntegrator::FindCellById(bstr_t id)
 
 	}
 	return NULL;
-	//throw std::exception("Resource not Found\n");
+	//throw std::exception("FindCellById not Found\n");
 }
 Distribution* CCMSDIntegrator::FindDistributionById(bstr_t id)
 {

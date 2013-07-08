@@ -36,7 +36,6 @@ public:
 	STDMETHOD(AddRow)(std::string csvFields, std::string values);
 	STDMETHOD(AddRows)(std::string csvFields, std::string values);
 	STDMETHOD(ClearValues)(){_values.clear(); return S_OK;}
-
 private:
 	static std::string HtmlStyle();
 	std::string GetHeaderRow();

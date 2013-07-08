@@ -11,6 +11,7 @@
 //#include "NIST/AgentCfg.h"
 //#include "MTCAgentCmd.h"
 #include "MainFrm.h"
+#include "KPI.h"
 
 //////////////////////////////////////////////////////////////////////////////////////////////
 // Sim StateModel - off, idle, starved, blocked, running, faulted
@@ -55,20 +56,22 @@ CDESMonitor::CDESMonitor()
 }
 void CDESMonitor::Setup()
 {
-	nBlockedTime=0.0;
-	nStarvedTime=0.0;
-	nDownTime=0.0;
-	nProductionTime=0.0;
-	nOffTime=0.0;
-	nRepairTime=0.0;
-	nIdleTime=0.0;
+	stats.nBlockedTime=0.0;
+	stats.nStarvedTime=0.0;
+	stats.nDownTime=0.0;
+	stats.nProductionTime=0.0;
+	stats.nOffTime=0.0;
+	stats.nRepairTime=0.0;
+	stats.nIdleTime=0.0;
 	_mtbf=MTBF;
 	_mttr=MTTR;
+	stats.nTotalParts=stats.nGoodParts=0;
+
 }
 void CDESMonitor::Off()
 {
 	LogMessage(name); LogMessage("Off\n");
-	nOffTime+= this->UpdateRate()*1000.00;
+	stats.nOffTime+= this->UpdateRate()*1000.00;
 }
 void CDESMonitor::Running()
 { 
@@ -91,9 +94,9 @@ void CDESMonitor::Running()
 	}
 		// Add up time in production state
 	if(Current()!=NULL && Current()->_mttp>0 && Current()!=NULL) 
-		nProductionTime+= _dUpdateRateSec;
+		stats.nProductionTime+= _dUpdateRateSec;
 	else
-		nIdleTime+= _dUpdateRateSec;
+		stats.nIdleTime+= _dUpdateRateSec;
 		
 	if(Current()!=NULL && Current()->_mttp<=0 ) 
 	{
@@ -114,7 +117,7 @@ void CDESMonitor::Running()
 void CDESMonitor::Blocked()
 {
 	//OutputDebugString(StdStringFormat("%s Blocked Queue Current = %X %x\n", name.c_str(), Current(), ConvertToString(nBlockedTime).c_str()).c_str());
-	nBlockedTime+= _dUpdateRateSec;
+	stats.nBlockedTime+= _dUpdateRateSec;
 	if(Current() != NULL && (Current()->_mttp>0 ) )  // item to process...
 		this->Trigger("run");
 	if(Current() == NULL)
@@ -123,7 +126,7 @@ void CDESMonitor::Blocked()
 void CDESMonitor::Starved()
 {
 	//OutputDebugString(StdStringFormat("%s Starved Queue Current = %X %x\n", name.c_str(), Current(), ConvertToString(nBlockedTime).c_str()).c_str());
-	nStarvedTime+= _dUpdateRateSec;
+	stats.nStarvedTime+= _dUpdateRateSec;
 	//if(inqueue.size() > 0)
 	//	Trigger("run");
 	if(Current() != NULL) 
@@ -137,8 +140,8 @@ void CDESMonitor::Faulted()
 		_mttr-= _dUpdateRateSec;;
 	//_mtbf-= _dUpdateRateSec;  // subtract second til next  fault
 	// Add up time in faulted state
-	nDownTime+= _dUpdateRateSec; // assume seconds
-	nRepairTime+= _dUpdateRateSec;  // assume seconds
+	stats.nDownTime+= _dUpdateRateSec; // assume seconds
+	stats.nRepairTime+= _dUpdateRateSec;  // assume seconds
 	// Add up utilites in faulted state? Or just add to preprocess step
 
 
@@ -179,12 +182,30 @@ void CDESMonitor::Postprocess()
 void CDESMonitor::Preprocess()
 {
 	_dUpdateRateSec = UpdateRateSec();
-	//if(pLastCurrent==NULL && Current()!=NULL || ( pLastCurrent!=Current() ) )
-	//{
-	//	_mttp=MTTP;  // reset - new job
-	//}
-	pLastCurrent=Current();
+	Stats::Update("TotalTime", _dUpdateRateSec, stats);
 
+	if( Current() !=NULL &&  pLastCurrent!=Current())
+	{
+	 	Stats partStats= _partStats[ Current()->_partid];
+	    Stats::Update("TotalParts", 1.0, Current()->stats,partStats);
+	    Stats::Update("GoodParts", 1.0, Current()->stats,partStats);
+
+	};
+
+	pLastCurrent=Current();
+	Stats::Update(StateStr(GetState()), _dUpdateRateSec, stats);
+	if( Current() !=NULL)
+	{
+	 	Stats partStats= _partStats[ Current()->_partid];
+		Stats::Update(StateStr(GetState()), _dUpdateRateSec, Current()->stats,Current()->GetStepStat(),partStats);
+	    Stats::Update("TotalTime", _dUpdateRateSec, Current()->stats,Current()->GetStepStat(),partStats);
+		 // fix me those on queue - are idle, waiting
+		 for(int i=1; i< Queue<>::size(); i++)
+			Stats::Update("idle", _dUpdateRateSec,  at(i)->stats,Current()->GetStepStat(),partStats);
+
+	
+		
+	}
 }
 
 
@@ -192,12 +213,12 @@ std::string CDESMonitor::GenerateReport()
 {
 	std::string tmp;
 	tmp+= ToString();
-	tmp+=StdStringFormat("\t Blocked Time =%8.4f\n", nBlockedTime);
-	tmp+=StdStringFormat("\t Starved Time =%8.4f\n", nStarvedTime);
-	tmp+=StdStringFormat("\t Down Time =%8.4f\n", nDownTime);
-	tmp+=StdStringFormat("\t Repair Time =%8.4f\n", nRepairTime);
-	tmp+=StdStringFormat("\t Production Time =%8.4f\n", nProductionTime);
-	tmp+=StdStringFormat("\t Off Time =%8.4f\n", nOffTime);
+	tmp+=StdStringFormat("\t Blocked Time =%8.4f\n", stats.nBlockedTime);
+	tmp+=StdStringFormat("\t Starved Time =%8.4f\n", stats.nStarvedTime);
+	tmp+=StdStringFormat("\t Down Time =%8.4f\n", stats.nDownTime);
+	tmp+=StdStringFormat("\t Repair Time =%8.4f\n", stats.nRepairTime);
+	tmp+=StdStringFormat("\t Production Time =%8.4f\n", stats.nProductionTime);
+	tmp+=StdStringFormat("\t Off Time =%8.4f\n", stats.nOffTime);
 	return tmp;
 }
 
@@ -212,14 +233,14 @@ void CDESMonitor::GenerateStateReport(std::map<std::string,double> &states, doub
 	states["off"]=0.0; 
 
 	if(dDivisor!=1.0)
-		dDivisor= (nBlockedTime+nStarvedTime+nDownTime+nProductionTime+nOffTime)/100.0;
+		dDivisor= (stats.nBlockedTime+stats.nStarvedTime+stats.nDownTime+stats.nProductionTime+stats.nOffTime)/100.0;
 
-	states["blocked"]+= nBlockedTime/dDivisor;
-	states["starved"]+= nStarvedTime/dDivisor;
-	states["down"]+= nDownTime/dDivisor;
+	states["blocked"]+= stats.nBlockedTime/dDivisor;
+	states["starved"]+= stats.nStarvedTime/dDivisor;
+	states["down"]+= stats.nDownTime/dDivisor;
 	//states["repair"]+= nRepairTime/dDivisor;
-	states["production"]+= nProductionTime/dDivisor;
-	states["off"]+= nOffTime/dDivisor;
+	states["production"]+= stats.nProductionTime/dDivisor;
+	states["off"]+= stats.nOffTime/dDivisor;
 }
 
 std::string CDESMonitor::GenerateCSVHeader(std::string units)
@@ -231,12 +252,12 @@ std::string CDESMonitor::GenerateCSVHeader(std::string units)
 std::string CDESMonitor::GenerateCSVTiming(double divider)
 {
 	std::string tmp;
-	tmp+=StdStringFormat("%8.4f,", nBlockedTime/divider);
-	tmp+=StdStringFormat("%8.4f,", nStarvedTime/divider);
-	tmp+=StdStringFormat("%8.4f,", nDownTime/divider);
+	tmp+=StdStringFormat("%8.4f,", stats.nBlockedTime/divider);
+	tmp+=StdStringFormat("%8.4f,", stats.nStarvedTime/divider);
+	tmp+=StdStringFormat("%8.4f,", stats.nDownTime/divider);
 //	tmp+=StdStringFormat("%8.4f,", nRepairTime/divider);
-	tmp+=StdStringFormat("%8.4f,", nProductionTime/divider);
-	tmp+=StdStringFormat("%8.4f", nOffTime/divider);
+	tmp+=StdStringFormat("%8.4f,", stats.nProductionTime/divider);
+	tmp+=StdStringFormat("%8.4f", stats.nOffTime/divider);
 	return tmp;
 }
 

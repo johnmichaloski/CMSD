@@ -1372,3 +1372,101 @@ int CMainFrame::FindResourceHandler(std::string id)
 	return -1;
 }
 
+
+//class CJobHandler
+//{
+//public:
+//	CJobHandler(AgentMgr * config, 
+//		Job * job, 
+//		CCMSDIntegrator * cmsd,
+//		std::vector<CCellHandler * >	& cellHandlers)
+//		: _cellHandlers(cellHandlers)
+//	{
+//		_agentconfig=config;
+//		_job=job;
+//		_cmsd=cmsd;
+//		_cellHandlers=cellHandlers;
+//	}
+//	~CJobHandler(void){}
+//
+//	CJobHandler(std::vector<CCellHandler * >	& cellHandlers) : _cellHandlers(cellHandlers)
+//	{
+//	
+//	}
+//	void Init(Job * job);
+//	std::vector<CCellHandler * >	&				_cellHandlers;
+//	//std::vector<CJobCommand * > jobs;
+//	CJobCommands jobs;
+//
+//	void Cycle();
+//	void GenerateReport();
+//	void CheckNewworkorder();
+//	void CheckNewJob();
+//
+//	std::vector<ProcessPlan *> currentprocessplans;
+//	int GetPartIndex(TCHAR * id)
+//	{
+//		for(int i=0; i< _job->partIds.size(); i++) 
+//			if( _job->partIds[i] == _bstr_t(id)) 
+//				return i;
+//		return -1;
+//	}
+//
+//
+//	bool								_mRunning;
+//	AgentMgr *				_agentconfig;
+//	Job *								_job;
+//	CCMSDIntegrator *					_cmsd;
+//	boost::mutex						_access;
+//
+//	std::vector< std::string > parts;
+//	std::vector< int > totnumparts;
+//	std::vector< int > numparts, finishedparts;
+//	std::vector<ProcessPlan*> _doneprocessplans;
+//	std::vector<ProcessPlan*> _activeprocessplans;
+//
+//};
+//class CPartHandler
+//{
+//public:
+//	CPartHandler::CPartHandler(AgentMgr * config, Part * part, CCMSDIntegrator * cmsd)
+//	{
+//		_agentconfig=config;
+//		_part=part;
+//		_cmsd=cmsd;
+//	}
+//	~CPartHandler(void){}
+//	void Cycle(){}
+//
+//	bool								_mRunning;
+//	AgentMgr *							_agentconfig;
+//	Part *								_part;
+//	CCMSDIntegrator *					_cmsd;
+//
+//
+//};
+	//for(int i=0 ; i< job->partIds.size(); i++)
+	//{
+	//	std::string partid = job->partIds[i];
+	//	try {
+	//		// Find all resource and then MTP for each resource to make part
+	//		Part * part = cmsd->FindPartById(partid);
+	//		if(part==NULL)			throw std::exception("Bad part lookup in CJobCommands::InitAllJobs");
+	//		ProcessPlan * processplan  = cmsd->FindProcessPlanById(part->processplanidentifier);
+	//		if(processplan==NULL)			throw std::exception("Bad processplan lookup in CJobCommands::InitAllJobs");
+	//		for(int j=0;j< 	processplan->steps.size(); j++)
+	//		{
+	//			Process *process = processplan->processes[j];
+	//			Cell * cell= cmsd->FindCellById((LPCSTR)  process->resourcesRequired[0]);
+	//			if(cell== NULL)			throw std::exception("Bad cell lookup in CJobCommands::InitAllJobs");
+
+	//			Resource * r = cmsd->FindResourceById((LPCSTR) cell->resourceIds[0]);
+	//			if(r== NULL)			throw std::exception("Bad Resource lookup in CJobCommands::InitAllJobs");
+	//			CResourceHandler * ResourceHandler = _wndMain->_resourceHandlers.Find((LPCSTR) r->name);
+	//			if(ResourceHandler==NULL)
+	//				continue ;
+	//			dOperationTimeForPart[i]+= ResourceHandler->_statemachine->MTTP;
+	//		}
+	//	} catch(std::exception err) { OutputDebugString(err.what()); } 
+	//}
+

@@ -22,6 +22,7 @@ CMainFrame::CMainFrame()
 	 _bSnapshot=_bPaused=_bStopped=false;
 	 _timeDivisor=1.0;
 	 _bMinutes=false;
+	 _bKPISnapshot=false;
 }
 
 BOOL CMainFrame::PreTranslateMessage(MSG* pMsg)
@@ -134,8 +135,7 @@ LRESULT CMainFrame::OnStart(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/
 
 	return 0;
 }
-//LRESULT CMainFrame::OnDisplaySnapshot(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
-	LRESULT  CMainFrame::OnDisplaySnapshot(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
+LRESULT  CMainFrame::OnDisplaySnapshot(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
 {
 	std::string filename = ::ExeDirectory() + "Doc.html";
 	CWtlHtmlView * pView = new CWtlHtmlView();
@@ -147,88 +147,24 @@ LRESULT CMainFrame::OnStart(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/
 	_pages.push_back(pView);
 	return 0;
 }
-
+LRESULT  CMainFrame::OnDisplayKPI(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
+{
+	std::string filename = ::ExeDirectory() + "JobsKpi.html"
+		;
+	CWtlHtmlView * pView = new CWtlHtmlView();
+	pView->Create(m_view,rcDefault,
+		filename.c_str(), 
+		WS_CHILD | WS_VISIBLE | WS_VSCROLL,
+		WS_EX_CLIENTEDGE);
+	m_view.AddPage(pView->m_hWnd,"KPI");
+	_pages.push_back(pView);
+	return 0;
+}
 LRESULT CMainFrame::OnDisplayAgent(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 {
-	CHtmlTable htmlJobsTable,htmlElapsedTable,htmlTable; 
-
-	//Job* job = (Job *)  _cmsd->jobs->at(0).get(); // there may be multiple jobs - but only 1st counts in our world
-	std::string  elapsedHeader="Date,Time, Simulation<br>Seconds, Togo, Deadline";
-	htmlElapsedTable.SetHeaderColumns( elapsedHeader);
-	std::string  jobElapsed=jobs->serviceTime.GetCurrentDateTime() + "," ;
-	jobElapsed += jobs->serviceTime.ElapsedString() + ",";
-	jobElapsed += StdStringFormat("%d,", (int) jobs->TimeElapsed());
-	jobElapsed += StdStringFormat("%d,", (int) (jobs->Deadline()-jobs->TimeElapsed()));
-	jobElapsed += StdStringFormat("%d ", (int) jobs->Deadline());
-	htmlElapsedTable.AddRow(elapsedHeader, jobElapsed);
-
-	////////////////////////////////////////////////////////
-	std::string	jobsheader = "Job, Finished Parts, TotalParts" ;
-	htmlJobsTable.SetHeaderColumns( jobsheader);
-	std::string  jobHtml;
-	for(int i=0 ; i< jobs->parts.size(); i++)
-	{
-		jobHtml =  jobs->parts[i] +",";
-		jobHtml +=StdStringFormat("%6d,%6d", jobs->finishedparts[ jobs->parts[i]],jobs->totnumparts[jobs->parts[i]]); 
-		htmlJobsTable.AddRow(jobsheader, jobHtml);
-	}
-
-	pHtmlView->SetElementId( "JobStatus", htmlElapsedTable.CreateHtmlTable() + "<BR>" + htmlJobsTable.CreateHtmlTable()+"<BR>\n");
-	////////////////////////////////////////////////////////
-	jobsheader = "JobId,PartId, Current, Operation, Machine,Max Steps,Order Time, Factory Time" ;
-	htmlJobsTable.ClearValues();
-	htmlJobsTable.SetHeaderColumns( jobsheader);
-	jobHtml.clear();
-	for(int i=0 ; i< jobs->size(); i++)
-	{
-		std::string step;
-		int k = jobs->at(i)->_currentstep;
-		if(k>=0 && k <  jobs->at(i)->steps.size())
-			step = jobs->at(i)->steps[k];
-		jobHtml =  jobs->at(i)->_jobId +",";
-		jobHtml +=  jobs->at(i)->_partid +",";
-		
-		jobHtml +=StdStringFormat("%6d,%s,", jobs->at(i)->_currentstep,step.c_str()); 
-		if(k>=0 && k <  jobs->at(i)->_ResourceHandlers.size())
-			jobHtml +=  jobs->at(i)->_ResourceHandlers[k]->_identifier + ",";
-		else
-			jobHtml += ",";
-		jobHtml +=StdStringFormat("%6d", jobs->at(i)->MaxStep())+ ","; 
-		jobHtml +=jobs->at(i)->orderTime.ElapsedString() + ",";
-		jobHtml +=jobs->at(i)->factoryTime.ElapsedString()  ;
-		htmlJobsTable.AddRow(jobsheader, jobHtml);
-	}
-
-	pHtmlView->SetElementId( "Jobs", htmlJobsTable.CreateHtmlTable()+"<BR>\n");
-	////////////////////////////////////////////////////////////////
-	std::string units = _bMinutes ? "Minutes" : "Seconds";
-	std::string	header = "#,Machine,State,InQ,InQMax,Current,MTP,Processing Left," + _resourceHandlers[0]->_statemachine->GenerateCSVHeader(units);
-	htmlTable.SetHeaderColumns( header);
-
-	for(int i=0;i<_resourceHandlers.size() ; i++)
-	{
-		std::string html1=StdStringFormat("%d,",i);
-
-		html1+= StdStringFormat("<A HREF=\"%s\">",(::ExeDirectory()+_resourceHandlers[i]->_statemachine->Name()).c_str() );
-		html1+=_resourceHandlers[i]->_statemachine->Name() + "</A>,";
-
-		//html1+=_resourceHandlers[i]->_statemachine->Name() + ",";
-		html1+=StateStr(_resourceHandlers[i]->_statemachine->GetState())  + "," ;
-		html1+=StdStringFormat("%d", _resourceHandlers[i]->_statemachine->size())  + "," ;
-		html1+=StdStringFormat("%d", _resourceHandlers[i]->_statemachine->MaxSize())  + "," ;
-		if(_resourceHandlers[i]->_statemachine->Current()!=NULL) 
-			html1+="*,"; 
-		else html1+="_,";  
-		html1+=StdStringFormat("%8.4f", _resourceHandlers[i]->_statemachine->MTTP)  + "," ;
-		if(_resourceHandlers[i]->_statemachine->Current()!=NULL)
-			html1+=StdStringFormat("%8.4f", _resourceHandlers[i]->_statemachine->Current()->_mttp)  + "," ;
-		else html1+=" ,";
-		
-		html1+= _resourceHandlers[i]->_statemachine->GenerateCSVTiming(_timeDivisor)  ;
-		htmlTable.AddRow(header, html1);
-	}
-
-	pHtmlView->SetElementId( "Device", htmlTable.CreateHtmlTable());
+	pHtmlView->SetElementId( "JobStatus",  jobs->JobStatus); // htmlElapsedTable.CreateHtmlTable() + "<BR>" + htmlJobsTable.CreateHtmlTable()+"<BR>\n");
+	pHtmlView->SetElementId( "Jobs", jobs->Jobs); // jobs->htmlJobsTable.CreateHtmlTable()+"<BR>\n");
+	pHtmlView->SetElementId( "Device", jobs->DeviceStatus); // jobs->htmlTable.CreateHtmlTable());
 	return 0;
 }
 
@@ -264,6 +200,7 @@ LRESULT CMainFrame::OnFileRun(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl
 		"<BUTTON id = \"Stop\"  onClick=\"location.href='stophost'\" >STOP</BUTTON>"		
 		"<BUTTON id = \"Step\"  onClick=\"location.href='localhost'\" >STEP</BUTTON>"
 		"<BUTTON id = \"Snapshot\"  onClick=\"location.href='snapshothost'\" >SNAPSHOT</BUTTON>"
+		"<BUTTON id = \"KPI\"  onClick=\"location.href='KPIhost'\" >KPI</BUTTON>"
 		"<BUTTON id = \"Seconds\"  onClick=\"location.href='secondshost'\" >SECONDS</BUTTON>"
 		"<BUTTON id = \"Minutes\"  onClick=\"location.href='minuteshost'\" >MINUTES</BUTTON>"
 		"<BUTTON id = \"Run\"  onClick=\"location.href='runhost'\" >RUN</BUTTON>"
@@ -277,44 +214,18 @@ LRESULT CMainFrame::OnFileRun(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl
 
 	pHtmlView->AddListener("Step", boost::bind(&CMainFrame::MutexStep, this,_1));
 
-	for(int i=0 ; i< _cmsd->resources->size(); i++)
-	{
-		Resource * r = (Resource *) _cmsd->resources->at(i).get();
-		std::string name = (LPCSTR) r->name;
-		if(name.empty() || name == "None")  // something wrong
-			continue; 
-
-		CResourceHandler *  _resourceHandler = new CResourceHandler(r, _cmsd);
-		_resourceHandler->_identifier = (LPCSTR) r->identifier;
-		_resourceHandler->_statemachine->name = name;
-		_resourceHandler->_statemachine->SetStateMachineName(name);
-		_resourceHandlers.push_back(_resourceHandler);
-	}
-
-
-	//jobs = new CJobCommands(&agent, _cmsd);
 	jobs = new CJobCommands( _cmsd);
+	Factory.CreateResourcesByPart(_cmsd);
+
 	jobs->InitAllJobs((Job *)  _cmsd->jobs->at(0).get());// there may be multiple jobs - but only 1st counts in our world
+	//jobs->InitJobsStats((Job *)  _cmsd->jobs->at(0).get()) ;  // FIXME: verify works
 
 	std::string nMaxQueueSize = _cmsd->jobs->at(0)->GetPropertyValue("MaxQueueSize");
 	CJobCommands::MaxQueueSize=ConvertString<int>(nMaxQueueSize,2);
- 	jobs->Run(jobs,&_resourceHandlers);
+ 	jobs->Run(jobs);
 
 	return 0;
 }
-
-
-
-LRESULT CMainFrame::UpdateResourceHandlers()
-{	
-	for(int i=0 ; i<_resourceHandlers.size(); i++)
-	{
-		CResourceHandler *  _resourceHandler = _resourceHandlers[i];
-		_resourceHandler->_statemachine->Cycle();
-	}
-	return 0;
-}
-
 
 LRESULT CMainFrame::OnFileMerge(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 {

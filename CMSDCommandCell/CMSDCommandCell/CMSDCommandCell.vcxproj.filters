@@ -43,6 +43,8 @@
     <ClCompile Include="..\..\src\CMSD\CMSD\SchemaTypes.cpp">
       <Filter>CMSD</Filter>
     </ClCompile>
+    <ClCompile Include="KPI.cpp" />
+    <ClCompile Include="ResourceHandler.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CMSDCommandCellView.h" />
@@ -70,6 +72,8 @@
     <ClInclude Include="CMSDIntegrator.h" />
     <ClInclude Include="StdStringFcn.h" />
     <ClInclude Include="Utils.h" />
+    <ClInclude Include="KPI.h" />
+    <ClInclude Include="ResourceHandler.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="CMSDCommandCell.rc" />

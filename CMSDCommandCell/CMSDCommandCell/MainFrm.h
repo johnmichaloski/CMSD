@@ -12,12 +12,16 @@
 #include "HtmlTable.h"
 #include <boost/thread.hpp>
 #include "CmdCell.h"
+#include "ResourceHandler.h"
 
 #define WINDOW_MENU_POSITION	3
 #define SIMULATION_RUN_DONE (WM_APP  + 1)
 #define LOG_MSG (WM_APP  + 2)
 #define DISPLAY_MSG (WM_APP  + 3)
 #define DISPLAY_SNAPSHOT (WM_APP  + 4)
+#define DISPLAY_KPISNAPSHOT (WM_APP  + 5)
+
+
 
 class CMainFrame : public CFrameWindowImpl<CMainFrame>, public CUpdateUI<CMainFrame>,
 		public CMessageFilter, public CIdleHandler
@@ -26,15 +30,11 @@ public:
 	DECLARE_FRAME_WND_CLASS(NULL, IDR_MAINFRAME)
 
 	CMainFrame();
-	//AgentMgr agent;
-	//std::vector<CAgentThread *> _agents;
-	//CAgentCfg _cmdAgentCfg;
-	//CAgentCfg _devicesAgentCfg;
 
 	boost::mutex _access;
 	boost::condition_variable cond;
 	CJobCommands * jobs;
-	bool _bPaused,_bStopped,_bSnapshot;
+	bool _bPaused,_bStopped,_bSnapshot,_bKPISnapshot;
 
 	CTabView m_view;
 	std::vector<CWtlHtmlView *> _pages;
@@ -65,6 +65,7 @@ public:
 		COMMAND_ID_HANDLER(ID_FILE_PRINT, OnFilePrint)
 		COMMAND_ID_HANDLER(ID_FILE_PRINT_PREVIEW, OnFilePrintPreview)
 		MESSAGE_HANDLER(DISPLAY_SNAPSHOT, OnDisplaySnapshot)
+		MESSAGE_HANDLER(DISPLAY_KPISNAPSHOT, OnDisplayKPI)
 		
 		COMMAND_ID_HANDLER(DISPLAY_MSG, OnDisplayAgent)
 		MESSAGE_HANDLER(LOG_MSG, OnLogMessage)
@@ -104,16 +105,11 @@ LRESULT OnWindowActivate(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, B
 	LRESULT OnFileRun(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
 	LRESULT OnDisplayAgent(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
 	LRESULT OnDisplaySnapshot(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
-
-
-	LRESULT UpdateResourceHandlers();
+	LRESULT OnDisplayKPI(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
 	
 	std::string										 m_FileTitle;
 	CCMSDIntegrator *								_cmsd;
-	CResourceHandlers								_resourceHandlers;
-	std::vector<CCellHandler * >					_cellHandlers;
-//	CHtmlTable										htmlTable; 
-	std::string										header;
+	//std::string										header;
 	double											_timeDivisor;
 	bool											_bMinutes;
 
