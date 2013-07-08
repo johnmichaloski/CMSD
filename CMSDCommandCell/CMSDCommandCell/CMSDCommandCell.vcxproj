@@ -255,6 +255,7 @@
     <ClCompile Include="HtmlTable.cpp" />
     <ClCompile Include="KPI.cpp" />
     <ClCompile Include="MainFrm.cpp" />
+    <ClCompile Include="Reporting.cpp" />
     <ClCompile Include="ResourceHandler.cpp" />
     <ClCompile Include="StateModel.cpp" />
     <ClCompile Include="stdafx.cpp">
@@ -279,6 +280,7 @@
     <ClInclude Include="KPI.h" />
     <ClInclude Include="MainFrm.h" />
     <ClInclude Include="Numerics.h" />
+    <ClInclude Include="Reporting.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="..\..\src\NIST\RunProcess.h" />
     <ClInclude Include="ResourceHandler.h" />

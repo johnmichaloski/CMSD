@@ -65,3 +65,5 @@ typedef enum    {	SAMPLE	= 0,
     } 	STORETYPE;
 #define END_MSG_MAP_EX	END_MSG_MAP
 #import <msxml6.dll>
+
+

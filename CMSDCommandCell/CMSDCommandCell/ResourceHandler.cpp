@@ -23,7 +23,16 @@ using std::ios;
 typedef EquationSolver ES;
 
 
-#define DOCHECK(X,Y) ((X!=NULL) ? X : throw std::exception((fcnname+ #Y).c_str()) )
+//#define DOCHECK(X,Y) ((X!=NULL) ? X : throw std::exception((fcnname+ #Y).c_str()) )
+template<typename T>
+T DOCHECK(T x, std::string y) 
+{
+	if (x!=NULL) 
+		return x ;
+	
+	throw std::exception(y.c_str());
+	return NULL;
+}
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

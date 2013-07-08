@@ -222,8 +222,6 @@ public:
 	void Newworkorder();
 	double &TimeElapsed() { return _dUpdateRateSec; }
 	double &Deadline() { return _dDeadline; }
-	std::string GenerateHtmlReport();
-	void AgentStatus(std::string &JobStatus, std::string &Jobs, std::string & DeviceStatus );
 	std::string JobStatus; std::string Jobs; std::string  DeviceStatus;
 
 	static int MaxQueueSize;
@@ -239,10 +237,11 @@ public:
 	CCMSDIntegrator * cmsd;
 	CTimestamp serviceTime;
 	Stats stats;
-private:
-	 boost::thread    m_Thread;  
-	bool m_bRunning;
 	double _dUpdateRateSec;
+	CTimestamp orderTime;
+private:
+	boost::thread    m_Thread;  
+	bool m_bRunning;
 	double _dDeadline;
 };
 

@@ -178,11 +178,11 @@ void CMainFrame::MutexStep(std::string s)
 
 LRESULT CMainFrame::OnFileRun(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 {
-	_cmsd->ParseCMSD("C:\\Program Files\\NIST\\proj\\MTConnect\\Nist\\MTConnectGadgets\\TESTBED DEMO\\AgentCmd\\GMCasting\\GMCastinglFactoryTestbed.xml");
-	_cmsd->MergeCMSD("C:\\Program Files\\NIST\\proj\\MTConnect\\Nist\\MTConnectGadgets\\TESTBED DEMO\\AgentCmd\\GMCasting\\GMCastinglPerfKPI.xml");
-	_cmsd->MergeCMSD("C:\\Program Files\\NIST\\proj\\MTConnect\\Nist\\MTConnectGadgets\\TESTBED DEMO\\AgentCmd\\GMCasting\\GMCastingJob.xml");
+	_cmsd->ParseCMSD("C:\\Program Files\\NIST\\proj\\CMSD\\TESTBED DEMO\\AgentCmd\\GMCasting\\GMCastinglFactoryTestbed.xml");
+	_cmsd->MergeCMSD("C:\\Program Files\\NIST\\proj\\CMSD\\TESTBED DEMO\\AgentCmd\\GMCasting\\GMCastinglPerfKPI.xml");
+	_cmsd->MergeCMSD("C:\\Program Files\\NIST\\proj\\CMSD\\TESTBED DEMO\\AgentCmd\\GMCasting\\GMCastingJob.xml");
 
-	_cmsd->MergeCMSD("C:\\Program Files\\NIST\\proj\\MTConnect\\Nist\\MTConnectGadgets\\TESTBED DEMO\\AgentCmd\\GMCasting\\GMCastinglUtilities.xml");
+	_cmsd->MergeCMSD("C:\\Program Files\\NIST\\proj\\CMSD\\TESTBED DEMO\\AgentCmd\\GMCasting\\GMCastinglUtilities.xml");
 	
 	pHtmlView = new CWtlHtmlView();
 
@@ -218,7 +218,7 @@ LRESULT CMainFrame::OnFileRun(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl
 	Factory.CreateResourcesByPart(_cmsd);
 
 	jobs->InitAllJobs((Job *)  _cmsd->jobs->at(0).get());// there may be multiple jobs - but only 1st counts in our world
-	//jobs->InitJobsStats((Job *)  _cmsd->jobs->at(0).get()) ;  // FIXME: verify works
+	jobs->InitJobsStats((Job *)  _cmsd->jobs->at(0).get()) ;  // FIXME: verify works
 
 	std::string nMaxQueueSize = _cmsd->jobs->at(0)->GetPropertyValue("MaxQueueSize");
 	CJobCommands::MaxQueueSize=ConvertString<int>(nMaxQueueSize,2);

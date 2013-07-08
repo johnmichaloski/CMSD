@@ -45,6 +45,7 @@
     </ClCompile>
     <ClCompile Include="KPI.cpp" />
     <ClCompile Include="ResourceHandler.cpp" />
+    <ClCompile Include="Reporting.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CMSDCommandCellView.h" />
@@ -74,6 +75,7 @@
     <ClInclude Include="Utils.h" />
     <ClInclude Include="KPI.h" />
     <ClInclude Include="ResourceHandler.h" />
+    <ClInclude Include="Reporting.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="CMSDCommandCell.rc" />
