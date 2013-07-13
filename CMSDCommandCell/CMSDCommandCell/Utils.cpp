@@ -1,7 +1,29 @@
 #include "StdAfx.h"
 #include "Utils.h"
 
-CTimestamp::CTimestamp() { startTime=endTime=-1; }
+std::vector<CTimestamp * > CTimestamp::_members;
+
+CTimestamp::CTimestamp() 
+{
+	startTime=endTime=-1;
+	_members.push_back(this);
+	_elapsed=0.0;
+}
+CTimestamp::~CTimestamp()
+{
+	for(int i=0; i< _members.size(); i++)
+		if(_members[i]== this) 
+			_members.erase(_members.begin() + i);
+}
+
+void CTimestamp::UpdateSimElapsed(double seconds)
+{
+	for(int i=0; i< _members.size(); i++)
+		_members[i]-> UpdateElapsed(seconds);
+
+}
+void CTimestamp::UpdateElapsed(double seconds){ _elapsed+=seconds; }
+unsigned long CTimestamp::SimElapsed(){ return _elapsed; }
 
 void CTimestamp::Start() { endTime=startTime=time(NULL); }
 
@@ -49,5 +71,5 @@ std::string CTimestamp::GetTotalSeconds(std::time_t rawtime)
 	int sec = rawtime % 60;
 	int min = (rawtime/60)%60;
 	int hr = rawtime/3600;
-	return StdStringFormat ("%d:%02d:%02d", hr, min, sec);
+	return StdStringFormat ("%02d:%02d:%02d", hr, min, sec);
 }

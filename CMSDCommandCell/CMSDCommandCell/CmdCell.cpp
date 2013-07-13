@@ -507,6 +507,7 @@ void CJobCommands::process(CJobCommands * jobs)
 		//	OutputDebugString(StdStringFormat("END Total Number Parts %s =%d\n", ((*it).first).c_str(), finishedparts[(*it).first] ).c_str())  ;
 
 		_dUpdateRateSec+= 1.0 * ControlThread::_dSpeedup; // one seconds times speed up
+		CTimestamp::UpdateSimElapsed(1.0);// updating 1 second per cycle - NOW - no zip skipping
 
 		boost::thread::yield();
 

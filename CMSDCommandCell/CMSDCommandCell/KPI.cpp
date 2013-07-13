@@ -241,12 +241,12 @@ std::string KPI::PlannedPeriods()
 {
 	std::string tmp;
 	tmp+= "POT,  Order duration, ";
-	tmp+= "The order duration is the scheduled time for executing a production task based on the work plan data. It is";
+	tmp+= "The order duration is the scheduled time for executing a production task based on the work plan data. It is ";
 	tmp+= "calculated from the production time per unit multiplied by the order quantity plus the planned set-up time.,";
 	tmp+= "POT=OT+PSUT\n";
 	
 	tmp+= "OT,Operation Time, ";
-	tmp+= "The operation time is that time in which a production unit can be used operational and personnel for";
+	tmp+= "The operation time is that time in which a production unit can be used operational and personnel for ";
 	tmp+= "production and maintenance. The operation time is a scheduled time.,";
 	tmp+= "OT=QuantityProducts*(Resource/TimePerUnit)+ Maintenance\n";
 	
@@ -255,8 +255,8 @@ std::string KPI::PlannedPeriods()
 	tmp+= "PUST=0.0\n";
 
 	tmp+= "PBT,Planned allocation time, ";
-	tmp+= "The planned allocation time is the operating time minus the planned standstill (planned downtime). The";
-	tmp+= "planned standstill may be used for planned maintenance work. The planned allocation period is available for";
+	tmp+= "The planned allocation time is the operating time minus the planned standstill (planned downtime). The ";
+	tmp+= "planned standstill may be used for planned maintenance work. The planned allocation period is available for ";
 	tmp+= "the detailed planning of machine usage with production orders.,";
 	tmp+= "PBT=OT-PlannedStandstill\n";
 	

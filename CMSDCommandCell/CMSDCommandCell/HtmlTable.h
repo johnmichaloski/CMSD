@@ -28,8 +28,6 @@ public:
 	static std::string HtmlStateInfo();
 	static std::string TableStyle();
 	std::string HtmlGoogleChart(std::map<std::string,double> &states);
-	std::string CHtmlTable::HtmlRaphaeleChart( );
-	std::string CHtmlTable::HtmlRaphaeleChartData(std::map<std::string,double> &states );
 
 	STDMETHOD(SetHeaderColumns)(std::string csv); // adds history to end of tab
 	STDMETHOD(SetAlignment)(std::string csv); // adds align to TH items
@@ -82,6 +80,8 @@ public:
 class Raphael
 {
 public:
+	static std::string HtmlRaphaeleChart( );
+	std::string HtmlRaphaelPieChartData(std::map<std::string,double> &states );
 	static std::string TestDrive(std::vector<double> &data) 
 	{
 		static int n=1;
@@ -95,7 +95,8 @@ public:
 		tmp+="</script>\n";
 		return tmp;
 	}
-	static std::string InlinePieChart(std::map<std::string,double> &states , std::string title = "") 
+	//static std::string InlinePieChart(std::map<std::string,double> &states , std::string title = "") 
+	static std::string InlinePieChart(std::vector<double> &values , std::vector<std::string> &names , std::string title = "") 
 	{
 		static int n=1;
 		std::string tmp;
@@ -104,21 +105,27 @@ public:
 		tmp+=StdStringFormat("<div id=\"%s\"></div>\n",name.c_str());	
 		tmp+="<script type=\"text/javascript\">\n";
 		tmp+="var values = [";
-		for(std::map<std::string,double>::iterator it = states.begin(); it!=states.end(); it++)
+		//for(std::map<std::string,double>::iterator it = states.begin(); it!=states.end(); it++)
+		for(int i=0; i< values.size(); i++)
 		{
-			if(it!=states.begin() ) tmp +=",";
-			tmp+=StdStringFormat("%8.4f", (*it).second) ;
+			if(i!=0) tmp +=","; //if(it!=states.begin() ) tmp +=",";
+			tmp+=StdStringFormat("%8.4f", values[i]); // (*it).second) ;
 		}
 		tmp +=" ];\n";
 
 //		tmp=tmp.substr(0,tmp.size()-1); // skip last ,
 
-		tmp+=StdStringFormat("var r = Raphael(\"%s\");\n",name.c_str());
-		tmp +="var pie = r.piechart(320, 240, 100, values, ";
+		tmp+=StdStringFormat("var r%d = Raphael(\"%s\");\n",n,name.c_str());
+		tmp +=StdStringFormat("var pie = r%d.piechart(320, 240, 100, values, ", n);
 		tmp +="               { legend: [";
+	
+		for(int i=0; i< names.size(); i++)
+		{
+			tmp+=StdStringFormat("\"%%.%%  -  %s\",", names[i].c_str()); // (*it).second) ;
+		}
 
-		for(std::map<std::string,double>::iterator it = states.begin(); it!=states.end(); it++)
-			tmp+="\"%%.%% - " +  (*it).first + "\"," ;
+		//for(std::map<std::string,double>::iterator it = states.begin(); it!=states.end(); it++)
+		//	tmp+="\"%%.%% - " +  (*it).first + "\"," ;
 		tmp=tmp.substr(0,tmp.size()-1); // skip last ,
 
 		tmp +="],";
@@ -126,7 +133,7 @@ public:
 		tmp +="	legendpos: \"west\"});\n";
 
 		if(!title.empty()) 
-			tmp +=StdStringFormat(" r.text(320, 100, \"%s\").attr({ font: \"20px sans-serif\" });", title.c_str());
+			tmp +=StdStringFormat(" r%d.text(320, 100, \"%s\").attr({ font: \"20px sans-serif\" });", n,title.c_str());
                
 
 		tmp +="	            pie.hover(function () {\n";

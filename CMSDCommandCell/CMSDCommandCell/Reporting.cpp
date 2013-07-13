@@ -51,7 +51,7 @@ void Reporting::AgentStatus(CJobCommands * jobs, std::string &JobStatus, std::st
 
 	//pHtmlView->SetElementId( "JobStatus", htmlElapsedTable.CreateHtmlTable() + "<BR>" + htmlJobsTable.CreateHtmlTable()+"<BR>\n");
 	////////////////////////////////////////////////////////
-	jobsheader = "JobId,PartId, Current, Operation, Machine,Max Steps,Order Time, Factory Time" ;
+	jobsheader = "JobId,PartId, Now, Ops, Machine,Max Steps,Order Time, Factory Time" ;
 	htmlJobsTable.ClearValues();
 	htmlJobsTable.SetHeaderColumns( jobsheader);
 	jobHtml.clear();
@@ -70,8 +70,8 @@ void Reporting::AgentStatus(CJobCommands * jobs, std::string &JobStatus, std::st
 		else
 			jobHtml += ",";
 		jobHtml +=StdStringFormat("%6d", jobs->at(i)->MaxStep())+ ","; 
-		jobHtml +=jobs->at(i)->orderTime.ElapsedString() + ",";
-		jobHtml +=jobs->at(i)->factoryTime.ElapsedString()  ;
+		jobHtml +=CTimestamp::ClockFormatofSeconds(jobs->at(i)->orderTime.SimElapsed()) + ",";
+		jobHtml +=CTimestamp::ClockFormatofSeconds(jobs->at(i)->factoryTime.SimElapsed())  ;
 		htmlJobsTable.AddRow(jobsheader, jobHtml);
 	}
 
@@ -80,7 +80,7 @@ void Reporting::AgentStatus(CJobCommands * jobs, std::string &JobStatus, std::st
 	////////////////////////////////////////////////////////////////
 	std::string units = _wndMain->_bMinutes ? "Minutes" : "Seconds";
 	double _timeDivisor = _wndMain->_bMinutes ? 60.0 : 1.0;
-	std::string	header = "#,Machine,State,InQ,InQ<BR>Max,Current,MTP,TP<BR>Left," + Factory[0]->_statemachine->GenerateCSVHeader(units);
+	std::string	header = "#,Machine,State,InQ,InQ<BR>Max,At,MTP,TP<BR>Left," + Factory[0]->_statemachine->GenerateCSVHeader(units);
 	htmlTable.SetHeaderColumns( header);
 
 	for(int i=0;i<Factory.size() ; i++)
@@ -115,7 +115,7 @@ std::string Reporting::GenerateHtmlReport(CJobCommands * jobs,std::string filena
 	CHtmlTable htmlTable; 
 	std::string html = CHtmlTable::CreateHtmlSytlesheetFrontEnd("Precision Sand Casting Saginaw MI");;
 	//html += htmlTable.HtmlGoogleChart(states);
-	html += htmlTable.HtmlRaphaeleChart( );
+	html += Raphael::HtmlRaphaeleChart( );
 
 	//html+= htmlTable.HtmlRaphaeleChartData(states );
 
@@ -205,12 +205,23 @@ std::string Reporting::GenerateHtmlReport(CJobCommands * jobs,std::string filena
 		//////////////////////////////////////////////////////////////////////////
 	// Make table of pie charts of performance states
 	HtmlTableMaker Table(3);
+	
+
 	for(int i=0;i<Factory.size() ; i++)
 	{
-		std::string machine=Factory[i]->_statemachine->Name() + ",";
 		std::map<std::string,double> states;
-		Factory[i]->_statemachine->GenerateStateReport(states,1000.0 );;
-		Table.AppendTableCell(Raphael::InlinePieChart(states, machine + " State Use"));
+		std::string machine=Factory[i]->_statemachine->Name() + ",";
+		Factory[i]->_statemachine->GenerateStateReport(states,1000.0 );
+		std::vector<double> values; std::vector<std::string> names;
+		for(std::map<std::string,double>::iterator it = states.begin(); it!=states.end(); it++)
+		{
+			values.push_back((*it).second) ;
+			names.push_back((*it).first) ;
+		}
+
+		// transform(states.begin(), states.end(), back_inserter(names), bind( &std::map<std::string,double>::value_type::first, _1));
+		
+		Table.AppendTableCell(Raphael::InlinePieChart(values, names, machine + " State Use"));
 	}
 	html+=Table.MakeTable();
 

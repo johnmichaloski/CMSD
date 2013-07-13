@@ -292,13 +292,14 @@ std::string CHtmlTable::HtmlGoogleChart(std::map<std::string,double> &states )
 	return tmp;
 }
 
-std::string CHtmlTable::HtmlRaphaeleChart( )
+std::string Raphael::HtmlRaphaeleChart( )
 {
 	std::string tmp;
 	tmp +="<script language=\"javascript\" src=\"./js/graphael/raphael.js\" type=\"text/javascript\"></script>\n";
 	tmp +="<script language=\"javascript\" src=\"./js/graphael/g.raphael.js\" type=\"text/javascript\"></script>\n";
 	tmp +="<script language=\"javascript\" src=\"./js/graphael/g.pie.js\" type=\"text/javascript\"></script> \n";
-	return tmp;
+	tmp +="<script language=\"javascript\" src=\"./js/graphael/g.line.js\" type=\"text/javascript\"></script> \n";
+ 	return tmp;
 }
 	
 //std::string CHtmlTable::HtmlRaphaeleChartData(std::map<std::string,double> &states )
@@ -342,7 +343,7 @@ std::string CHtmlTable::HtmlRaphaeleChart( )
 //	return tmp;
 //}
 
-std::string CHtmlTable::HtmlRaphaeleChartData(std::map<std::string,double> &states )
+std::string Raphael::HtmlRaphaelPieChartData(std::map<std::string,double> &states )
 {
 	std::string tmp;
 

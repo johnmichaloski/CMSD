@@ -7,15 +7,20 @@
 #include <ctime>
 #include <string>
 #include "StdStringFcn.h"
-
+class CTimestamp;
 
 class CTimestamp
 {
 public:
 	CTimestamp() ;
+	~CTimestamp();
+	static std::vector<CTimestamp * > _members;
+	static void UpdateSimElapsed(double seconds);
+	void UpdateElapsed(double seconds);
 	void Start() ;
 	void Stop() ;
 	unsigned long Elapsed() ;
+	unsigned long SimElapsed();
 	std::string ElapsedString() ;
 	std::string StartTimeString() ;
 	std::string EndTimeString() ;
@@ -34,12 +39,13 @@ public:
 		int sec=time;
 		return StdStringFormat("%02d:%02d:%02d", hour, min, sec);
 	}
+
 private:
 	std::time_t startTime;
 	std::time_t endTime;
-	unsigned long elapsed;
 
 	std::string GetTotalSeconds(std::time_t rawtime);
+	double _elapsed;
 
 };
 
