@@ -75,32 +75,37 @@ void CDESMonitor::Off()
 }
 void CDESMonitor::Running()
 { 
-	//OutputDebugString(StdStringFormat("%s Running Queue Current = %X %x\n", name.c_str(), Current(), ConvertToString(_mttp).c_str()).c_str());
 
+		//OutputDebugString(StdStringFormat("%s Running Queue Current = %X %x\n", name.c_str(), Current(), ConvertToString(_mttp).c_str()).c_str());
 	if(this->MTBF>0) 
-		_mtbf-= _dUpdateRateSec;
+	{
+		//_mtbf-= _dUpdateRateSec;
+		_mtbf-= dMtbf;
+	}
+
+	if(Current()!=NULL && Current()->_mttp>0 && Current()!=NULL) 
+		stats.nProductionTime+= dMtp;
+	else
+		stats.nIdleTime+= dRMtp;
 
 	//// Now in faulted state??
 	if(MTBF>0  && _mtbf<=0 )
 	{
-		Trigger("fail");
-		_mttr=MTTR; // wait until repaired
+		_mttr=MTTR-dRMtbf  ;  // add on extra time to repair
+		SyncEvent("fail");
 		return;
 	}
-
+	
 	if(Current()!=NULL && MTTP>0) 
 	{
-		Current()->_mttp-=_dUpdateRateSec;
+		Current()->_mttp-=dMtp;
+		return;
 	}
 		// Add up time in production state
-	if(Current()!=NULL && Current()->_mttp>0 && Current()!=NULL) 
-		stats.nProductionTime+= _dUpdateRateSec;
-	else
-		stats.nIdleTime+= _dUpdateRateSec;
-		
-	if(Current()!=NULL && Current()->_mttp<=0 ) 
+	
+	if(Current()!=NULL && Current()->_mttp<=0 && MTTP>0) // nwas blocking when 0 MTP was set
 	{
-		this->Trigger("block");
+		this->SyncEvent("block");
 		return;
 	}
 	else if(Current()!=NULL) 
@@ -109,7 +114,7 @@ void CDESMonitor::Running()
 	}
 	if(Current()==NULL)
 	{
-		Trigger("starved");
+		SyncEvent("starved");
 		return;
 	}
 }
@@ -119,18 +124,17 @@ void CDESMonitor::Blocked()
 	//OutputDebugString(StdStringFormat("%s Blocked Queue Current = %X %x\n", name.c_str(), Current(), ConvertToString(nBlockedTime).c_str()).c_str());
 	stats.nBlockedTime+= _dUpdateRateSec;
 	if(Current() != NULL && (Current()->_mttp>0 ) )  // item to process...
-		this->Trigger("run");
+		this->SyncEvent("run");
 	if(Current() == NULL)
-		this->Trigger("starved");
+		this->SyncEvent("starved");
 }
 void CDESMonitor::Starved()
 {
 	//OutputDebugString(StdStringFormat("%s Starved Queue Current = %X %x\n", name.c_str(), Current(), ConvertToString(nBlockedTime).c_str()).c_str());
 	stats.nStarvedTime+= _dUpdateRateSec;
-	//if(inqueue.size() > 0)
-	//	Trigger("run");
+
 	if(Current() != NULL) 
-		this->Trigger("run");
+		this->SyncEvent("run");
 }
 void CDESMonitor::Faulted()
 { 
@@ -144,23 +148,44 @@ void CDESMonitor::Faulted()
 	stats.nRepairTime+= _dUpdateRateSec;  // assume seconds
 	// Add up utilites in faulted state? Or just add to preprocess step
 
-
 	// Done in faulted state?
 	if(_mttr<=0)
 	{
 		_mtbf=MTBF;  // start faulted wait over - is MTBF< MTTR - YIKES
-		Trigger("run");
+		SyncEvent("run");
 	}
 	
 }	
 
 std::string CDESMonitor::ToString()
 { 
-	std::string tmp =  StdStringFormat("%s State  %s Rate=%8.4f In:%d Job:%x TTP=%8.4f\n", this->_statemachinename.c_str(), StateStr(GetState()).c_str(), this->UpdateRateSec(),
+	std::string tmp =  StdStringFormat("%s State  %s Rate=%8.4f In:%d Job:%x TTP=%8.4f\n", this->_statemachinename.c_str(), GetStateName().c_str(), this->UpdateRateSec(),
 		size(),  Current(),Current()->_mttp);
 	return tmp;
 }
 
+double  CDESMonitor::Speedup()
+{
+	double dSpeedup=99999.0;
+	if(this->GetStateName() == "faulted" ) 
+	{
+		if(_mttr > 0 )
+			dSpeedup=_mttr;
+	}
+	else if(GetStateName() == "running"   )
+	{
+		if(_mtbf>0) 
+			dSpeedup=_mtbf;
+		if( Current()  != NULL && Current()->_mttp != 0.0) 
+			dSpeedup=MIN(dSpeedup, Current()->_mttp);
+	}
+	else if(GetStateName() == "blocked" || GetStateName() == "starved")
+	{
+		dSpeedup=100000.0;
+		return dSpeedup;
+	}
+	return dSpeedup;
+}
 
 void CDESMonitor::Postprocess()
 {
@@ -182,6 +207,21 @@ void CDESMonitor::Postprocess()
 void CDESMonitor::Preprocess()
 {
 	_dUpdateRateSec = UpdateRateSec();
+
+	dMtbf= MIN(_dUpdateRateSec,_mtbf);
+	dRMtbf=  MIN(_dUpdateRateSec-dMtbf,_mtbf-dMtbf);
+
+	dMtp= _dUpdateRateSec;
+	if(Current() != NULL)
+		dMtp = MIN(dMtp,Current()->_mttp);
+	else dMtp=0.0;
+
+	dRMtp = POSMIN(_dUpdateRateSec-dMtp,0);
+
+	dMttr = MIN(_dUpdateRateSec,_mttr);;
+	dRMttr=  MIN(_dUpdateRateSec-dMttr,_mttr-dMttr);
+
+
 	Stats::Update("TotalTime", _dUpdateRateSec, stats);
 
 	if( Current() !=NULL &&  pLastCurrent!=Current())

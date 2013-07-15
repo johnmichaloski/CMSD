@@ -491,41 +491,48 @@ void CJobCommands::process(CJobCommands * jobs)
 	{
 		ControlThread::RestartTimer();
 		Newworkorder();               // done with job - start new work order
-		Update() ; // resourceHandlers);  // update job queues 
-		Factory.UpdateResourceHandlers();  // update state machine
+		Update() ;					// update job queues 
 
-		// Good example specialized logging per Resource in FurLogger
-		//CResourceHandler * resourceHandler= _resourceHandlers->Find("LINE1_PS_CAST1_FUR1");
-		//if(resourceHandler!=NULL)
-		//{
-		//	//std::string dump;		
-		//	//dump+= resourceHandler-> _statemachine->GenerateReport();
-		//	//FurLogger.LogMessage(StdStringFormat("Resource(%s) Report=%s\n",resourceHandler->_identifier.c_str(), dump.c_str() ) );;
-		//}
+		double dSpeedup =1.0;
+		ControlThread::_dSpeedup=1.0;
+		if(_wndMain->_bZip==true)
+		{
+			dSpeedup =10000.0;
+			for(int i=0 ; i<Factory.size(); i++)
+			{
+				double dUp = Factory[i]->_statemachine->Speedup();
+				dSpeedup = MIN(dSpeedup,dUp);
+				OutputDebugString(StdStringFormat("%s=%8.4f ", Factory[i]->_statemachine->Name().c_str(), dUp).c_str());
+				if(dSpeedup < 0)
+				{
+					DebugBreak();
+					Factory[i]->_statemachine->Speedup();
+				}
+			}
+			if(dSpeedup == 10000.0) dSpeedup=1.0;
+			if(dSpeedup <= 0.0) dSpeedup=1.0;
+			ControlThread::_dSpeedup=dSpeedup;
+			OutputDebugString(StdStringFormat("\n Final Speed up %8.4f\n", dSpeedup).c_str());
+		}
+		CTimestamp::UpdateSimElapsed(_dUpdateRateSec);// updating 
 
-		//for(std::map<std::string, int > ::iterator it = finishedparts.begin() ; it!=finishedparts.end(); it++)
-		//	OutputDebugString(StdStringFormat("END Total Number Parts %s =%d\n", ((*it).first).c_str(), finishedparts[(*it).first] ).c_str())  ;
 
 		_dUpdateRateSec+= 1.0 * ControlThread::_dSpeedup; // one seconds times speed up
-		CTimestamp::UpdateSimElapsed(1.0);// updating 1 second per cycle - NOW - no zip skipping
+		Factory.UpdateResourceHandlers();  // update state machine
 
 		boost::thread::yield();
 
 		Reporting::AgentStatus(this, JobStatus, Jobs, DeviceStatus );
-		//		if(_wndMain->_nLoopCounter<0) 
+
 		if( (_dUpdateRateSec ) <= _dDeadline)
 		{
-			//_wndMain->_nLoopCounter--;
 			::SendMessage(_wndMain->m_hWnd, WM_COMMAND, DISPLAY_MSG,0);
 			DoEvents();
-			//::Sleep(500);
-
 		}
 		else
 		{
 			_wndMain->cond.wait(lock);
 			::SendMessage(_wndMain->m_hWnd, WM_COMMAND, DISPLAY_MSG,0);
-		//	//boost::thread::yield();
 		}
 
 		// Stop - break while loop

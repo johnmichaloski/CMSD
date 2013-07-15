@@ -251,11 +251,18 @@ typedef boost::tuple<std::string, std::string, std::string, std::string, double 
 		void Trigger(StateType e)
 		{ 
 			_eventQueue.push_back(e); 
-			//			Cycle(); // make events synchronously happen  = FIXME
 		}
-
+		// Event handling
+		void SyncEvent(StateType e)
+		{ 
+			//_eventQueue.push_back(e); 
+			Process(e); // make events synchronously happen  - PROBLEM - endless recursion
+		}
 		// Conditions
-		bool NullCondition() {return true; }
+		bool NullCondition() 
+		{
+			return true; 
+		}
 		void SetStateMachineName(std::string name) { _statemachinename=name; }
 		void SetStateUpdate(StateType state1, StateModel::ControlThreadFnc fcn)
 		{
@@ -367,16 +374,38 @@ typedef boost::tuple<std::string, std::string, std::string, std::string, double 
 			}
 			StateType state = GetState();
 			std::string msg = StdStringFormat("%s State update %s \n", this->_statemachinename.c_str(), StateStr(state));
+			
 			// Execute current state update method - if no update method, do nothing...
 			if(_stateMap.find(state)!=_stateMap.end())
 			{
 				boost::timer t; // start timing 
-				//OutputDebugString(msg.c_str());
 				_stateMap[state]();
 				_stateMapTiming[state]= MAX(_stateMapTiming[state], t.elapsed());
-				//OutputDebugString(StrFormat("Time took %.3f\n", t.elapsed()));
 			}
 			Postprocess();
+		}
+
+		void Process(EventType e)
+		{
+			StateType state = GetState();
+			bool bFail=true;
+			StateMachineTuple statematch;
+			if(FindStateTransitionMatch(state, e, _statemachine, statematch))
+			{
+				eventtrace.push_back(e);
+				// Test guard condition
+				if(get<3>(statematch)())
+				{
+					SetState(get<2>(statematch));
+				}
+			}
+			// Execute current state update method - if no update method, do nothing...
+			if(_stateMap.find(state)!=_stateMap.end())
+			{
+				boost::timer t; // start timing 
+				_stateMap[state]();
+				_stateMapTiming[state]= MAX(_stateMapTiming[state], t.elapsed());
+			}
 		}
 
 		void Join() 

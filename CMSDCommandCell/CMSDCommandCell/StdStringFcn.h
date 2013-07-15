@@ -353,12 +353,17 @@ inline std::string HrMinSecFormat(int nsec)
 
 // Return string of length <fieldwidth> with text centred on position
 // cenpos (numbered from 0)
-#ifndef MAX
-#define MAX(X,Y) ((X>Y) ?  X : Y)
-#endif
-#ifndef MIN
-#define MIN(X,Y) ((X<Y) ?  X : Y)
-#endif
+//#ifndef MAX
+//#define MAX(X,Y) ((X>Y) ?  X : Y)
+//#endif
+//#ifndef MIN
+//#define MIN(X,Y) ((X<Y) ?  X : Y)
+//#endif
+
+inline double MAX(double x, double y) { if(x>y) return x; return y; }
+inline double MIN(double x, double y) { if(x<y) return x; return y; }
+inline double POSMAX(double x, double y, double dMin=0) {x=MAX(x,dMin); y=MAX(y,dMin); if(x>y) return x;   return y;}
+inline double POSMIN(double x, double y, double dMin=0) {x=MAX(x,dMin); y=MAX(y,dMin);  if(x<y) return x; return y; }
 
 inline std::string CenterString(const std::string& text, const int& fieldwidth,
 			 const int& cenposition)

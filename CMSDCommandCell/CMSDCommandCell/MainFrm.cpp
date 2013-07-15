@@ -10,6 +10,9 @@
 #include "CmdCell.h"
 #include "HtmlTable.h"
 
+#define ID_ZIP_PANE 404 //For zip
+
+
 CMainFrame::CMainFrame()
 {
 	//_cmdAgentCfg.SetHttpPort(81);
@@ -23,6 +26,8 @@ CMainFrame::CMainFrame()
 	 _timeDivisor=1.0;
 	 _bMinutes=false;
 	 _bKPISnapshot=false;
+	 _bZip=false;
+
 }
 
 BOOL CMainFrame::PreTranslateMessage(MSG* pMsg)
@@ -36,15 +41,22 @@ BOOL CMainFrame::PreTranslateMessage(MSG* pMsg)
 BOOL CMainFrame::OnIdle()
 {
 	UIUpdateToolBar();
+	if( _bZip ==_bLastzip)
+		return FALSE;
+	if(_bZip ) // && _bZip !=_bLastzip)
+		m_status.SetPaneText(ID_ZIP_PANE, _T("Zip On")); //,SBT_NOBORDERS);
+	else 
+		m_status.SetPaneText(ID_ZIP_PANE, _T("Zip Off")); //,SBT_NOBORDERS);
+	_bLastzip=_bZip;
 	return FALSE;
 }
 
 LRESULT CMainFrame::OnCreate(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
 {
+
 	CreateSimpleToolBar();
 
 	CreateSimpleStatusBar();
-
 	m_hWndClient = m_view.Create(m_hWnd, rcDefault, NULL, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN, WS_EX_CLIENTEDGE);
 
 	UIAddToolBar(m_hWndToolBar);
@@ -59,6 +71,20 @@ LRESULT CMainFrame::OnCreate(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/
 
 	CMenuHandle menuMain = GetMenu();
 	m_view.SetWindowMenu(menuMain.GetSubMenu(WINDOW_MENU_POSITION));
+
+	m_status.SubclassWindow(m_hWndStatusBar);
+
+	int arrPanes[] = { ID_DEFAULT_PANE, ID_ZIP_PANE};
+	m_status.SetPanes(arrPanes, sizeof(arrPanes) / sizeof(int), false);
+	// set status bar pane widths using local workaround
+    int arrWidths[] = { 0, 60 };
+   // SetPaneWidths(arrWidths, sizeof(arrWidths) / sizeof(int));
+	m_status.SetParts(m_status.m_nPanes, arrWidths); 
+	//m_status.SetPanes(arrPanes, sizeof(arrWidths) / sizeof(int), false);
+
+	m_status.SetPaneText(ID_DEFAULT_PANE, _T("Ready")); //,SBT_NOBORDERS);
+	m_status.SetPaneText(ID_ZIP_PANE, _T("Zip Off")); //,SBT_NOBORDERS);
+
 	return 0;
 }
 
@@ -199,13 +225,14 @@ LRESULT CMainFrame::OnFileRun(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl
 		"<BUTTON id = \"Resume\"  onClick=\"location.href='resumehost'\" >RESUME</BUTTON>"		
 		"<BUTTON id = \"Stop\"  onClick=\"location.href='stophost'\" >STOP</BUTTON>"		
 		"<BUTTON id = \"Step\"  onClick=\"location.href='localhost'\" >STEP</BUTTON>"
+		"<BUTTON id = \"Zip\"  onClick=\"location.href='ziphost'\" >ZIP</BUTTON>"
 		"<BUTTON id = \"Snapshot\"  onClick=\"location.href='snapshothost'\" >SNAPSHOT</BUTTON>"
 		"<BUTTON id = \"KPI\"  onClick=\"location.href='KPIhost'\" >KPI</BUTTON>"
 		"<BUTTON id = \"Seconds\"  onClick=\"location.href='secondshost'\" >SECONDS</BUTTON>"
 		"<BUTTON id = \"Minutes\"  onClick=\"location.href='minuteshost'\" >MINUTES</BUTTON>"
 		"<BUTTON id = \"Run\"  onClick=\"location.href='runhost'\" >RUN</BUTTON>"
 		"<input type=\"text\" id=\"Loop\" size=\"6\" >"
-		"<BUTTON id = \"Continue\"  onClick=\"location.href='continuehost'\" >CONTINUE </BUTTON>\n"
+		"<BUTTON id = \"Deadline\"  onClick=\"location.href='deadlinehost'\" >DEADLINE </BUTTON>\n"
 		"<input type=\"text\" id=\"ContinueLoop\" size=\"6\">\n"
 	);
 

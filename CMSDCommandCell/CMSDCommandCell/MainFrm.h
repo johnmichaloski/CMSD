@@ -39,6 +39,7 @@ public:
 	CTabView m_view;
 	std::vector<CWtlHtmlView *> _pages;
 	CWtlHtmlView *	pHtmlView ;
+	CMultiPaneStatusBarCtrl	 m_status;
 
 	//int _nLoopCounter;
 	void LogMsg(const TCHAR * msg);
@@ -112,5 +113,6 @@ LRESULT OnWindowActivate(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, B
 	//std::string										header;
 	double											_timeDivisor;
 	bool											_bMinutes;
+	bool                                            _bZip, _bLastzip;
 
 };

@@ -16,6 +16,19 @@ tems, carousels, and flow racks.
 (7) Flexible Manufacturing Systems. 
 (8) Conventional Warehouses and Distribution Facilities. 
 
+
+		// Good example specialized logging per Resource in FurLogger
+		//CResourceHandler * resourceHandler= _resourceHandlers->Find("LINE1_PS_CAST1_FUR1");
+		//if(resourceHandler!=NULL)
+		//{
+		//	//std::string dump;		
+		//	//dump+= resourceHandler-> _statemachine->GenerateReport();
+		//	//FurLogger.LogMessage(StdStringFormat("Resource(%s) Report=%s\n",resourceHandler->_identifier.c_str(), dump.c_str() ) );;
+		//}
+
+		//for(std::map<std::string, int > ::iterator it = finishedparts.begin() ; it!=finishedparts.end(); it++)
+		//	OutputDebugString(StdStringFormat("END Total Number Parts %s =%d\n", ((*it).first).c_str(), finishedparts[(*it).first] ).c_str())  ;
+
 // Correct.
 
 MSG msg = { };

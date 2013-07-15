@@ -64,6 +64,9 @@ public:
 	}
 	T* Current() 
 	{ 
+		if(size() ==0)
+			return NULL;
+
 		if(CanPop()) 
 			return front(); 
 		else 
@@ -80,6 +83,16 @@ public:
 	double MTBF, _mtbf; // counter seconds
 	double MTTR, _mttr; // counter seconds
 	double MTTP;  // counter seconds
+
+	double dMtbf;
+	double dRMtbf;
+
+	double dMtp;
+	double dRMtp ;
+
+	double dMttr;
+	double dRMttr;
+
 
 	std::map<std::string, Stats> _partStats;
 	std::string _partid;
@@ -122,7 +135,7 @@ public:
 	//double GetUpdateFactor();
 
 	void GenerateStateReport(std::map<std::string,double> &states, double dDivisor=1000);
-	
+	double  Speedup();
 
 	//Queue<> inqueue;
 	//Queue<> outqueue;

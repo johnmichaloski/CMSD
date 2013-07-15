@@ -490,7 +490,7 @@ void __stdcall CWtlHtmlView::OnBeforeNavigate2 (
 		//_wndMain->_nLoopCounter = _wndMain->jobs->Deadline() - _wndMain->jobs->TimeElapsed();
 		_wndMain->cond.notify_all();  // have to run once from "STEP"
 	}
-	if(url.find("continuehost") != std::string::npos ) //  
+	if(url.find("deadlinehost") != std::string::npos ) //  
 	{
 		std::string loop ;
 		this->GetElementId("ContinueLoop",loop);
@@ -532,6 +532,10 @@ void __stdcall CWtlHtmlView::OnBeforeNavigate2 (
 	{
 		_wndMain->_bKPISnapshot=true;
 
+	}	
+	if(url.find("ziphost") != std::string::npos ) //  
+	{
+		_wndMain->_bZip=!_wndMain->_bZip;
 	}	
 
 	// Return TRUE to cancel

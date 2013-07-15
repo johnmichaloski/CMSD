@@ -91,7 +91,7 @@ void Reporting::AgentStatus(CJobCommands * jobs, std::string &JobStatus, std::st
 		html1+=Factory[i]->_statemachine->Name() + "</A>,";
 
 		//html1+=_resourceHandlers[i]->_statemachine->Name() + ",";
-		html1+=StateStr(Factory[i]->_statemachine->GetState())  + "," ;
+		html1+=Factory[i]->_statemachine->GetStateName()  + "," ;
 		html1+=StdStringFormat("%d", Factory[i]->_statemachine->size())  + "," ;
 		html1+=StdStringFormat("%d", Factory[i]->_statemachine->MaxSize())  + "," ;
 		if(Factory[i]->_statemachine->Current()!=NULL) 
