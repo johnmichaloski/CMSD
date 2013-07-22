@@ -68,8 +68,8 @@ static void DoEvents()
             DispatchMessage(&msg);
         }
 		else  bRunning=false;
-		::Sleep(10); 
 	}
+		::Sleep(10); 
 }
 
 
@@ -96,7 +96,7 @@ static std::string GetTimeEstimate(std::string etime)
 CJobCommand::CJobCommand(CJobCommands * jobs)
 {
 	_parent=jobs; 	
-	orderTime=jobs->orderTime;
+	orderTime.SimStart(jobs->serviceTime.SimElapsed());
 }
 
 std::string CJobCommand::ToString()
@@ -259,7 +259,6 @@ CJobCommand *  CJobCommands::AddJob(CCMSDIntegrator * _cmsd, int &jobId, std::st
 // This is the root of the jobs tree
 void CJobCommands::InitAllJobs(Job *	job) 
 {
-	orderTime.Start();
 	//jobids = job->partIds;
 	for(int i=0 ; i< job->partIds.size(); i++)
 	{
@@ -455,7 +454,7 @@ void CJobCommands::Update() // CResourceHandlers * resourceHandlers)
 			continue;
 
 		// Done with processing at current step
-		if(resource ->_statemachine->Current() != NULL && (at(i)-> _mttp <= 0) )
+		if(resource ->_statemachine->Current() != NULL && (at(i)-> _mttp <= 0.0) )
 		{
 			// Done no more steps
 			if((_current+1)>= at(i)->MaxStep())
@@ -463,6 +462,7 @@ void CJobCommands::Update() // CResourceHandlers * resourceHandlers)
 				resource->_statemachine->Pop();  // finish/pop current step
 				                           // which is at front of queue
 				at(i)->_currentstep++; // increment current step
+				i=i-1; // redo this to remove !?
 				continue; // skip all processing
 			}
 			resource1 = job->_ResourceHandlers[_current+1] ;
@@ -490,7 +490,8 @@ void CJobCommands::process(CJobCommands * jobs)
 	while(m_bRunning)
 	{
 		ControlThread::RestartTimer();
-		Newworkorder();               // done with job - start new work order
+		if(!_wndMain->_bFinish)
+			Newworkorder();               // done with job - start new work order
 		Update() ;					// update job queues 
 
 		double dSpeedup =1.0;
@@ -502,9 +503,9 @@ void CJobCommands::process(CJobCommands * jobs)
 			{
 				double dUp = Factory[i]->_statemachine->Speedup();
 				dSpeedup = MIN(dSpeedup,dUp);
-				OutputDebugString(StdStringFormat("%s=%8.4f ", Factory[i]->_statemachine->Name().c_str(), dUp).c_str());
 				if(dSpeedup < 0)
 				{
+					OutputDebugString(StdStringFormat("Calamity neg uptime %s=%8.4f\n", Factory[i]->_statemachine->Name().c_str(), dUp).c_str());
 					DebugBreak();
 					Factory[i]->_statemachine->Speedup();
 				}
@@ -512,12 +513,13 @@ void CJobCommands::process(CJobCommands * jobs)
 			if(dSpeedup == 10000.0) dSpeedup=1.0;
 			if(dSpeedup <= 0.0) dSpeedup=1.0;
 			ControlThread::_dSpeedup=dSpeedup;
-			OutputDebugString(StdStringFormat("\n Final Speed up %8.4f\n", dSpeedup).c_str());
+			//OutputDebugString(StdStringFormat("\n Final Speed up %8.4f\n", dSpeedup).c_str());
 		}
-		CTimestamp::UpdateSimElapsed(_dUpdateRateSec);// updating 
 
 
 		_dUpdateRateSec+= 1.0 * ControlThread::_dSpeedup; // one seconds times speed up
+		CTimestamp::UpdateSimElapsed(ControlThread::_dSpeedup);// updating time
+
 		Factory.UpdateResourceHandlers();  // update state machine
 
 		boost::thread::yield();
@@ -544,14 +546,14 @@ void CJobCommands::process(CJobCommands * jobs)
 			_wndMain->cond.wait(lock);
 			::SendMessage(_wndMain->m_hWnd, WM_COMMAND, DISPLAY_MSG,0);
 		}
-		// Create snapshot of operation
-		if(_wndMain->_bSnapshot==true)
-		{
-			_wndMain->_bSnapshot=false;
-			Reporting::GenerateHtmlReport(this, ::ExeDirectory() + "Doc.html");
-			::SendMessage(_wndMain->m_hWnd, DISPLAY_SNAPSHOT,0,0);
-			::Sleep(500);
-		}
+		//// Create snapshot of operation
+		//if(_wndMain->_bSnapshot==true)
+		//{
+		//	_wndMain->_bSnapshot=false;
+		//	Reporting::GenerateHtmlReport(this, ::ExeDirectory() + "Doc.html");
+		//	::SendMessage(_wndMain->m_hWnd, DISPLAY_SNAPSHOT,0,0);
+		//	::Sleep(500);
+		//}
 		// Create KPI snapshot of operation
 		if(_wndMain->_bKPISnapshot==true)
 		{
@@ -569,6 +571,11 @@ void CJobCommands::process(CJobCommands * jobs)
 		}
 		if(AllFinished())
 			break;
+		if(_wndMain->_bFinish)
+		{
+			if(size() == 0) // quit when all the current jobs are done
+				break;
+		}
 	}
 
 	//for(int i=0 ; i<_resourceHandlers->size(); i++)

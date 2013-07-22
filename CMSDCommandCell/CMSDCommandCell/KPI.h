@@ -21,8 +21,8 @@ public:
 	static std::string ReportingPlanned();
 	static std::string Reporting(Stats &factoryStats);
 
-	static std::string CalculationCSVString();
-	static std::string AbbrvCSVString();
+	static std::string EquationCSVString();
+	std::string AbbrvCSVString();
 
 	double dTotalTime; // seconds
 	int  nTotalParts;
@@ -38,7 +38,7 @@ public:
 	// KPI 
 	double 	PSUT; //Planned set up time (PRZ)\n";
 
-
+	double BZ, WT, PRU,OEE, GT, GQ, GC, TPT,QR, PDT, PCT ;
 	// Line info - actual
 
 	double  ASUT; //=0.0; // actual setup time
@@ -51,7 +51,7 @@ public:
 	//OEE  = Availability * Effectiveness * Quality rate 
 	double PQ; // = nTotalParts; // produced quantity\n";
 	double SQ; // Scrap Quantity\n";
-
+	double OT, PEZ;
 	double IP; //  Inspected Part (IP)\n";
 	double FPY; //  Yield(FPY) =GP/IP\n";
 	

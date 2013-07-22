@@ -1,0 +1,107 @@
+<html>
+<HTML>
+<HEAD>
+ <title>LINE1_PS_CAST1_CI1</title><STYLE>P
+{
+ FONT-FAMILY: Myriad, sans-serif;
+ LINE-HEIGHT: 12pt;
+ MARGIN-BOTTOM: 0px;
+ MARGIN-LEFT: 10px;
+ MARGIN-TOP: 10px
+}
+input.btn {   color:#050;   font: bold 84% 'trebuchet ms',helvetica,sans-serif;   background-color:#fed;   border: 1px solid;   border-color: #696 #363 #363 #696;   filter:progid:DXImageTransform.Microsoft.Gradient   (GradientType=0,StartColorStr='#ffffffff',EndColorStr='#ffeeddaa'); } 
+input.btnhov {   border-color: #c63 #930 #930 #c63; <input type="button" value="Submit" class="bt
+"   onmouseover="this.className='btn btnhov'" onmouseout="this.className='btn'"/> }
+H1
+{
+ BACKGROUND-COLOR: #003366;
+ BORDER-BOTTOM: #336699 6px solid;
+ COLOR: #ffffff;
+ FONT-SIZE: 130%;
+ FONT-WEIGHT: normal;
+ MARGIN: 0em 0em 0em -20px;
+ PADDING-BOTTOM: 8px;
+ PADDING-LEFT: 30px;
+ PADDING-TOP: 16px
+}
+table.gridtable {
+  BACKGROUND-COLOR: #f0f0e0;
+ BORDER-BOTTOM: #ffffff 0px solid;
+ BORDER-COLLAPSE: collapse;
+ BORDER-LEFT: #ffffff 0px solid;
+ BORDER-RIGHT: #ffffff 0px solid;
+ BORDER-TOP: #ffffff 0px solid;
+ FONT-SIZE: 9pt;
+ MARGIN-LEFT: 10px
+  }
+table.gridtable td {
+ BACKGROUND-COLOR: #e7e7ce;
+ BORDER-BOTTOM: #ffffff 1px solid;
+ BORDER-LEFT: #ffffff 1px solid;
+ BORDER-RIGHT: #ffffff 1px solid;
+ BORDER-TOP: #ffffff 1px solid;
+ PADDING-LEFT: 3px
+  }
+table.gridtable th {
+ BACKGROUND-COLOR: #cecf9c;
+ BORDER-BOTTOM: #ffffff 1px solid;
+ BORDER-LEFT: #ffffff 1px solid;
+ BORDER-RIGHT: #ffffff 1px solid;
+ BORDER-TOP: #ffffff 1px solid;
+ COLOR: #000000;
+ FONT-WEIGHT: bold
+  }
+table.histogram {
+ 	BACKGROUND-COLOR: #f0f0e0;
+	border-width: 0px;
+	BORDER-COLLAPSE: collapse;
+	padding: 0px;
+	FONT-SIZE: 9pt;
+	MARGIN-LEFT: 0px
+  }
+table.histogram td {
+	BORDER-BOTTOM: #ffffff 0px solid;
+	BORDER-LEFT: #ffffff 0px solid;
+	BORDER-RIGHT: #ffffff 0px solid;
+	BORDER-TOP: #ffffff 0px solid;
+	PADDING: 0px
+	margin: 0px
+  }
+$('#myTable td[title]')
+.hover(function() {
+    showTooltip($(this));
+ }, function() {
+     hideTooltip();
+ })
+;
+</STYLE><script type="text/javascript">
+function showTooltip($el) {
+    // insert code here to position your tooltip element (which i'll call $tip)
+    $tip.html($el.attr('title'));
+}
+function hideTooltip() {
+    $tip.hide();
+}
+</script>
+</HEAD>
+<BODY>
+<script language="javascript" src="./js/graphael/raphael.js" type="text/javascript"></script>
+<script language="javascript" src="./js/graphael/g.raphael.js" type="text/javascript"></script>
+<script language="javascript" src="./js/graphael/g.pie.js" type="text/javascript"></script> 
+<script language="javascript" src="./js/graphael/g.line.js" type="text/javascript"></script> 
+</HEAD>
+<body>
+<H1>LINE1_PS_CAST1_CI1</h1>
+<TABLE class="gridtable">
+<TR><TH>Machine</TH><TH>MTTP</TH><TH>MTBF</TH><TH>MTTR</TH><TH>INQ</TH>
+</TR>
+<TR>
+<TD align="right"> LINE1_PS_CAST1_CI1</TD><TD align="right"> 64.5000</TD><TD align="right"> 23628.0000</TD><TD align="right"> 5172.0000</TD><TD align="right"> 1</TD></TR>
+</TABLE>
+<TABLE><TD cellpadding=0 cellspacing=0 border=0 width=600px>
+<table id="myTable" class="histogram" style='empty-cells: show; cellpadding=0; cellspacing=0; border=0;'><tr>
+<td style='background-color:black' >	<DIV style='width:2px;'/></td><td style='background-color:green' >	<DIV style='width:2px;'/></td><td style='background-color:yellow' >	<DIV style='width:361px;'/></td><td style='background-color:green' >	<DIV style='width:128px;'/></td><td style='background-color:yellow' >	<DIV style='width:104px;'/></td><td style='background-color:green' >	<DIV style='width:2px;'/></td></tr>
+ </table>	
+<TD/>
+
+</TABLE></body></html>

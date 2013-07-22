@@ -9,6 +9,8 @@
 #include "docobj.h"
 #include "comutil.h"
 #include "StdStringFcn.h"
+#include "Reporting.h"
+
 #include "MainFrm.h"
 extern CMainFrame * _wndMain;
 
@@ -454,7 +456,8 @@ HRESULT CWtlHtmlView::GetElementId(std::string id, std::string &val)
 
 		variant_t  value;
 		elem->getAttribute(_bstr_t("Value"), NULL, &value );
-		val= (LPCSTR) (bstr_t) value;
+		val="0";
+		val=  (LPCSTR) (bstr_t) value;
 	}
 	catch(...)
 	{
@@ -516,18 +519,20 @@ void __stdcall CWtlHtmlView::OnBeforeNavigate2 (
 	}
 	if(url.find("snapshothost") != std::string::npos ) //  
 	{
-		_wndMain->_bSnapshot=true;
+	//	_wndMain->_bSnapshot=true;
+		Reporting::GenerateHtmlReport(_wndMain->jobs, ::ExeDirectory() + "Doc.html");
+		::PostMessage(_wndMain->m_hWnd, DISPLAY_SNAPSHOT,0,0);
+			::Sleep(500);
 	}	
-	if(url.find("minuteshost") != std::string::npos ) //  
+	if(url.find("unitshost") != std::string::npos ) //  
 	{
-		_wndMain->_timeDivisor=60.0;
-		_wndMain->_bMinutes=true;
+		_wndMain->_bMinutes=!_wndMain->_bMinutes;
+		if(_wndMain->_bMinutes)
+			_wndMain->_timeDivisor=60.0;
+		else
+			_wndMain->_timeDivisor=1.0;
 	}	
-	if(url.find("secondshost") != std::string::npos ) //  
-	{
-		_wndMain->_timeDivisor=1.0;
-		_wndMain->_bMinutes=false;
-	}	
+	
 	if(url.find("KPIhost") != std::string::npos ) //  
 	{
 		_wndMain->_bKPISnapshot=true;
@@ -537,7 +542,23 @@ void __stdcall CWtlHtmlView::OnBeforeNavigate2 (
 	{
 		_wndMain->_bZip=!_wndMain->_bZip;
 	}	
+	if(url.find("finishhost") != std::string::npos ) //  
+	{
+		_wndMain->_bFinish=!_wndMain->_bFinish;
+	}	
+	for(int i=0; i< Factory.size() ; i++)
+	{
+		std::string name = Factory[i]->_statemachine->Name();
+		name = MakeLower(name);
+		if(url.find(name) != std::string::npos )
+		{
+			Reporting::GenerateResourceReport(i);
+			::PostMessage(_wndMain->m_hWnd, DISPLAY_RESOURCE,(WPARAM) i ,0);
+			::Sleep(500);
 
+		}
+	}
+	
 	// Return TRUE to cancel
 	*Cancel = VARIANT_TRUE;
 }

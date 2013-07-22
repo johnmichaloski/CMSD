@@ -20,6 +20,7 @@
 #define DISPLAY_MSG (WM_APP  + 3)
 #define DISPLAY_SNAPSHOT (WM_APP  + 4)
 #define DISPLAY_KPISNAPSHOT (WM_APP  + 5)
+#define DISPLAY_RESOURCE (WM_APP  + 6)
 
 
 
@@ -67,6 +68,7 @@ public:
 		COMMAND_ID_HANDLER(ID_FILE_PRINT_PREVIEW, OnFilePrintPreview)
 		MESSAGE_HANDLER(DISPLAY_SNAPSHOT, OnDisplaySnapshot)
 		MESSAGE_HANDLER(DISPLAY_KPISNAPSHOT, OnDisplayKPI)
+		MESSAGE_HANDLER(DISPLAY_RESOURCE, OnDisplayResource)
 		
 		COMMAND_ID_HANDLER(DISPLAY_MSG, OnDisplayAgent)
 		MESSAGE_HANDLER(LOG_MSG, OnLogMessage)
@@ -107,12 +109,14 @@ LRESULT OnWindowActivate(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, B
 	LRESULT OnDisplayAgent(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
 	LRESULT OnDisplaySnapshot(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
 	LRESULT OnDisplayKPI(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
+	LRESULT OnDisplayResource(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/);
 	
 	std::string										 m_FileTitle;
 	CCMSDIntegrator *								_cmsd;
 	//std::string										header;
 	double											_timeDivisor;
-	bool											_bMinutes;
+	bool											_bMinutes,_bLastMinutes;
 	bool                                            _bZip, _bLastzip;
+	bool											_bFinish,_bLastFinish;
 
 };

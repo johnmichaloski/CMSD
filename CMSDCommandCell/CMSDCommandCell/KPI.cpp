@@ -9,6 +9,13 @@ KPI::KPI(Stats stats)
 
 void KPI::Init(Stats & stats1) 
 {
+		
+	nTotalParts=stats1["TotalParts"];
+	nGoodParts=stats1["GoodParts"];
+	dTotalTime=stats1["TotalTime"];
+	nIdleTime=stats1["idle"];
+	TPT= dTotalTime;
+
 	this->nBlockedTime=stats1.nBlockedTime;
 	this->nStarvedTime=stats1.nStarvedTime;
 	this->nDownTime=stats1.nDownTime;
@@ -16,91 +23,18 @@ void KPI::Init(Stats & stats1)
 	this->nOffTime=stats1.nOffTime;
 	this->nRepairTime=stats1.nRepairTime;
 	this->nIdleTime=stats1.nIdleTime;
-	 nTotalParts=stats1.nTotalParts;
-	nGoodParts=stats1.nGoodParts;
-
+		
 }
 
 KPI::~KPI(void)
 {
 }
-//void 
-//OT
-//PDT
-//PCT
-//BT
-//PBT
+
 
 void KPI::Compute() // throws error
 {
-	if(nTotalParts<=0)
-		throw std::exception("Need parts to compute KPI \n");
-
-	// (PTU The production time per unit is the scheduled time for producing one unit.
-
-	// Line info - planned
-	//tmp+="POT, Planned Operation Time =PBT + Planned Down time\n";
-	PSUT=0.0; //Planned set up time (PRZ)\n";
-	PBZ=PBT= AUPT + ADOT; //Planned Busy Time (PBZ) 
-	PTU= 0.0; // Production time per unit (PEZ)\n";
-
-
-	// Line info - actual
-
-	ASUT=0.0; // actual setup time
-	AUPT=APT= nProductionTime;  ///Actual production time 
-	ADET=nBlockedTime+ nStarvedTime; // Actual unit delay time
-	BT=APT + ADET + ASUT; //Busy time (BLZ)\n";
-	SU= nStarvedTime; //, Delay time (SU)\n";
-	SZ=nDownTime; //Down time Do (SZ)\n";
-	ESUT=0; // Effective setup time == Real set up time / effective set up time (TRZ)\n";
-	//OEE  = Availability * Effectiveness * Quality rate 
-	PQ = nTotalParts; // produced quantity\n";
-	SQ=0.0; // , Scrap Quantity\n";
-	POQ=0; // FIXME: job total parts - // Production order quantity
-	IP = 0; // Inspected Part (IP)\n";
-	if(IP!= 0) 
-		FPY = GP/IP; // Yield(FPY) =GP/IP\n";
 	
-	GP=nGoodParts; // Good pieces (GT) good quantity (GM)\n";
 
-	// Unit operation (not resources) defintions
-	//tmp+="OP, Operation process (AG)\n";
-	//tmp+="OS, Operation sequence (AFO)\n";
-	//tmp+="OT, Operation time (BZ)\n";
-
-	AUP= (APT + ASUT) / nTotalParts; //  or AUP Actual unit processing time = APT + ASUT (Divided by parts?)
-	AUPT = AUP / nTotalParts;
-	AUBT= AUPT + ADET; //  Actual unit busy time (Divided by parts?)
-	ADOT=nDownTime; //  Actual unit down time (Divided by parts?)
-	AOET= dTotalTime; //  Actual order execution time
-//	tmp+="PU, Production unit (PE)\n";
-
-
-	// inventory
-	//tmp+="CI, Consumables inventory\n";
-	//tmp+="FGI, Finished goods inventory\n";
-
-	//tmp+="LLV, Lower limit value (UGW)\n";
-	//tmp+="LT, Labor time (PZt)\n";
-	//tmp+="PCT, Process time (BAZ)\n";
-	//tmp+="PDT, Production time (HNZ)\n";
-	//tmp+="PO, Production order (FA)\n";
-	//tmp+="POQ, Production order quantity (FAM)\n";
-	//tmp+="PRU, PlannedRunTimePerUnit \n";
-	//tmp+="PSQ, Planned scrap quantity (GAM)\n";
-	//tmp+="RMI, Raw material inventory\n";
-	//tmp+="RQ, Rework quantity (NM)\n";
-	//tmp+="s, Standard deviation\n";
-	//tmp+="TAT, Total attendance time (GAZ)\n";
-	//tmp+="TPT, Lead time / throughput time (DLZ)\n";
-	//tmp+="TT, Transportation time (TZ)\n";
-	//tmp+="ULV, Upper limit value (OGW)\n";
-	//tmp+="WG, Working group (AGR)\n";
-	//tmp+="WIP, Work in process inventory (WPI)\n";
-	//tmp+="WOT, Working time (PAZ)\n";
-	//tmp+="WP, Work place (AP)\n";
-	//tmp+="WT, Wait time (LZ)\n";
 
 }
 
@@ -109,84 +43,147 @@ std::string KPI::AbbrvCSVString()
 {
 	std::string tmp;
 
-	tmp+="ADET, Actual unit delay time\n";
-	tmp+="ADOT, Actual unit down time\n";
-	tmp+="AOET, Actual order execution time\n";
-	tmp+="APT, Actual production time \n";
-	tmp+="ASUT, Actual set up time \n";
-	tmp+="AUBT, Actual unit busy time = AUPT + ADET\n";
-	tmp+="AUPT, Actual unit processing time = APT + ASUT\n";
-	tmp+="BT, Busy time (BLZ)\n";
-	tmp+="CI, Consumables inventory\n";
-	tmp+="DeT, Delay time (SU)\n";
-	tmp+="DoT, Down time (SZ)\n";
-	tmp+="ESUT, Real set up time / effective set up time (TRZ)\n";
-	tmp+="FGI, Finished goods inventory\n";
-	tmp+="FPY, Yield(FPY) =GP/IP\n";
-	tmp+="GP, Good pieces (GT)\n";
-	tmp+="GP, GoodParts \n";
-	tmp+="GQ, Good quantity (GM)\n";
-	tmp+="IP, Inspected Part (IP)\n";
-	tmp+="IP, Inspected parts (PT)\n";
-	tmp+="LLV, Lower limit value (UGW)\n";
-	tmp+="LT, Labor time (PZt)\n";
-	tmp+="MA, Machine\n";
-	tmp+="OEE, OEE index = Availability * Effectiveness * Quality rate \n";
-	tmp+="OP, Operation process (AG)\n";
-	tmp+="OS, Operation sequence (AFO)\n";
-	tmp+="OT, Operation time (BZ)\n";
-	tmp+="PBT, Planned Busy Time = AUPT + ADOT \n";
-	tmp+="PBT, Planned busy time (PBZ)\n";
-	tmp+="PCT, Process time (BAZ)\n";
-	tmp+="PDT, Production time (HNZ)\n";
-	tmp+="PO, Production order (FA)\n";
-	tmp+="POQ, Production order quantity (FAM)\n";
-	tmp+="POT, Planned Operation Time =PBT + Planned Down time\n";
-	tmp+="PQ, produced quantity\n";
-	tmp+="PRU, PlannedRunTimePerUnit \n";
-	tmp+="PSQ, Planned scrap quantity (GAM)\n";
-	tmp+="PSUT, Planned set up time (PRZ)\n";
-	tmp+="PTU, Production time per unit (PEZ)\n";
-	tmp+="PU, Production unit (PE)\n";
-	tmp+="RMI, Raw material inventory\n";
-	tmp+="RQ, Rework quantity (NM)\n";
-	tmp+="s, Standard deviation\n";
-	tmp+="SQ, Scrap quantity (AM)\n";
-	tmp+="SQ, Scrap Quantity\n";
-	tmp+="TAT, Total attendance time (GAZ)\n";
-	tmp+="TPT, Lead time / throughput time (DLZ)\n";
-	tmp+="TT, Transportation time (TZ)\n";
-	tmp+="ULV, Upper limit value (OGW)\n";
-	tmp+="WG, Working group (AGR)\n";
-	tmp+="WIP, Work in process inventory (WPI)\n";
-	tmp+="WOT, Working time (PAZ)\n";
-	tmp+="WP, Work place (AP)\n";
-	tmp+="WT, Wait time (LZ)\n";
+
+		BZ=dTotalTime; //=nBlockedTime+nStarvedTime+nDownTime+nProductionTime+nOffTime+nRepairTime+nIdleTime;
+	PQ = nTotalParts; // produced quantity\n";
+	
+	// Primitives
+	AUPT=APT= nProductionTime;  ///Actual production time 
+	ADOT=nDownTime;				//  Actual unit down time	
+	PEZ=PTU= nProductionTime; // Production time per unit (PEZ)";
+
+		SU= nBlockedTime + nDownTime; //, Delay time (SU)\n";
+	SZ=nDownTime; //Down time Do (SZ)\n";
+
+	PSUT=0.0; //Planned set up time (PRZ)\n";
+	PBZ=PBT= AUPT + ADOT; //Planned Busy Time (PBZ) (seems per order)
+
+	ASUT=0.0; // actual setup time
+	ADET=nBlockedTime+ nDownTime; // Actual unit delay time
+	BT=APT + ADET + ASUT; //Busy time (BLZ)\n";
+	GC=GT=GQ=GP=nGoodParts; // Good pieces (GT) good quantity (GM)\n";
+	AUP= (APT + ASUT) ; //  or AUP Actual unit processing time = APT + ASUT (NOT Divided by parts?)
+	AUBT= AUPT + ADET; //  Actual unit busy time (NOT Divided by parts? unit=resource)
+	WT=this->nStarvedTime+this->nBlockedTime+this->nDownTime;  // wait time
+
+	if(nTotalParts>0) 
+	{
+		AOET= dTotalTime/nTotalParts; //  Actual order execution time
+		PRU=AUPT/ nGoodParts;
+		QR= nGoodParts/nTotalParts;
+	}
+	else
+	{
+		AOET=0.0;
+		PRU=99.99;
+		QR=0;
+	}
+	OEE = AUBT/ PBT * PRU * PQ / APT * GC / PQ;
+	// PDT = The main usage time is the producing time of the machine. It includes only the value-adding functions
+	PDT=nProductionTime;
+	// Process time (BAZ) - processing time + setup time
+	PCT=nProductionTime+0.0; 
+if(nTotalParts<=0)
+		throw std::exception("Need parts to compute KPI \n");
 
 
+	// (PTU The production time per unit is the scheduled time for producing one unit.
 
-	tmp+=",Allocation ratio = AUBT / AOET\n";
-	tmp+=",Production process ratio = APT / AOET\n";
-	tmp+=",Setup rate = ASUT / AUPT\n";
-	tmp+=" ,Effectiveness	= PRU * PQ / APT\n";
-	tmp+=",Availability	= AUBT/ PBT\n";
+	// Line info - planned
+	//tmp+="POT, Planned Operation Time =PBT + Planned Down time\n";
+
+
+	// Line info - actual
+
+	ESUT=0; // Effective setup time == Real set up time / effective set up time (TRZ)\n";
+	//OEE  = Availability * Effectiveness * Quality rate 
+	SQ=0.0; // , Scrap Quantity\n";
+	POQ=0; // FIXME: job total parts - // Production order quantity
+	IP = 0; // Inspected Part (IP)\n";
+	if(IP!= 0) 
+		FPY = GP/IP; // Yield(FPY) =GP/IP\n";
+	else
+		FPY=0;
+	
+
+	tmp+=StdStringFormat("%8.2f,", ADET)+ "ADET, Actual unit delay time,resource BlockedTime+resource DownTime\n";
+	tmp+=StdStringFormat("%8.2f,", ADOT ) + "ADOT, Actual unit down time,resource DownTime\n";
+	tmp+=StdStringFormat("%8.2f,", (nProductionTime+nDownTime)/nTotalParts )+"AOET, Actual order execution time,\n";
+	tmp+=StdStringFormat("%8.2f,", APT )+"APT, Actual production time, resource production time \n";
+	tmp+="0,ASUT, Actual set up time,resource setup - none \n";
+	tmp+=StdStringFormat("%8.2f,", AUBT )+"AUBT, Actual unit busy time , AUPT + ADET\n";
+	tmp+=StdStringFormat("%8.2f,", AUPT )+"AUPT, Actual unit processing time , APT + ASUT\n";
+	tmp+="0,BT, Busy time (BLZ),TotalTime\n";
+	tmp+="0,CI, Consumables inventory,\n";
+	tmp+=StdStringFormat("%8.2f,", SU )+"DeT, Delay time (SU), Resource blocked + downtime \n";
+	tmp+=StdStringFormat("%8.2f,", SZ )+"DoT, Down time (SZ), Resource downtime\n";
+	tmp+="0,ESUT, Real set up time / effective set up time (TRZ),\n";
+	tmp+="0,FGI, Finished goods inventory,\n";
+	tmp+="0,FPY, Yield(FPY) ,GP/IP\n";
+	tmp+=StdStringFormat("%8.2f,", GP )+"GQ, Good quantity (GM GoodParts GP- Good pieces (GT)),N parts\n";
+	tmp+="0,IP, Inspected Part (IP)(PT), \n";
+	tmp+="0,LT, Labor time (PZt),\n";
+	tmp+="0,MA, Machine,\n";
+	tmp+=StdStringFormat("%8.2f,", OEE )+"OEE, OEE index , Availability * Effectiveness * Quality rate (AUBT/ PBT * PRU * PQ / APT * GC / PQ) \n";
+	tmp+="0,OP, Operation process (AG),\n";
+	tmp+="0,OS, Operation sequence (AFO),\n";
+	tmp+=StdStringFormat("%8.2f,", BZ )+"OT, Operation time (BZ),TotalTime\n";
+	tmp+=StdStringFormat("%8.2f,", PBT )+"PBT, Planned Busy Time , AUPT + ADOT \n";
+	tmp+=StdStringFormat("%8.2f,", PBT )+ "PBZ, Planned busy time (PBZ), nParts*Processing/part\n";
+	tmp+="0,PCT, Process time (BAZ), Resource processing\n";
+	tmp+=StdStringFormat("%8.2f,", PDT )+"PDT, Production time (HNZ), Resource processing\n";
+	tmp+="0,PO, Production order (FA),?\n";
+	tmp+=StdStringFormat("%8.2f,", PQ )+"PQ, Production quantity,total parts good and bad\n";
+	tmp+="0,POQ, Production order quantity (FAM),\n";
+	tmp+="0,POT, Planned Operation Time ,PBT + Planned Down time\n";
+	tmp+=StdStringFormat("%8.2f,", PQ )+ "PQ, produced quantity, N parts\n";
+	tmp+="0,PRU, PlannedRunTimePerUnit, \n";
+	tmp+="0,PSQ, Planned scrap quantity (GAM),\n";
+	tmp+="0,PSUT, Planned set up time (PRZ),\n";
+	tmp+=StdStringFormat("%8.2f,", PTU )+"PTU, Production time per unit (PEZ),\n";
+	tmp+="0,PU, Production unit (PE),\n";
+	tmp+=StdStringFormat("%8.2f,", PRU)+"PRU, PlannedRunTimePerUnit, \n";
+	tmp+=StdStringFormat("%8.2f,", QR )+"QR,QualityRate,GC/TP\n";
+	tmp+="0,RMI, Raw material inventory,\n";
+	tmp+="0,RQ, Rework quantity (NM),\n";
+	tmp+="0,SQ, Scrap quantity (AM),\n";
+	tmp+="0,TAT, Total attendance time (GAZ,)\n";
+	// TPT, Execution time is the time difference between start time and end time of a manufacturing order. It includes the busy time as well as the drop and transportation time., ";
+	tmp+=StdStringFormat("%8.2f,", TPT)+"TPT, Lead time / throughput time (DLZ),\n";
+	tmp+="0,TT, Transportation time (TZ),\n";
+	tmp+="0,WG, Working group (AGR),\n";
+	tmp+="0,WIP, Work in process inventory (WPI,)\n";
+	tmp+="0,WOT, Working time (PAZ,)\n";
+	tmp+="0,WP, Work place (AP),\n";
+	tmp+=StdStringFormat("%8.2f,", WT)+"WT, Wait time (LZ),\n";
+
+
+	
+	tmp+=StdStringFormat("%8.2f,", AUBT/ PBT )+",Availability	, AUBT/ PBT\n";
+	tmp+=StdStringFormat("%8.2f,", PRU * PQ / APT )+",Effectiveness	, PRU * PQ / APT or PTU * PQ / PDT\n";
+	tmp+=StdStringFormat("%8.2f,", AUBT / AOET )+",Allocation ratio , AUBT / AOET\n";
+	tmp+=StdStringFormat("%8.2f,", APT / AOET )+",Production process ratio , APT / AOET\n";
+
+	tmp+=StdStringFormat("%8.2f,", BT/TPT)+",Allocation degree , BT/TPT\n";
+	tmp+=StdStringFormat("%8.2f,",  PDT/BT)+",Efficiency, PDT/BT\n";	
+	double test = PCT/PBT *  PRU * PQ / APT * QR;
+	tmp+=StdStringFormat("%8.2f,", PCT/PBT *  PRU * PQ / APT * QR )+"NEE,NEE Index, PCT/PBT * Effectiveness * Quality rate\n";	
 
 
 	return tmp;
 }
-std::string KPI::CalculationCSVString()
+std::string KPI::EquationCSVString()
 {
 	std::string tmp;
 
 	tmp+="Allocation degree, 	,Allocation degree = BT/TPT	";
-	tmp+="Allocation efficiency, 	Allocation efficiency = BT/PBT\n";		
-	tmp+="Availability, 	= PDT/PBT	\n";	
+	tmp+="Allocation efficiency, 	,Allocation efficiency = BT/PBT\n";		
+	tmp+="Availability, 	,= PDT/PBT	\n";	
 	tmp+="Comprehensive Energy Consumption,	e, e = E/PQ =（∑Mi*Ri + Q）/ PQ\n";	
 
 	tmp+="Critical Machine Capability Index, (Cmk),	Cmko = (ULV - xqq) / (3 * s) ; Cmku = (Xqq - LLV) / (3 * s)	\n";	
 	tmp+="Critical Process Capability Index, (Cpk),	Cpko = (ULV - xqq) / (3 *  ) ;   Cpku = (xqq - LLV) / (3 *  )\n";	
 
-	tmp+="Effectiveness,	,Effectiveness = PTU * PQ / PDT\n";	
 	tmp+="Efficiency, 	,Efficiency = PDT/BT\n";	
 	tmp+="Emission ratio,	,Emission ratio = (CO2energy + CO2transported goods + CO2travel + CO2internal) / VA	\n";
 	tmp+="Energy ratio, 	,Energy ratio = (energy bought + energy internally produced) / VA\n";	
@@ -203,7 +200,7 @@ std::string KPI::CalculationCSVString()
 	tmp+="OEE Index,	,OEE Index = Availability * Effectiveness * Quality rate	\n";
 	tmp+="Other Lost Rate,	,Other Lost Rate = other lost / consumed material	\n";
 	tmp+="Preparation degree, 	,Preparation Degree = ESUT/BRZ	\n";
-	tmp+="Process Capability Index, (Cp),	Cp = (ULV - LLV) / (6 * Sigma )\n";
+	tmp+="Process Capability Index, Cp,	Cp = (ULV - LLV) / (6 * Sigma )\n";
 
 	tmp+="Production Lost Rate,	,Production Lost Rate = production lost / consumed material	\n";
 	tmp+="Quality Rate,	,Quality Rate = GQ / PQ	\n";
@@ -214,6 +211,7 @@ std::string KPI::CalculationCSVString()
 	tmp+="Throughput,	,Throughput = PQ/TPT\n";
 
 	tmp+="Wastage Degree, 	, Wastage Degree = SQ / PSQ	<BR> Wastage Ratio, 	Wastage Ratio = SQ / PQ	\n";
+	tmp+="Wastage Ratio, ,Wastage Ratio = SQ / PQ	\n";
 	tmp+="Worker productivity, 	,Worker Productivity = WOT/TAT	\n";
 
 	return tmp;
@@ -237,36 +235,278 @@ std::string KPI::CalculationCSVString()
 //Produced Quantity (PQ)	MTCPartCount
 
 
-std::string KPI::PlannedPeriods()
+std::string KPI::Init2_0()
 {
 	std::string tmp;
-	tmp+= "POT,  Order duration, ";
-	tmp+= "The order duration is the scheduled time for executing a production task based on the work plan data. It is ";
-	tmp+= "calculated from the production time per unit multiplied by the order quantity plus the planned set-up time.,";
-	tmp+= "POT=OT+PSUT\n";
-	
-	tmp+= "OT,Operation Time, ";
-	tmp+= "The operation time is that time in which a production unit can be used operational and personnel for ";
-	tmp+= "production and maintenance. The operation time is a scheduled time.,";
-	tmp+= "OT=QuantityProducts*(Resource/TimePerUnit)+ Maintenance\n";
-	
-	tmp+= "PSUT, Planned set-up time, ";
-	tmp+= "The planned set-up time is the scheduled time for the set-up of a production unit for an order.,";
-	tmp+= "PUST=0.0\n";
 
-	tmp+= "PBT,Planned allocation time, ";
-	tmp+= "The planned allocation time is the operating time minus the planned standstill (planned downtime). The ";
-	tmp+= "planned standstill may be used for planned maintenance work. The planned allocation period is available for ";
-	tmp+= "the detailed planning of machine usage with production orders.,";
-	tmp+= "PBT=OT-PlannedStandstill\n";
-	
-	tmp+= "PTU, Production time per unit, ";
-	tmp+= "The production time per unit is the scheduled time for producing one unit.,";
-	tmp+="PTU=MTTP_partid\n";
+	//Planned times
+	tmp+= StdStringFormat("%8.2f",  POET )+ ",POET, Planned order execution time,, ";
+	tmp+= "The planned order execution time shall be the planned time for executing an order.";
+	tmp+= "NOTE: It is often calculated from the planned run time per item multiplied by the order quantity plus";
+	tmp+= "the planned setup time.\n";
 
-	tmp+= ", Planned standstill, ";
-	tmp+= "The planned standstill is the planned downtime,";
-	tmp+="PlannedStandstill=0.0\n";
+	tmp+= StdStringFormat("%8.2f",  POT )+ ",POT,Planned operation time,, ";
+	tmp+= "The planned operation time shall be the planned time in which a work unit can be used. The operation";
+	tmp+= "time is a scheduled time.\n";
+
+	tmp+= StdStringFormat("%8.2f",  RQ )+ ",PSUT,Planned unit setup time, ";
+	tmp+= "The planned unit setup time shall be the planned time for the setup of a work unit for an order.\n";
+	
+	tmp+= StdStringFormat("%8.2f",  PBT )+ ",PBT,Planned busy time,, ";
+	tmp+= "The planned busy time shall be the operating time minus the planned downtime.";
+	tmp+= "NOTE: The planned down time may be used for planned maintenance work. The planned busy period";
+	tmp+= "is available for the detailed planning of the work unit for expected production orders.\n";
+	
+	tmp+=  StdStringFormat("%8.2f",  PRI )+",PRI,Planned run time per unit,,";
+	tmp+= "The run time per item shall the planned time for producing one quantity unit.\n";
+	
+	// Actual times
+	tmp+= StdStringFormat("%8.2f",  APWT )+ ",APWT, Actual personnel work time ,,";
+	tmp+= "The actual personnel work time shall be the time that a worker needs for the execution of a production";
+	tmp+= "order.\n";
+
+	tmp+= StdStringFormat("%8.2f",  AUPT )+ ",AUPT, Actual unit processing time,,";
+	tmp+= "The actual unit processing time shall be the time needed for setup and for the production\n";
+
+	tmp+= StdStringFormat("%8.2f",  AUBT )+ ",AUBT,Actual unit busy time,,";
+	tmp+= "The actual unit busy time shall be the actual time that a work unit is used for the execution of a";
+	tmp+= "production order.\n";
+
+	tmp+= StdStringFormat("%8.2f",  AOET )+ ",AOET, Actual order execution time,,";
+	tmp+= "The actual order execution time shall be the time difference between start time and end time of a";
+	tmp+= "production order. It includes the actual busy time, the actual transport and the actual queuing time.\n";
+
+	tmp+= StdStringFormat("%8.2f",  APAT )+ "APAT, Actual personnel attendance time ,,";
+	tmp+= "The actual personnel attendance time shall be the actual time that a worker is available to work on";
+	tmp+= "production orders. It does not include actual time for company authorized break periods (i.e. lunch). It";
+	tmp+= "shall be the difference between login and logout excluding breaks.\n";
+
+	tmp+= StdStringFormat("%8.2f",  APT )+ ",APT,Actual production time ,,";
+	tmp+= "The actual production time shall be the actual time during which a work unit is producing. It includes";
+	tmp+= "only the value-adding functions.\n";
+
+	tmp+= StdStringFormat("%8.2f",  AQT )+ ",AQT, Actual queuing time,, ";
+	tmp+= "The actual queuing time shall be the actual time in which the material is either in transport or";
+	tmp+= "progressing through a manufacturing process, i.e., the material is waiting for the process to begin.\n";
+
+	tmp+= StdStringFormat("%8.2f",  ADOT )+ ",ADOT,Actual unit down time ,, ";
+	tmp+= "The actual unit down time shall be the actual time when the work unit is not executing order production ";
+	tmp+= "although it is available.\n";
+
+	tmp+= StdStringFormat("%8.2f",  ADET )+ ",ADET,Actual unit delay time ,, ";
+	tmp+= "The actual unit delay time shall be the actual time associated with malfunction-caused interrupts, ";
+	tmp+= "minor stoppages, and other unplanned time intervals that occur while tasks are being completed that ";
+	tmp+= "lead to unwanted extension of the order processing time\n";
+
+	tmp+= StdStringFormat("%8.2f",  ASUT )+ ",ASUT,Actual unit setup time ,, ";
+	tmp+= "The actual unit setup time shall be the time consumed for the preparation of an order at a work unit.\n";
+
+	tmp+= StdStringFormat("%8.2f",  ATT )+ ",ATT,Actual transport time ,,";
+	tmp+= "The actual transport time shall be the actual time required for transport between work units.\n";
+
+	tmp+= StdStringFormat("%8.2f",  AUPT )+ ",AUPT,Actual unit processing time ,, ";
+	tmp+= "The actual unit processing time shall be the actual production time plus the actual unit setup time.\n ";
+
+	tmp+= StdStringFormat("%8.2f",  AUBT )+ ",AUBT,Actual unit busy time ,, ";
+	tmp+= "The actual unit busy time shall be the actual unit processing time plus the actual unit delay time. \n";
+
+	tmp+= StdStringFormat("%8.2f",  AOET )+ ",AOET,Actual order execution time ,, ";
+	tmp+= "The actual order execution time shall be the time from the start of the order until the time of the ";
+	tmp+= "completion of the order. \n";
+
+	// Maintenance times
+	tmp+= StdStringFormat("%8.2f",  TBF )+ ",TBF,Time between failures,, ";
+	tmp+= "The time between failures shall be the actual unit busy time (AUBT) between two consecutive failures ";
+	tmp+= "of a work unit including setup time and production time related to the orders being processed and ";
+	tmp+= "without delay times. \n";
+
+	tmp+= StdStringFormat("%8.2f",  TTR )+ ",TTR,Time to repair ,, ";
+	tmp+= "Time to repair shall be the actual time during which a work unit is unavailable due to a failure. \n";
+
+	tmp+= StdStringFormat("%8.2f",  TTF )+ ",TTF,Time to failure ,, ";
+	tmp+= "The time to failure shall be the time between failures minus the time to repair. \n";
+
+	tmp+= StdStringFormat("%8.2f",  FE )+ ",FE,Failure event count ,, ";
+	tmp+= "The Failure event count shall be the count over a specified time interval of the terminations of the ";
+	tmp+= "ability for a work unit to perform a required operation. \n";
+
+	tmp+= StdStringFormat("%8.2f",  CMT )+ ",CMT,Corrective maintenance time ,,";
+	tmp+= "The corrective maintenance time shall be the part of the maintenance time, during which corrective ";
+	tmp+= "maintenance is performed on a work unit, including technical delays and logistic delays inherent in ";
+	tmp+= "corrective maintenance (IEC 60050-191). \n";
+
+	tmp+= StdStringFormat("%8.2f",  PMT )+ ",PMT,Preventive maintenance time ,, ";
+	tmp+= "The preventive maintenance time shall be that part of the maintenance time during which preventive ";
+	tmp+= "maintenance is performed on a work unit, including technical delays and logistic delays inherent in ";
+	tmp+= "preventive maintenance (IEC 60050-191). \n";
+	
+	// Logistical elements
+	tmp+= StdStringFormat("%8.2f",  POQ )+ ",POQ,Order quantity ,, ";
+	tmp+= "The planned order quantity shall be the planned quantity of products for a production order (lot size,";
+	tmp+= "production order quantity).\n";
+	
+	tmp+= StdStringFormat("%8.2f",  SQ )+ ",SQ, Scrap quantity,,";
+	tmp+= "The scrap quantity shall be the produced quantity that did not meet quality requirements and either";
+	tmp+= "has to be scrapped or recycled.\n";
+	
+	tmp+= StdStringFormat("%8.2f",  PSQ )+ ",PSQ, Planned scrap quantity ,,";
+	tmp+= "The planned scrap quantity shall be the amount of process-related scrap that is expected when";
+	tmp+= "manufacturing the product (e.g., at the start or ramp-up phases of the manufacturing systems).\n";
+	
+	tmp+= StdStringFormat("%8.2f",  GQ )+ ",GQ, Good quantity ,,";
+	tmp+= "The good quantity shall be the produced quantity that meets quality requirements.\n";
+
+	tmp+=  StdStringFormat("%8.2f",  RQ )+ ",RQ, Rework quantity ,,";
+	tmp+= "The rework quantity shall be the quantity that will be failed to meet the quality requirements but where";
+	tmp+= "these requirements can be met by subsequent work.\n";
+	
+	tmp+=  StdStringFormat("%8.2f",  PQ )+ ",PQ, Produced quantity ,,";
+	tmp+= "The produced quantity shall be the quantity that a work unit has produced in relation to a production";
+	tmp+= "order.\n";
+
+	tmp+= StdStringFormat("%8.2f",  RM )+ ",RM, Raw materials ,,";
+	tmp+= "The materials that are changed into finished goods through the production.\n";
+
+	tmp+= StdStringFormat("%8.2f",  RMI )+ ",RMI, Raw materials inventory ,, ";
+	tmp+= "The raw materials inventory shall be the inventory of materials that are changed into intermediates or";
+	tmp+= "finished goods through production.\n";
+
+	tmp+= StdStringFormat("%8.2f",  FGI )+ ",FGI, Finished goods inventory,, ";
+	tmp+= "The finished goods inventory shall be the amount of acceptable quantity which can be delivered.\n";
+
+	tmp+= StdStringFormat("%8.2f",  CI )+ ",CI, Consumable inventory,,";
+	tmp+= "These are materials which are transformed in quantity or quality during the production process and no";
+	tmp+= "longer available for use in production operations.\n";
+
+	tmp+= StdStringFormat("%8.2f",  CM )+",CM, Consumed material,, ";
+	tmp+= "The consumed material shall be the summed quantity of materials consumed by a process.";
+	tmp+= "NOTE:";
+	tmp+= "In the process industry (e.g., oil refining and chemicals), consumed material is usually used in the";
+	tmp+= "denominator to calculate the related KPIs. In some industrial processes, input can be less than the";
+	tmp+= "output. Many chemical and physical changes occur during production, and product yield has";
+	tmp+= "fluctuation and uncertainty. It is therefore difficult to calculate and measure the output.\n";
+
+	tmp+= StdStringFormat("%8.2f",  IGQ )+ ",IGQ,Integrated good quantity,,";
+	tmp+= "The integrated good quantity shall be the summed product count or quantity resulting from a multiproduct";
+	tmp+= "production process used in KPI calculations instead of GQ.";
+	tmp+= "NOTE Since IGQ represents the quantity of all products during production, all products need to be";
+	tmp+= "measured in the same unit of measure, or be converted to the same unit of measure. A list of";
+	tmp+= "conversion coefficients can be used to unify the measurement modes of different products.\n";
+	
+	tmp+= StdStringFormat("%8.2f",  PL )+ ",PL,Production loss ,,";
+	tmp+= "The production loss shall be the quantity lost during production, calculated as output minus input.";
+	tmp+= "NOTE Used in batch and continuous manufacturing\n";
+
+	tmp+= StdStringFormat("%8.2f",  STL )+ ",STL,Storage and transportation loss ,,";
+	tmp+= "The storage and transportation loss shall be the quantity lost during storage and transportation, e.g.,";
+	tmp+= "inventory lost during an inventory calculation or material lost during movement from one place to";
+	tmp+= "another.";
+	tmp+= "NOTE Used in batch and continuous manufacturing\n";
+
+	tmp+= StdStringFormat("%8.2f",  OL )+ ",OL, Other loss ,,";
+	tmp+= "Other loss shall be the quantity lost due to extraordinary incidents, e.g., natural disasters.";
+	tmp+= "NOTE Used in batch and continuous manufacturing\n";
+	
+	tmp+= StdStringFormat("%8.2f",  EPC )+ ",EPC, Equipment production capacity ,,";
+	tmp+= "EPC is the maximum production quantity of production equipment.";
+	tmp+= "NOTE:";
+	tmp+= "Used in batch and continuous manufacturing\n";
+
+	//Quality elements
+	tmp+= StdStringFormat("%8.2f",  GP )+",GP,Good part ,,";
+	tmp+= "A good part shall be the count of individual identifiable parts, e.g., by serialization, which meets the";
+	tmp+= "quality requirements.";
+	tmp+= "NOTE: In discrete manufacturing a part is typically a single produced item. In batch manufacturing a";
+	tmp+= "party refers to a defined material lot\n";
+
+	tmp+= StdStringFormat("%8.2f",  IP )+",IP,Inspected part,,";
+	tmp+= "An inspected part shall be the count of individual identifiable parts, e.g., by serialization, which was";
+	tmp+= "tested against the quality requirements.";
+	tmp+= "NOTE: In discrete manufacturing a part is typically a single produced item. In batch manufacturing a";
+	tmp+= "party refers to a defined material lot.\n";
+
+
+	tmp+= StdStringFormat("%8.2f",  APWT / APAT )+ ",, Worker Efficiency , APWT / APAT,";
+	tmp+= "The worker efficiency considers the relationship between the Actual";
+	tmp+= "personnel work time (APWT) related to production orders and the";
+	tmp+= "actual personnel attendance time (APAT) of the employee.\n";
+	
+	tmp+= StdStringFormat("%8.2f",   AUBT / AOET )+ ",, Allocation ratio , (sum of AUBT) / AOET,";
+	tmp+= "AUBT = sum of the AUBT of all work units involved in a";
+	tmp+= "production order, where AUBT is the Actual unit busy time";
+	tmp+= "The allocation ratio is the relationship of the complete actual busy";
+	tmp+= "time over all work units (AUBT) involved in a production order to the";
+	tmp+= "actual order execution time of a production order (AOET).\n";
+
+	tmp+=StdStringFormat("%8.2f",  PQ/AOET )+  ",,Throughput rate , PQ/AOET,";
+	tmp+= "Process performance in terms of produced quantity of an order";
+	tmp+= "(PQ) and the actual execution time of an order (AOET).\n";
+
+	tmp+= StdStringFormat("%8.2f",  AUBT / PBT )+ ",,Allocation efficiency , AUBT / PBT,";
+	tmp+= "The allocation efficiency is the ratio between the actual allocation";
+	tmp+= "time of a work unit expressed as the actual unit busy time (AUBT)";
+	tmp+= "and the planned time for allocating the work unit expressed as the";
+	tmp+= "planned unit busy time (PBT).\n";
+
+	tmp+= StdStringFormat("%8.2f",  APT / AUBT )+ ",,Utilization Efficiency , APT / AUBT,";
+	tmp+= "The utilization efficiency is the ratio between the actual production";
+	tmp+= "time (APT) and the actual unit busy time (AUBT)\n";
+
+	tmp+= StdStringFormat("%8.2f",  OEE )+ ",OEE,OEE Index , Availability * Effectiveness * Quality ratio,";
+	tmp+= "The OEE Index represents the availability of a work unit,";
+	tmp+= "the effectiveness of the work unit (see 5.9), and the quality ratio";
+	tmp+= "KPI’s integrated in a single indicator.\n";
+
+	tmp+=  StdStringFormat("%8.2f",  APT / PB )+",NEE , Net Equipment Effectiveness , AUPT / PBT * Effectiveness * Quality ratio,";
+	tmp+= "The Net Equipment Effectiveness (NEE) index combines the ratio";
+	tmp+= "between actual unit processing time (AUPT) and planned busy time";
+	tmp+= "(PBT), the Effectiveness KPI and the Quality Ratio KPI into a single";
+	tmp+= "indicator\n";
+	
+	tmp+= StdStringFormat("%8.2f",  APT / PB )+",,Availability , APT / PBT,";
+	tmp+= "Availability is a ratio that shows the relation between the actual";
+	tmp+= "production time (APT) and the Planned busy time (PBT) for a work";
+	tmp+= "unit.\n";
+
+	tmp+= StdStringFormat("%8.2f", PRI * PQ / APT )+ ",,Effectiveness , PRI * PQ / APT,";
+	tmp+= "It Effectiveness represents the relationship between the planned";
+	tmp+= "target cycle and the actual cycle expressed as the planned runtime";
+	tmp+= "per item (PRI) multiplied by the produced quantity (PQ) divided by";
+	tmp+= "the actual production time (APT).\n";
+
+	tmp+= StdStringFormat("%8.2f", QR )+",QR,Quality Ratio , GQ / PQ,";
+	tmp+= "The Quality Ratio is the relationship between the good quantity";
+	tmp+= "(GQ) and the produced quantity (PQ).\n";
+
+	tmp+= StdStringFormat("%8.2f", ASUT / AUPT )+",,Setup ratio , ASUT / AUPT,";
+	tmp+= "The Setup ratio is the ratio of Actual Setup Time (ASUT) to Actual";
+	tmp+= "Unit Processing Time (AUPT). It defines the percentage time used";
+	tmp+= "for setup compared to the actual time used for processing.\n";
+
+	tmp+= StdStringFormat("%8.2f", APT / (APT + ADET) )+",,Technical efficiency , APT / (APT + ADET),";
+	tmp+= "The technical efficiency of a work unit is the relationship between";
+	tmp+= "the actual production time (APT) and the sum of the actual";
+	tmp+= "production time (APT) and the actual unit delay time (ADET) which";
+	tmp+= "includes the delays and malfunction-caused interruptions.\n";
+
+	//tmp+= ",,Production process ratio ,APT / AOET,";
+	//tmp+= "APT = sum of the APT of all work units and work centres involved";
+	//tmp+= "in a production order.";
+	//tmp+= "The Production Process Ratio defines the relationship between the";
+	//tmp+= "actual production time (APT) over all work units and work centres";
+	//tmp+= "involved in a production order and the whole throughput time of a";
+	//tmp+= "production order which is the actual order execution time (AOET)\n";
+
+	tmp+=  StdStringFormat("%8.2f", GP / IP)+",FPY, First Pass Yield,GP / IP,";
+	tmp+= "The FPY designates the percentage of products, which full fill the";
+	tmp+= "quality requirements in the first process run without reworks (good";
+	tmp+= "parts). It is expressed as the ratio between good parts (GP) and";
+	tmp+= "inspected parts (IP).\n";
+
+	tmp+=  StdStringFormat("%8.2f", SQ / PQ)+",,Scrap Ratio , SQ / PQ,";
+	tmp+= "The scrap ratio is the relationship between scrap quantity (SQ) and";
+	tmp+= "produced quantity (PQ).\n";
+
 
 	return tmp;
 }

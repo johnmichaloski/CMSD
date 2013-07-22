@@ -227,6 +227,25 @@ std::string CHtmlTable::TableStyle()
 	style+= " FONT-WEIGHT: bold\n";
 	style+= "  }\n";
 
+	
+	style+= "table.histogram {\n";
+	style+= " 	BACKGROUND-COLOR: #f0f0e0;\n";
+	style+= "	border-width: 0px;\n";
+	style+= "	BORDER-COLLAPSE: collapse;\n";
+	style+= "	padding: 0px;\n";
+	//style+= "	FONT-SIZE: 70%;\n";
+	style+= "	FONT-SIZE: 9pt;\n";
+	style+= "	MARGIN-LEFT: 0px\n";
+	style+= "  }\n";
+	style+= "table.histogram td {\n";
+	style+= "	BORDER-BOTTOM: #ffffff 0px solid;\n";
+	style+= "	BORDER-LEFT: #ffffff 0px solid;\n";
+	style+= "	BORDER-RIGHT: #ffffff 0px solid;\n";
+	style+= "	BORDER-TOP: #ffffff 0px solid;\n";
+	style+= "	PADDING: 0px\n";
+	style+= "	margin: 0px\n";
+	style+= "  }\n";
+
 	/*style+= "  h1 {\n";
 	style+= "  font-size : 11px;\n";
 	style+= "  text-transform : uppercase;\n";

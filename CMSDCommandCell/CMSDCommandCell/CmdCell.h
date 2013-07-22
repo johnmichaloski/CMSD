@@ -248,10 +248,10 @@ public:
 
 	int _jobid;
 	CCMSDIntegrator * cmsd;
-	CTimestamp serviceTime;
 	Stats stats;
 	double _dUpdateRateSec;
-	CTimestamp orderTime;
+	//CTimestamp orderTime;
+	CTimestamp serviceTime;
 private:
 	boost::thread    m_Thread;  
 	bool m_bRunning;

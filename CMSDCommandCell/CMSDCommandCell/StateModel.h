@@ -202,7 +202,6 @@ typedef boost::tuple<std::string, std::string, std::string, std::string, double 
 			_laststate=_state=off;
 			_nDebugLevel=0;
 			_updaterate=1000; // 1 second for now, eventually speed up
-			eventtrace.resize(10);
 			_dSpeedup=1.0;
 			_dLoopTime=1.0; // loop time 1 second 
 			_dTotalTime=0.0;
@@ -255,8 +254,8 @@ typedef boost::tuple<std::string, std::string, std::string, std::string, double 
 		// Event handling
 		void SyncEvent(StateType e)
 		{ 
-			//_eventQueue.push_back(e); 
-			Process(e); // make events synchronously happen  - PROBLEM - endless recursion
+			_eventQueue.push_back(e); 
+			//Process(e); // make events synchronously happen  - PROBLEM - endless recursion
 		}
 		// Conditions
 		bool NullCondition() 
@@ -329,6 +328,20 @@ typedef boost::tuple<std::string, std::string, std::string, std::string, double 
 			}
 			return false;
 		}
+		void StateSave(StateType e, double dSeconds)
+		{
+			if(statetrace.size() ==0 ||  e !=statetrace.back())
+			{
+				statetrace.push_back(e);
+				timetrace.push_back(dSeconds);
+			}
+			else
+				timetrace.back()+=dSeconds;
+
+			if(statetrace.size() > 100)			
+				statetrace.erase(statetrace.begin());
+		};
+
 		void Cycle()
 		{
 			_cycle++;
@@ -345,7 +358,6 @@ typedef boost::tuple<std::string, std::string, std::string, std::string, double 
 				if(FindStateTransitionMatch(state, e, _statemachine, statematch))
 				{
 					bFail=false;
-					eventtrace.push_back(e);
 					// Test guard condition
 					if(get<3>(statematch)())
 					{
@@ -372,8 +384,10 @@ typedef boost::tuple<std::string, std::string, std::string, std::string, double 
 				}
 
 			}
+
 			StateType state = GetState();
 			std::string msg = StdStringFormat("%s State update %s \n", this->_statemachinename.c_str(), StateStr(state));
+			StateSave(state, UpdateRateSec()) ; 
 			
 			// Execute current state update method - if no update method, do nothing...
 			if(_stateMap.find(state)!=_stateMap.end())
@@ -392,13 +406,13 @@ typedef boost::tuple<std::string, std::string, std::string, std::string, double 
 			StateMachineTuple statematch;
 			if(FindStateTransitionMatch(state, e, _statemachine, statematch))
 			{
-				eventtrace.push_back(e);
 				// Test guard condition
 				if(get<3>(statematch)())
 				{
 					SetState(get<2>(statematch));
 				}
 			}
+			StateSave(state, UpdateRateSec()) ; 
 			// Execute current state update method - if no update method, do nothing...
 			if(_stateMap.find(state)!=_stateMap.end())
 			{
@@ -517,6 +531,9 @@ typedef boost::tuple<std::string, std::string, std::string, std::string, double 
 		double GetStateTiming(StateType state) { return _stateMapTiming[state]; }
 
 		/////////////////////////////////////////////////////////////////
+		//boost::circular_buffer<EventType> eventtrace;
+		std::vector<StateType> statetrace;
+		std::vector<double> timetrace;
 	protected:
 			// problem
 		typedef std::map<StateType, std::vector<ControlThreadCallbackFnc > >::iterator ListenerIterator;
@@ -536,7 +553,6 @@ typedef boost::tuple<std::string, std::string, std::string, std::string, double 
 		std::string _errmsg;
 		int _nDebugLevel;
 		std::string _statemachinename;
-		boost::circular_buffer<EventType> eventtrace;
 
 #ifdef DEBUG
 		virtual void LogMessage(std::string str, int n=0)

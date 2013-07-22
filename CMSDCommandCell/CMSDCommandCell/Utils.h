@@ -17,10 +17,13 @@ public:
 	static std::vector<CTimestamp * > _members;
 	static void UpdateSimElapsed(double seconds);
 	void UpdateElapsed(double seconds);
+	void SimStart(double seconds) ;
+	unsigned long SimElapsed();
+
 	void Start() ;
 	void Stop() ;
 	unsigned long Elapsed() ;
-	unsigned long SimElapsed();
+
 	std::string ElapsedString() ;
 	std::string StartTimeString() ;
 	std::string EndTimeString() ;

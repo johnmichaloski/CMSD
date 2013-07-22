@@ -11,6 +11,8 @@
 #include "HtmlTable.h"
 
 #define ID_ZIP_PANE 404 //For zip
+#define ID_UNITS_PANE 405 //For minutes vs seconds
+#define ID_FINISH_PANE 406 //For minutes vs seconds
 
 
 CMainFrame::CMainFrame()
@@ -27,6 +29,7 @@ CMainFrame::CMainFrame()
 	 _bMinutes=false;
 	 _bKPISnapshot=false;
 	 _bZip=false;
+	 _bFinish=false;
 
 }
 
@@ -41,12 +44,25 @@ BOOL CMainFrame::PreTranslateMessage(MSG* pMsg)
 BOOL CMainFrame::OnIdle()
 {
 	UIUpdateToolBar();
-	if( _bZip ==_bLastzip)
-		return FALSE;
-	if(_bZip ) // && _bZip !=_bLastzip)
+
+	if(_bZip !=_bLastzip  && _bZip ) // && _bZip !=_bLastzip)
 		m_status.SetPaneText(ID_ZIP_PANE, _T("Zip On")); //,SBT_NOBORDERS);
-	else 
+	else if(_bZip !=_bLastzip )
 		m_status.SetPaneText(ID_ZIP_PANE, _T("Zip Off")); //,SBT_NOBORDERS);
+	
+	if(_bMinutes && _bLastMinutes !=_bMinutes ) // && _bZip !=_bLastzip)
+		m_status.SetPaneText(ID_UNITS_PANE, _T("Minutes")); //,SBT_NOBORDERS);
+	else if( _bLastMinutes !=_bMinutes )
+		m_status.SetPaneText(ID_UNITS_PANE, _T("Seconds")); //,SBT_NOBORDERS);	
+
+	if(_bFinish && _bLastFinish !=_bFinish ) // && _bZip !=_bLastzip)
+		m_status.SetPaneText(ID_FINISH_PANE, _T("Finish")); //,SBT_NOBORDERS);
+	else if( _bLastFinish !=_bFinish )
+		m_status.SetPaneText(ID_FINISH_PANE, _T("")); //,SBT_NOBORDERS);	
+
+	
+	_bLastFinish=_bFinish;
+	_bLastMinutes=_bMinutes;
 	_bLastzip=_bZip;
 	return FALSE;
 }
@@ -74,17 +90,22 @@ LRESULT CMainFrame::OnCreate(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/
 
 	m_status.SubclassWindow(m_hWndStatusBar);
 
-	int arrPanes[] = { ID_DEFAULT_PANE, ID_ZIP_PANE};
+	int arrPanes[] = { ID_DEFAULT_PANE, ID_ZIP_PANE,ID_UNITS_PANE,ID_FINISH_PANE};
 	m_status.SetPanes(arrPanes, sizeof(arrPanes) / sizeof(int), false);
-	// set status bar pane widths using local workaround
-    int arrWidths[] = { 0, 60 };
-   // SetPaneWidths(arrWidths, sizeof(arrWidths) / sizeof(int));
-	m_status.SetParts(m_status.m_nPanes, arrWidths); 
-	//m_status.SetPanes(arrPanes, sizeof(arrWidths) / sizeof(int), false);
 
+	int arrWidths[] = { 0, 50, 80,50 };
+	//m_status.SetParts(sizeof(arrWidths) / sizeof(int), arrWidths); 
+
+	//m_status.SetPaneWidth(ID_DEFAULT_PANE, 100);
+	m_status.SetPaneWidth(ID_ZIP_PANE, 40);
+	m_status.SetPaneWidth(ID_UNITS_PANE, 40);
+	m_status.SetPaneWidth(ID_FINISH_PANE, 40);
+	
 	m_status.SetPaneText(ID_DEFAULT_PANE, _T("Ready")); //,SBT_NOBORDERS);
 	m_status.SetPaneText(ID_ZIP_PANE, _T("Zip Off")); //,SBT_NOBORDERS);
-
+	m_status.SetPaneText(ID_UNITS_PANE, _T("Seconds")); //,SBT_NOBORDERS);
+	m_status.SetPaneText(ID_FINISH_PANE, _T("")); //,SBT_NOBORDERS);
+	
 	return 0;
 }
 
@@ -225,11 +246,11 @@ LRESULT CMainFrame::OnFileRun(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl
 		"<BUTTON id = \"Resume\"  onClick=\"location.href='resumehost'\" >RESUME</BUTTON>"		
 		"<BUTTON id = \"Stop\"  onClick=\"location.href='stophost'\" >STOP</BUTTON>"		
 		"<BUTTON id = \"Step\"  onClick=\"location.href='localhost'\" >STEP</BUTTON>"
-		"<BUTTON id = \"Zip\"  onClick=\"location.href='ziphost'\" >ZIP</BUTTON>"
+		"<BUTTON id = \"Finish\"  onClick=\"location.href='finishhost'\" >FINISH</BUTTON>"
 		"<BUTTON id = \"Snapshot\"  onClick=\"location.href='snapshothost'\" >SNAPSHOT</BUTTON>"
 		"<BUTTON id = \"KPI\"  onClick=\"location.href='KPIhost'\" >KPI</BUTTON>"
-		"<BUTTON id = \"Seconds\"  onClick=\"location.href='secondshost'\" >SECONDS</BUTTON>"
-		"<BUTTON id = \"Minutes\"  onClick=\"location.href='minuteshost'\" >MINUTES</BUTTON>"
+		"<BUTTON id = \"Zip\"  onClick=\"location.href='ziphost'\" >ZIP</BUTTON>"
+		"<BUTTON id = \"Units\"  onClick=\"location.href='unitshost'\" >UNITS</BUTTON>"
 		"<BUTTON id = \"Run\"  onClick=\"location.href='runhost'\" >RUN</BUTTON>"
 		"<input type=\"text\" id=\"Loop\" size=\"6\" >"
 		"<BUTTON id = \"Deadline\"  onClick=\"location.href='deadlinehost'\" >DEADLINE </BUTTON>\n"
@@ -350,3 +371,17 @@ LRESULT CMainFrame::OnWindowActivate(WORD /*wNotifyCode*/, WORD wID, HWND /*hWnd
 	return 0;
 }
 
+LRESULT CMainFrame::OnDisplayResource(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/)
+{	
+	int i = (WPARAM) wParam;
+	std::string filename = ::ExeDirectory()+Factory[i]->_statemachine->Name()+ ".html";
+
+	CWtlHtmlView * pView = new CWtlHtmlView();
+	pView->Create(m_view,rcDefault,
+		filename.c_str(), 
+		WS_CHILD | WS_VISIBLE | WS_VSCROLL,
+		WS_EX_CLIENTEDGE);
+	m_view.AddPage(pView->m_hWnd,"Snapshot");
+	_pages.push_back(pView);
+	return 0;
+}

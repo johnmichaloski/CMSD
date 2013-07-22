@@ -99,7 +99,6 @@ void CDESMonitor::Running()
 	if(Current()!=NULL && MTTP>0) 
 	{
 		Current()->_mttp-=dMtp;
-		return;
 	}
 		// Add up time in production state
 	
@@ -166,15 +165,16 @@ std::string CDESMonitor::ToString()
 
 double  CDESMonitor::Speedup()
 {
+	OutputDebugString(StdStringFormat("CDESMonitor::Speedup() %s\n",Name().c_str()).c_str());
 	double dSpeedup=99999.0;
 	if(this->GetStateName() == "faulted" ) 
 	{
-		if(_mttr > 0 )
+		if(_mttr > 0 && MTBF>0)
 			dSpeedup=_mttr;
 	}
 	else if(GetStateName() == "running"   )
 	{
-		if(_mtbf>0) 
+		if(_mtbf>0 && MTBF>0) 
 			dSpeedup=_mtbf;
 		if( Current()  != NULL && Current()->_mttp != 0.0) 
 			dSpeedup=MIN(dSpeedup, Current()->_mttp);
@@ -221,14 +221,21 @@ void CDESMonitor::Preprocess()
 	dMttr = MIN(_dUpdateRateSec,_mttr);;
 	dRMttr=  MIN(_dUpdateRateSec-dMttr,_mttr-dMttr);
 
+	double dPT;
+	if(Current() != NULL)
+		dPT =Current()->_mttp;
+	else
+		dPT = 0.0;
+	
+	OutputDebugString(StdStringFormat("Preprocess %s TP=%8.4f TF=%8.4f Mtbf=%8.4f RMtbf=%8.4f Mtp=%8.4f RMTp=%8.4f \n",Name().c_str(), dPT ,_mtbf,dMtbf,dRMtbf,dMtp, dRMtp).c_str());
 
-	Stats::Update("TotalTime", _dUpdateRateSec, stats);
+	Stats::Update("TotalTime", UpdateRateSec(), stats);
 
 	if( Current() !=NULL &&  pLastCurrent!=Current())
 	{
-	 	Stats partStats= _partStats[ Current()->_partid];
-	    Stats::Update("TotalParts", 1.0, Current()->stats,partStats);
-	    Stats::Update("GoodParts", 1.0, Current()->stats,partStats);
+	 	Stats &partStats= _partStats[ Current()->_partid];
+	    Stats::Update("TotalParts", 1.0, Current()->stats,partStats, stats);
+	    Stats::Update("GoodParts", 1.0, Current()->stats,partStats, stats);
 
 	};
 
@@ -253,9 +260,9 @@ std::string CDESMonitor::GenerateReport()
 {
 	std::string tmp;
 	tmp+= ToString();
+	tmp+=StdStringFormat("\t Down Time =%8.4f\n", stats.nDownTime);
 	tmp+=StdStringFormat("\t Blocked Time =%8.4f\n", stats.nBlockedTime);
 	tmp+=StdStringFormat("\t Starved Time =%8.4f\n", stats.nStarvedTime);
-	tmp+=StdStringFormat("\t Down Time =%8.4f\n", stats.nDownTime);
 	tmp+=StdStringFormat("\t Repair Time =%8.4f\n", stats.nRepairTime);
 	tmp+=StdStringFormat("\t Production Time =%8.4f\n", stats.nProductionTime);
 	tmp+=StdStringFormat("\t Off Time =%8.4f\n", stats.nOffTime);
@@ -265,9 +272,9 @@ std::string CDESMonitor::GenerateReport()
 void CDESMonitor::GenerateStateReport(std::map<std::string,double> &states, double dDivisor )
 {
 
+	states["down"]=0.0; 
 	states["blocked"]=0.0; 
 	states["starved"]=0.0; 
-	states["down"]=0.0; 
 	//states["repair"]=0.0; 
 	states["production"]=0.0; 
 	states["off"]=0.0; 
@@ -275,9 +282,9 @@ void CDESMonitor::GenerateStateReport(std::map<std::string,double> &states, doub
 	if(dDivisor!=1.0)
 		dDivisor= (stats.nBlockedTime+stats.nStarvedTime+stats.nDownTime+stats.nProductionTime+stats.nOffTime)/100.0;
 
+	states["down"]+= stats.nDownTime/dDivisor;
 	states["blocked"]+= stats.nBlockedTime/dDivisor;
 	states["starved"]+= stats.nStarvedTime/dDivisor;
-	states["down"]+= stats.nDownTime/dDivisor;
 	//states["repair"]+= nRepairTime/dDivisor;
 	states["production"]+= stats.nProductionTime/dDivisor;
 	states["off"]+= stats.nOffTime/dDivisor;
@@ -286,15 +293,15 @@ void CDESMonitor::GenerateStateReport(std::map<std::string,double> &states, doub
 std::string CDESMonitor::GenerateCSVHeader(std::string units)
 {
 	// FIXME: this will have to be smarter
-	 return StdStringFormat("Blocked<BR>(%s)</BR>,Starved<BR>(%s)</BR>,Down<BR>(%s)</BR>,Production<BR>(%s)</BR>,Off<BR>(%s)</BR>",
+	 return StdStringFormat("Down<BR>(%s)</BR>,Blocked<BR>(%s)</BR>,Starved<BR>(%s)</BR>,Production<BR>(%s)</BR>,Off<BR>(%s)</BR>",
 		 units.c_str(), units.c_str(), units.c_str(),units.c_str(),units.c_str());
 }
 std::string CDESMonitor::GenerateCSVTiming(double divider)
 {
 	std::string tmp;
+	tmp+=StdStringFormat("%8.4f,", stats.nDownTime/divider);
 	tmp+=StdStringFormat("%8.4f,", stats.nBlockedTime/divider);
 	tmp+=StdStringFormat("%8.4f,", stats.nStarvedTime/divider);
-	tmp+=StdStringFormat("%8.4f,", stats.nDownTime/divider);
 //	tmp+=StdStringFormat("%8.4f,", nRepairTime/divider);
 	tmp+=StdStringFormat("%8.4f,", stats.nProductionTime/divider);
 	tmp+=StdStringFormat("%8.4f", stats.nOffTime/divider);

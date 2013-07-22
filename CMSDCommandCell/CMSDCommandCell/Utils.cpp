@@ -22,10 +22,12 @@ void CTimestamp::UpdateSimElapsed(double seconds)
 		_members[i]-> UpdateElapsed(seconds);
 
 }
+
+void CTimestamp::SimStart(double seconds) {_elapsed=seconds; }
 void CTimestamp::UpdateElapsed(double seconds){ _elapsed+=seconds; }
 unsigned long CTimestamp::SimElapsed(){ return _elapsed; }
 
-void CTimestamp::Start() { endTime=startTime=time(NULL); }
+void CTimestamp::Start() { endTime=startTime=time(NULL); _elapsed=0.0; }
 
 void CTimestamp::Stop() {  endTime=time(NULL); }
 
