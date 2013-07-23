@@ -142,9 +142,9 @@ public:
 	//CJobCommand *  Current() { return inqueue.Current(); }
 	CJobCommand *  pLastCurrent;
 
-	void SetMTBF(double sec){ MTBF= sec ;}
-	void SetMTTR(double sec){ MTTR= sec;}
-	void SetMTTP(double sec){  MTTP= sec;}
+	void SetMTBF(double sec){ MTBF= sec; stats["MTBF"]=MTBF;}
+	void SetMTTR(double sec){ MTTR= sec; stats["MTTR"]=MTTR;}
+	void SetMTTP(double sec){  MTTP= sec; stats["MTTP"]=MTTP;}
 	void Setup();
 	virtual std::string ToString();
 

@@ -4,7 +4,29 @@ if (pInputElem)
 	pInputElem->get_checked(&varCheck.boolVal);
 }
 
-	//for( boost::circular_buffer<EventType>::iterator it= Factory[i]->_statemachine->eventtrace.begin() ; it != Factory[i]->_statemachine->eventtrace.end(); ++it )
+std::string KPI::ReportingPlanned()
+{
+	CHtmlTable htmlPlannedTable;
+	std::string htmlPlannedTableHeader="Abbrev,Term, Description, Formula";
+	htmlPlannedTable.SetHeaderColumns(htmlPlannedTableHeader);
+	htmlPlannedTable.AddRows(htmlPlannedTableHeader, PlannedPeriods());
+	return htmlPlannedTable.CreateHtmlTable();
+}
+
+std::string KPI::Reporting(Stats &factoryStats)
+{	
+	CHtmlTable htmlStatsPlannedTable;
+	std::string htmlStatsPlannedTableHeader="Machine, OT, PSUT, PBT, PTU ";
+	htmlStatsPlannedTable.SetHeaderColumns(htmlStatsPlannedTableHeader);
+	std::string html = factoryStats.Property("name") + ",";
+	html +=  ConvertToString(factoryStats["OT"]) + ",";
+	html +=  ConvertToString(factoryStats["PSUT"]) + ",";
+	html +=  ConvertToString(factoryStats["PBT"]) + ",";
+	html +=  ConvertToString(factoryStats["PTU"]) ;
+	htmlStatsPlannedTable.AddRow(htmlStatsPlannedTableHeader, html);
+
+	return htmlStatsPlannedTable.CreateHtmlTable();
+}	//for( boost::circular_buffer<EventType>::iterator it= Factory[i]->_statemachine->eventtrace.begin() ; it != Factory[i]->_statemachine->eventtrace.end(); ++it )
 
 
 	// Unit operation (not resources) defintions

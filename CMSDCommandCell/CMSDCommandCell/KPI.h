@@ -17,9 +17,7 @@ public:
 
 	void Init(Stats &stats1);
 	void Compute(); // throws error
-	static std::string PlannedPeriods();
-	static std::string ReportingPlanned();
-	static std::string Reporting(Stats &factoryStats);
+	std::string ByResources(Stats &stats1);
 
 	static std::string EquationCSVString();
 	std::string AbbrvCSVString();
@@ -34,6 +32,10 @@ public:
 	double nOffTime;
 	double nRepairTime;
 	double nIdleTime;
+	double 	MTBF;
+	double MTTR;
+	double MTTP;
+
 
 	// KPI 
 	double 	PSUT; //Planned set up time (PRZ)\n";

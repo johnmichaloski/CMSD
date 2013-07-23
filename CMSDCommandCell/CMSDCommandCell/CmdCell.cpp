@@ -323,11 +323,14 @@ void CJobCommands::InitJobsStats(Job *	job)
 			std::vector<CResourceHandler * > ResourceHandlers = Factory.GetJobResources(partid);
 			for(int k=0 ; k< ResourceHandlers.size(); k++)
 			{
-				ResourceHandlers[k]->_partStats[partid].Property("name")= (LPCSTR) ResourceHandlers[k]->_resource->name;
-				ResourceHandlers[k]->_partStats[partid]["OT"]=ResourceHandlers[k]->_statemachine->MTTP * totnumparts[partid];
-				ResourceHandlers[k]->_partStats[partid]["PSUT"]= 0.0;
-				ResourceHandlers[k]->_partStats[partid]["PlannedStandstill"]= 0.0;
-				ResourceHandlers[k]->_partStats[partid].Get("PBT")= ResourceHandlers[k]->_partStats[partid]["OT"];
+				ResourceHandlers[k]->_statemachine->_partStats[partid].Property("name")= (LPCSTR) ResourceHandlers[k]->_resource->name;
+				ResourceHandlers[k]->_statemachine->_partStats[partid]["OT"]=ResourceHandlers[k]->_statemachine->MTTP * totnumparts[partid];
+				ResourceHandlers[k]->_statemachine->_partStats[partid]["PSUT"]= 0.0;
+				ResourceHandlers[k]->_statemachine->_partStats[partid]["PlannedStandstill"]= 0.0;
+				ResourceHandlers[k]->_statemachine->_partStats[partid].Get("PBT")= ResourceHandlers[k]->_partStats[partid]["OT"];
+				
+				ResourceHandlers[k]->_statemachine->stats["POET"]=ResourceHandlers[k]->_statemachine->stats["POET"] + ResourceHandlers[k]->_statemachine->MTTP * totnumparts[partid];
+				ResourceHandlers[k]->_statemachine->stats["OQ"]=ResourceHandlers[k]->_statemachine->stats["OQ"] +  totnumparts[partid];
 				
 			}
 		}
@@ -558,10 +561,9 @@ void CJobCommands::process(CJobCommands * jobs)
 		if(_wndMain->_bKPISnapshot==true)
 		{
 			_wndMain->_bKPISnapshot=false;
-			
+			KPI kpi(stats);
 			std::string kpiReport = CHtmlTable::CreateHtmlSytlesheetFrontEnd("KPI Precision Sand Casting Saginaw MI")+"</HEAD>";
-			kpiReport += KPI::ReportingPlanned();
-			kpiReport += KPI::Reporting(stats);
+			kpiReport += kpi.ByResources(stats);
 			kpiReport += "</BODY></HTML>\n";
 
 			::WriteFile(::ExeDirectory() + "JobsKpi.html", kpiReport);

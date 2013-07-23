@@ -93,6 +93,7 @@ void CDESMonitor::Running()
 	{
 		_mttr=MTTR-dRMtbf  ;  // add on extra time to repair
 		SyncEvent("fail");
+		stats["FE"]=stats["FE"]+1;
 		return;
 	}
 	

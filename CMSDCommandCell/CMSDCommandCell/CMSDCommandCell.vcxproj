@@ -79,7 +79,7 @@
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Release10\Win64\Intermediate\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
-    <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">C:\Program Files\NIST\src\wtl81\Include;C:\Program Files\NIST\src\boost_1_44_0;C:\Program Files\NIST\proj\cmsd\src;$(IncludePath)</IncludePath>
+    <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">C:\Program Files\NIST\src\wtl81\Include;C:\Program Files\NIST\src\boost_1_44_0;C:\Program Files\NIST\proj\cmsd\src;C:\Program Files\NIST\proj\CMSD\src\NIST;C:\Program Files\NIST\proj\CMSD\src\CMSD;$(IncludePath)</IncludePath>
     <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Program Files\NIST\src\wtl81\Include;C:\Program Files\NIST\src\boost_1_44_0;C:\Program Files\NIST\proj\MTConnect\Nist\MTConnectGadgets\src\Agent\agent;C:\Program Files\NIST\proj\MTConnect\Nist\MTConnectGadgets\src\Agent\agent\lib;C:\Program Files\NIST\proj\MTConnect\Nist\MTConnectGadgets\src;$(IncludePath)</IncludePath>
     <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">C:\Program Files\NIST\src\wtl81\Include;C:\Program Files\NIST\src\boost_1_44_0;C:\Program Files\NIST\proj\MTConnect\Nist\MTConnectGadgets\src\AgentMaster\agent;C:\Program Files\NIST\proj\MTConnect\Nist\MTConnectGadgets\src\AgentMaster\agent\lib;C:\Program Files\NIST\proj\MTConnect\Nist\MTConnectGadgets\src;$(IncludePath)</IncludePath>
     <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Program Files\NIST\src\wtl81\Include;C:\Program Files\NIST\src\boost_1_44_0;C:\Program Files\NIST\proj\MTConnect\Nist\MTConnectGadgets\src\AgentMaster\agent;C:\Program Files\NIST\proj\MTConnect\Nist\MTConnectGadgets\src\AgentMaster\agent\lib;C:\Program Files\NIST\proj\MTConnect\Nist\MTConnectGadgets\src;$(IncludePath)</IncludePath>
@@ -107,7 +107,7 @@
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>C:\Program Files\NIST\proj\MTConnect\Nist\MTConnectGadgets\src\ListControl;.;C:\Program Files\NIST\proj\MTConnect\Nist\MTConnectGadgets\src\NIST;C:\Program Files\NIST\proj\MTConnect\Nist\MTConnectGadgets\src;C:\Program Files\NIST\proj\MTConnect\Nist\MTConnectGadgets\src\Agent\win32\libxml2-2.7.7\include;C:\Program Files\NIST\proj\MTConnect\Nist\MTConnectGadgets\src\CMSD;C:\Program Files\NIST\proj\MTConnect\Nist\MTConnectGadgets\src\Agent\lib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_WINDOWS;STRICT;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
