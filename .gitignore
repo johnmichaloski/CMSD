@@ -23,7 +23,6 @@ Github.txt
 *.exg
 *.dlx
 *.tlog
-*.xml
 Copy*.*
 *.exe
 *.opensdf
