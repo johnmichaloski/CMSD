@@ -348,9 +348,9 @@ std::string Reporting::GenerateResourceReport(int i)
 
 	KPI kpi(Factory[i]->_statemachine->stats);
 	CHtmlTable kpiHtmlTable; 
-	kpiHtmlTable.SetHeaderColumns( "Value,Abbrev, KPI, Equation");
+	kpiHtmlTable.SetHeaderColumns( "Value,Abbrev, KPI, Equation, Description");
 	//kpiHtmlTable.AddRows("Value,Abbrev, KPI, Equation", kpi.AbbrvCSVString());
-	kpiHtmlTable.AddRows("Value,Abbrev, KPI, Equation", kpi.ByResources(Factory[i]->_statemachine->stats));
+	kpiHtmlTable.AddRows("Value,Abbrev, KPI, Equation, Description", kpi.ByResources(Factory[i]->_statemachine->stats),"@");
 	html += kpiHtmlTable.CreateHtmlTable();
 	
 	

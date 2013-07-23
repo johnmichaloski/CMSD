@@ -28,6 +28,11 @@ std::string  CHtmlTable::CreateHtmlTable()
 	for(int i = 0; i!=_values.size(); i++)
 	{
 		std::vector<std::string> values = _values[i];
+		if(values.size() > 0 && values[0][0]=='#')
+		{
+			updatetable += values[0].substr(1);
+			continue;
+		}
 	
 
 		updatetable +=   "<TR>\n";
@@ -61,16 +66,16 @@ STDMETHODIMP CHtmlTable::AddRow(std::string csvFields, std::string csvValues)
 	_values.push_back(values);
 	return S_OK;
 }
-STDMETHODIMP CHtmlTable::AddRows(std::string csvFields, std::string csvValues)
+STDMETHODIMP CHtmlTable::AddRows(std::string csvFields, std::string csvValues, std::string delimiter)
 {
 	std::vector<std::string> valuelines = TrimmedTokenize(csvValues,"\n");
-	std::vector<std::string> fields = TrimmedTokenize(csvFields,",");
+	std::vector<std::string> fields = TrimmedTokenize(csvFields,delimiter);
 
 	for(int i=0; i< valuelines.size(); i++)
 	{
-		std::vector<std::string> values = TrimmedTokenize(valuelines[i],",");
-		if(fields.size() != values.size())
-			return E_FAIL;
+		std::vector<std::string> values = TrimmedTokenize(valuelines[i],delimiter);
+	//	if(fields.size() != values.size())
+	//		return E_FAIL;
 		_values.push_back(values);
 	}
 	return S_OK;
