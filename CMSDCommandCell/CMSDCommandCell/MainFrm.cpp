@@ -225,11 +225,11 @@ void CMainFrame::MutexStep(std::string s)
 
 LRESULT CMainFrame::OnFileRun(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 {
-	_cmsd->ParseCMSD("C:\\Program Files\\NIST\\proj\\CMSD\\TESTBED DEMO\\AgentCmd\\GMCasting\\GMCastinglFactoryTestbed.xml");
-	_cmsd->MergeCMSD("C:\\Program Files\\NIST\\proj\\CMSD\\TESTBED DEMO\\AgentCmd\\GMCasting\\GMCastinglPerfKPI.xml");
-	_cmsd->MergeCMSD("C:\\Program Files\\NIST\\proj\\CMSD\\TESTBED DEMO\\AgentCmd\\GMCasting\\GMCastingJob.xml");
+	_cmsd->ParseCMSD("C:\\Users\\michalos\\Documents\\GitHub\\CMSD\\TESTBED DEMO\\AgentCmd\\GMCasting\\GMCastinglFactoryTestbed.xml");
+	_cmsd->MergeCMSD("C:\\Users\\michalos\\Documents\\GitHub\\CMSD\\TESTBED DEMO\\AgentCmd\\GMCasting\\GMCastinglPerfKPI.xml");
+	_cmsd->MergeCMSD("C:\\Users\\michalos\\Documents\\GitHub\\CMSD\\TESTBED DEMO\\AgentCmd\\GMCasting\\GMCastingJob.xml");
 
-	_cmsd->MergeCMSD("C:\\Program Files\\NIST\\proj\\CMSD\\TESTBED DEMO\\AgentCmd\\GMCasting\\GMCastinglUtilities.xml");
+	_cmsd->MergeCMSD("C:\\Users\\michalos\\Documents\\GitHub\\CMSD\\TESTBED DEMO\\AgentCmd\\GMCasting\\GMCastinglUtilities.xml");
 	
 	pHtmlView = new CWtlHtmlView();
 
