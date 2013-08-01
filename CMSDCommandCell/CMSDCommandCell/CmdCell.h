@@ -17,14 +17,8 @@
 
 #include "Utils.h"
 
-//#include "agent.hpp"
-//#include "config.hpp"
-
 #include "CMSDIntegrator.h"
 #include "NIST/config.h"
-//#include "NIST/AgentCfg.h"
-//#include "NIST/MTConnectStreamsParser.h"
-//#include "NIST/MTConnectDeviceParser.h"
 
 #include "StateModel.h"
 using namespace StateModel;
@@ -213,7 +207,8 @@ public:
 //	CJobCommands(AgentMgr * _agentconfig, CCMSDIntegrator * _cmsd);
 	CJobCommands(CCMSDIntegrator * _cmsd);
 
-	void IncPart(std::string partid);
+	void IncFinishedPart(std::string partid);
+	void IncStartedPart(std::string partid);
 	std::string GetPartId(int i) { return random_part[i]; }
 	void InitAllJobs(Job *	masterjob) ;
 	void InitJobsStats(Job *	job) ;
@@ -224,6 +219,7 @@ public:
 	int DoneParts(std::string partid) { return finishedparts[ partid]; }
 	int PartsInProcess();
 	int AllFinished() ;
+	int AllDoneQueuing();
 	int IsNewWorkorder() { return this->size() < MaxQueueSize; }
 	int GetCurrentNuber() { return this->size();}
 	int MaxSize() { return MaxQueueSize;}

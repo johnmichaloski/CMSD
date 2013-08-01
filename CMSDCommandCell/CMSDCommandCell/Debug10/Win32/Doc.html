@@ -29,6 +29,22 @@ table.gridtable th {
  COLOR: #000000;
  FONT-WEIGHT: bold
   }
+table.histogram {
+ 	BACKGROUND-COLOR: #f0f0e0;
+	border-width: 0px;
+	BORDER-COLLAPSE: collapse;
+	padding: 0px;
+	FONT-SIZE: 9pt;
+	MARGIN-LEFT: 0px
+  }
+table.histogram td {
+	BORDER-BOTTOM: #ffffff 0px solid;
+	BORDER-LEFT: #ffffff 0px solid;
+	BORDER-RIGHT: #ffffff 0px solid;
+	BORDER-TOP: #ffffff 0px solid;
+	PADDING: 0px
+	margin: 0px
+  }
 </STYLE>
 <script language="javascript" src="./js/graphael/raphael.js" type="text/javascript"></script>
 <script language="javascript" src="./js/graphael/g.raphael.js" type="text/javascript"></script>
@@ -37,34 +53,60 @@ table.gridtable th {
 </HEAD>
 <h1>Precision Casting</h1>
 <TABLE class="gridtable">
-<TR><TH>Machine</TH><TH>Blocked</TH><TH>Starved</TH><TH>Down</TH><TH>Production</TH><TH>Off</TH>
+<TR><TH>Machine</TH><TH>Down</TH><TH>Blocked</TH><TH>Starved</TH><TH>Production</TH><TH>Off</TH>
 </TR>
 <TR>
-<TD> LINE1_PS_CAST1_ELV1</TD><TD> 0.0000</TD><TD> 14442.9000</TD><TD> 0.0000</TD><TD> 257.2000</TD><TD> 0.0000</TD></TR>
+<TD> LINE1_PS_CAST1_ELV1</TD><TD> 10296.0000</TD><TD> 7001.0000</TD><TD> 43229.0000</TD><TD> 6622.9000</TD><TD> 0.0000</TD></TR>
 <TR>
-<TD> LINE1_PS_CAST1_CRS1</TD><TD> 0.0000</TD><TD> 14216.0000</TD><TD> 0.0000</TD><TD> 462.0000</TD><TD> 0.0000</TD></TR>
+</TR>
 <TR>
-<TD> LINE1_PS_CAST1_CI1</TD><TD> 0.0000</TD><TD> 14502.9000</TD><TD> 0.0000</TD><TD> 315.3000</TD><TD> 0.0000</TD></TR>
+<TD> LINE1_PS_CAST1_CRS1</TD><TD> 10344.0000</TD><TD> 6893.0000</TD><TD> 38155.0000</TD><TD> 11783.0000</TD><TD> 0.0000</TD></TR>
 <TR>
-<TD> LINE1_PS_CAST1_AS1</TD><TD> 0.0000</TD><TD> 14518.6000</TD><TD> 0.0000</TD><TD> 0.0000</TD><TD> 0.0000</TD></TR>
+</TR>
 <TR>
-<TD> LINE1_PS_CAST1_CVRDEL</TD><TD> 0.0000</TD><TD> 9332.6000</TD><TD> 1008.0000</TD><TD> 0.0000</TD><TD> 0.0000</TD></TR>
+<TD> LINE1_PS_CAST1_CI1</TD><TD> 10344.0000</TD><TD> 7437.0000</TD><TD> 42965.0000</TD><TD> 6517.5000</TD><TD> 0.0000</TD></TR>
 <TR>
-<TD> LINE1_PS_CAST1_CVS1</TD><TD> 0.0000</TD><TD> 13693.3000</TD><TD> 0.0000</TD><TD> 304.8000</TD><TD> 0.0000</TD></TR>
+</TR>
 <TR>
-<TD> LINE1_PS_CAST1_LG1</TD><TD> 0.0000</TD><TD> 3980.9000</TD><TD> 2862.0000</TD><TD> 426.3000</TD><TD> 0.0000</TD></TR>
+<TD> LINE1_PS_CAST1_AS1</TD><TD> 385.0000</TD><TD> 0.0000</TD><TD> 39046.0000</TD><TD> 0.0000</TD><TD> 0.0000</TD></TR>
 <TR>
-<TD> LINE1_PS_CAST1_RO1</TD><TD> 0.0000</TD><TD> 6463.2000</TD><TD> 6850.9000</TD><TD> 0.0000</TD><TD> 0.0000</TD></TR>
+</TR>
 <TR>
-<TD> LINE1_PS_CAST1_FUR1</TD><TD> 0.0000</TD><TD> 1759.5000</TD><TD> 0.0000</TD><TD> 0.0000</TD><TD> 0.0000</TD></TR>
+<TD> LINE1_PS_CAST1_CVRDEL</TD><TD> 3073.0000</TD><TD> 0.0000</TD><TD> 36768.0000</TD><TD> 0.0000</TD><TD> 0.0000</TD></TR>
 <TR>
-<TD> LINE1_PS_CAST1_EMP1</TD><TD> 0.0000</TD><TD> 183.1000</TD><TD> 5431.4000</TD><TD> 0.0000</TD><TD> 0.0000</TD></TR>
+</TR>
 <TR>
-<TD> LINE1_PS_CAST1_EG1</TD><TD> 0.0000</TD><TD> 1818.8000</TD><TD> 5422.0000</TD><TD> 261.2000</TD><TD> 0.0000</TD></TR>
+<TD> LINE1_PS_CAST1_CVS1</TD><TD> 5172.0000</TD><TD> 22537.0000</TD><TD> 31768.0000</TD><TD> 7696.2000</TD><TD> 0.0000</TD></TR>
 <TR>
-<TD> LINE1_PS_CAST1_CE1</TD><TD> 0.0000</TD><TD> 14300.4000</TD><TD> 0.0000</TD><TD> 304.0000</TD><TD> 0.0000</TD></TR>
+</TR>
 <TR>
-<TD> LINE1_PS_CAST1_LWR1</TD><TD> 0.0000</TD><TD> 12221.4000</TD><TD> 0.0000</TD><TD> 249.2000</TD><TD> 0.0000</TD></TR>
+<TD> LINE1_PS_CAST1_LG1</TD><TD> 13356.0000</TD><TD> 18997.0000</TD><TD> 28777.0000</TD><TD> 6151.9000</TD><TD> 0.0000</TD></TR>
+<TR>
+</TR>
+<TR>
+<TD> LINE1_PS_CAST1_RO1</TD><TD> 24960.0000</TD><TD> 0.0000</TD><TD> 35227.0000</TD><TD> 0.0000</TD><TD> 0.0000</TD></TR>
+<TR>
+</TR>
+<TR>
+<TD> LINE1_PS_CAST1_FUR1</TD><TD> 0.0000</TD><TD> 0.0000</TD><TD> 46888.0000</TD><TD> 0.0000</TD><TD> 0.0000</TD></TR>
+<TR>
+</TR>
+<TR>
+<TD> LINE1_PS_CAST1_EMP1</TD><TD> 54447.0000</TD><TD> 0.0000</TD><TD> 8350.0000</TD><TD> 0.0000</TD><TD> 0.0000</TD></TR>
+<TR>
+</TR>
+<TR>
+<TD> LINE1_PS_CAST1_EG1</TD><TD> 15264.0000</TD><TD> 12496.0000</TD><TD> 32773.0000</TD><TD> 6595.3000</TD><TD> 0.0000</TD></TR>
+<TR>
+</TR>
+<TR>
+<TD> LINE1_PS_CAST1_CE1</TD><TD> 10404.0000</TD><TD> 9205.0000</TD><TD> 39989.0000</TD><TD> 7663.0000</TD><TD> 0.0000</TD></TR>
+<TR>
+</TR>
+<TR>
+<TD> LINE1_PS_CAST1_LWR1</TD><TD> 10380.0000</TD><TD> 200.0000</TD><TD> 50444.0000</TD><TD> 6230.0000</TD><TD> 0.0000</TD></TR>
+<TR>
+</TR>
 </TABLE>
 <p>
 <TABLE class="gridtable">
@@ -73,7 +115,7 @@ table.gridtable th {
 <TR>
 <TD> LINE1_PS_CAST1_ELV1</TD><TD> 23640.0000</TD><TD> 5148.0000</TD><TD> 1</TD><TD> </TD></TR>
 <TR>
-<TD> LINE1_PS_CAST1_CRS1</TD><TD> 23628.0000</TD><TD> 5172.0000</TD><TD> 5</TD><TD> </TD></TR>
+<TD> LINE1_PS_CAST1_CRS1</TD><TD> 23628.0000</TD><TD> 5172.0000</TD><TD> 1</TD><TD> </TD></TR>
 <TR>
 <TD> LINE1_PS_CAST1_CI1</TD><TD> 23628.0000</TD><TD> 5172.0000</TD><TD> 1</TD><TD> </TD></TR>
 <TR>
@@ -98,39 +140,39 @@ table.gridtable th {
 <TD> LINE1_PS_CAST1_LWR1</TD><TD> 23610.0000</TD><TD> 5190.0000</TD><TD> 1</TD><TD> </TD></TR>
 </TABLE>
 <h2>Casting Line 1 Performance</h2>
-<BR> Part FilledCoveredCorePackage Number Made = 4
-<br>Time elapsed   4.0941 in hours
-<br>Time elapsed 245.6483 in minutes
-<br>Time elapsed 14738.9000 in seconds
+<BR> Part FilledCoveredCorePackage Number Made = 100
+<br>Time elapsed  18.5639 in hours
+<br>Time elapsed 1113.8333 in minutes
+<br>Time elapsed 66830.0000 in seconds
 <TABLE class="gridtable">
 <TR><TH>Machine</TH><TH>Down<BR>(Minutes)</BR></TH><TH>Blocked<BR>(Minutes)</BR></TH><TH>Starved<BR>(Minutes)</BR></TH><TH>Production<BR>(Minutes)</BR></TH><TH>Off<BR>(Minutes)</BR></TH><TH>Utility<BR>Costs</BR></TH><TH>Description</TH>
 </TR>
 <TR>
-<TD> LINE1_PS_CAST1_ELV1</TD><TD align="right"> 0.0000</TD><TD align="right"> 0.0000</TD><TD align="right"> 240.7150</TD><TD align="right"> 4.2867</TD><TD align="right"> 0.0000</TD><TD align="right"> $ 19.0950</TD><TD align="right"> Elevator</TD></TR>
+<TD> LINE1_PS_CAST1_ELV1</TD><TD align="right"> 171.6000</TD><TD align="right"> 116.6833</TD><TD align="right"> 720.4833</TD><TD align="right"> 110.3817</TD><TD align="right"> 0.0000</TD><TD align="right"> $ 87.3369</TD><TD align="right"> Elevator</TD></TR>
 <TR>
-<TD> LINE1_PS_CAST1_CRS1</TD><TD align="right"> 0.0000</TD><TD align="right"> 0.0000</TD><TD align="right"> 236.9333</TD><TD align="right"> 7.7000</TD><TD align="right"> 0.0000</TD><TD align="right"> $  0.0000</TD><TD align="right"> Package Insert</TD></TR>
+<TD> LINE1_PS_CAST1_CRS1</TD><TD align="right"> 172.4000</TD><TD align="right"> 114.8833</TD><TD align="right"> 635.9167</TD><TD align="right"> 196.3833</TD><TD align="right"> 0.0000</TD><TD align="right"> $  0.0000</TD><TD align="right"> Package Insert</TD></TR>
 <TR>
-<TD> LINE1_PS_CAST1_CI1</TD><TD align="right"> 0.0000</TD><TD align="right"> 0.0000</TD><TD align="right"> 241.7150</TD><TD align="right"> 5.2550</TD><TD align="right"> 0.0000</TD><TD align="right"> $ 29.1831</TD><TD align="right"> Chill Insert</TD></TR>
+<TD> LINE1_PS_CAST1_CI1</TD><TD align="right"> 172.4000</TD><TD align="right"> 123.9500</TD><TD align="right"> 716.0833</TD><TD align="right"> 108.6250</TD><TD align="right"> 0.0000</TD><TD align="right"> $132.3236</TD><TD align="right"> Chill Insert</TD></TR>
 <TR>
-<TD> LINE1_PS_CAST1_AS1</TD><TD align="right"> 0.0000</TD><TD align="right"> 0.0000</TD><TD align="right"> 241.9767</TD><TD align="right"> 0.0000</TD><TD align="right"> 0.0000</TD><TD align="right"> $  0.0000</TD><TD align="right"> Alloy Insert</TD></TR>
+<TD> LINE1_PS_CAST1_AS1</TD><TD align="right"> 6.4167</TD><TD align="right"> 0.0000</TD><TD align="right"> 650.7667</TD><TD align="right"> 0.0000</TD><TD align="right"> 0.0000</TD><TD align="right"> $  0.0000</TD><TD align="right"> Alloy Insert</TD></TR>
 <TR>
-<TD> LINE1_PS_CAST1_CVRDEL</TD><TD align="right"> 16.8000</TD><TD align="right"> 0.0000</TD><TD align="right"> 155.5433</TD><TD align="right"> 0.0000</TD><TD align="right"> 0.0000</TD><TD align="right"> $  0.0000</TD><TD align="right"> Cover Delivery</TD></TR>
+<TD> LINE1_PS_CAST1_CVRDEL</TD><TD align="right"> 51.2167</TD><TD align="right"> 0.0000</TD><TD align="right"> 612.8000</TD><TD align="right"> 0.0000</TD><TD align="right"> 0.0000</TD><TD align="right"> $  0.0000</TD><TD align="right"> Cover Delivery</TD></TR>
 <TR>
-<TD> LINE1_PS_CAST1_CVS1</TD><TD align="right"> 0.0000</TD><TD align="right"> 0.0000</TD><TD align="right"> 228.2217</TD><TD align="right"> 5.0800</TD><TD align="right"> 0.0000</TD><TD align="right"> $  1.0809</TD><TD align="right"> Cover Insert</TD></TR>
+<TD> LINE1_PS_CAST1_CVS1</TD><TD align="right"> 86.2000</TD><TD align="right"> 375.6167</TD><TD align="right"> 529.4667</TD><TD align="right"> 128.2700</TD><TD align="right"> 0.0000</TD><TD align="right"> $  4.9009</TD><TD align="right"> Cover Insert</TD></TR>
 <TR>
-<TD> LINE1_PS_CAST1_LG1</TD><TD align="right"> 47.7000</TD><TD align="right"> 0.0000</TD><TD align="right"> 66.3483</TD><TD align="right"> 7.1050</TD><TD align="right"> 0.0000</TD><TD align="right"> $  9.3674</TD><TD align="right"> Load Gantry</TD></TR>
+<TD> LINE1_PS_CAST1_LG1</TD><TD align="right"> 222.6000</TD><TD align="right"> 316.6167</TD><TD align="right"> 479.6167</TD><TD align="right"> 102.5317</TD><TD align="right"> 0.0000</TD><TD align="right"> $ 42.4742</TD><TD align="right"> Load Gantry</TD></TR>
 <TR>
-<TD> LINE1_PS_CAST1_RO1</TD><TD align="right"> 114.1817</TD><TD align="right"> 0.0000</TD><TD align="right"> 107.7200</TD><TD align="right"> 0.0000</TD><TD align="right"> 0.0000</TD><TD align="right"> $ 12.9702</TD><TD align="right"> Rollover</TD></TR>
+<TD> LINE1_PS_CAST1_RO1</TD><TD align="right"> 416.0000</TD><TD align="right"> 0.0000</TD><TD align="right"> 587.1167</TD><TD align="right"> 0.0000</TD><TD align="right"> 0.0000</TD><TD align="right"> $ 58.8103</TD><TD align="right"> Rollover</TD></TR>
 <TR>
-<TD> LINE1_PS_CAST1_FUR1</TD><TD align="right"> 0.0000</TD><TD align="right"> 0.0000</TD><TD align="right"> 29.3250</TD><TD align="right"> 0.0000</TD><TD align="right"> 0.0000</TD><TD align="right"> $  0.0000</TD><TD align="right"> Heated Well Furnance</TD></TR>
+<TD> LINE1_PS_CAST1_FUR1</TD><TD align="right"> 0.0000</TD><TD align="right"> 0.0000</TD><TD align="right"> 781.4667</TD><TD align="right"> 0.0000</TD><TD align="right"> 0.0000</TD><TD align="right"> $  0.0000</TD><TD align="right"> Heated Well Furnance</TD></TR>
 <TR>
-<TD> LINE1_PS_CAST1_EMP1</TD><TD align="right"> 90.5233</TD><TD align="right"> 0.0000</TD><TD align="right"> 3.0517</TD><TD align="right"> 0.0000</TD><TD align="right"> 0.0000</TD><TD align="right"> $  1.0809</TD><TD align="right"> EM Pump</TD></TR>
+<TD> LINE1_PS_CAST1_EMP1</TD><TD align="right"> 907.4500</TD><TD align="right"> 0.0000</TD><TD align="right"> 139.1667</TD><TD align="right"> 0.0000</TD><TD align="right"> 0.0000</TD><TD align="right"> $  4.9009</TD><TD align="right"> EM Pump</TD></TR>
 <TR>
-<TD> LINE1_PS_CAST1_EG1</TD><TD align="right"> 90.3667</TD><TD align="right"> 0.0000</TD><TD align="right"> 30.3133</TD><TD align="right"> 4.3533</TD><TD align="right"> 0.0000</TD><TD align="right"> $ 28.4624</TD><TD align="right"> Exit Gantry</TD></TR>
+<TD> LINE1_PS_CAST1_EG1</TD><TD align="right"> 254.4000</TD><TD align="right"> 208.2667</TD><TD align="right"> 546.2167</TD><TD align="right"> 109.9217</TD><TD align="right"> 0.0000</TD><TD align="right"> $129.0561</TD><TD align="right"> Exit Gantry</TD></TR>
 <TR>
-<TD> LINE1_PS_CAST1_CE1</TD><TD align="right"> 0.0000</TD><TD align="right"> 0.0000</TD><TD align="right"> 238.3400</TD><TD align="right"> 5.0667</TD><TD align="right"> 0.0000</TD><TD align="right"> $ 29.1831</TD><TD align="right"> Chill Extractor</TD></TR>
+<TD> LINE1_PS_CAST1_CE1</TD><TD align="right"> 173.4000</TD><TD align="right"> 153.4167</TD><TD align="right"> 666.4833</TD><TD align="right"> 127.7167</TD><TD align="right"> 0.0000</TD><TD align="right"> $132.3236</TD><TD align="right"> Chill Extractor</TD></TR>
 <TR>
-<TD> LINE1_PS_CAST1_LWR1</TD><TD align="right"> 0.0000</TD><TD align="right"> 0.0000</TD><TD align="right"> 203.6900</TD><TD align="right"> 4.1533</TD><TD align="right"> 0.0000</TD><TD align="right"> $ 20.5362</TD><TD align="right"> Lowerator</TD></TR>
+<TD> LINE1_PS_CAST1_LWR1</TD><TD align="right"> 173.0000</TD><TD align="right"> 3.3333</TD><TD align="right"> 840.7333</TD><TD align="right"> 103.8333</TD><TD align="right"> 0.0000</TD><TD align="right"> $ 93.1164</TD><TD align="right"> Lowerator</TD></TR>
 </TABLE>
 <br><h1>Casting Line 1 Utility Costs By Item</h1>
 <P>Factory equipment can be modeled by state machines. 
@@ -146,83 +188,101 @@ The numbers for repair for a piece of equipment when it has a break down or faul
 <TR><TH>Machine</TH><TH>Units</TH><TH>Name</TH><TH>State</TH><TH>Time</TH><TH>Cost</TH>
 </TR>
 <TR>
-<TD> LINE1_PS_CAST1_ELV1</TD><TD> KWH</TD><TD> Upper Conveyor</TD><TD> any</TD><TD> 3.27531</TD><TD> $0.360284</TD></TR>
+<TD> LINE1_PS_CAST1_ELV1</TD><TD> KWH</TD><TD> Upper Conveyor</TD><TD> any</TD><TD> 14.8511</TD><TD> $1.63362</TD></TR>
 <TR>
-<TD> LINE1_PS_CAST1_ELV1</TD><TD> KWH</TD><TD> Lower Conveyor</TD><TD> any</TD><TD> 3.27531</TD><TD> $0.360284</TD></TR>
+<TD> LINE1_PS_CAST1_ELV1</TD><TD> KWH</TD><TD> Lower Conveyor</TD><TD> any</TD><TD> 14.8511</TD><TD> $1.63362</TD></TR>
 <TR>
-<TD> LINE1_PS_CAST1_ELV1</TD><TD> KWH</TD><TD> Lower Conveyor</TD><TD> any</TD><TD> 3.27531</TD><TD> $0.360284</TD></TR>
+<TD> LINE1_PS_CAST1_ELV1</TD><TD> KWH</TD><TD> Lower Conveyor</TD><TD> any</TD><TD> 14.8511</TD><TD> $1.63362</TD></TR>
 <TR>
-<TD> LINE1_PS_CAST1_ELV1</TD><TD> KWH</TD><TD> Hydraulic Unit Pump</TD><TD> any</TD><TD> 163.765</TD><TD> $18.0142</TD></TR>
+<TD> LINE1_PS_CAST1_ELV1</TD><TD> KWH</TD><TD> Hydraulic Unit Pump</TD><TD> any</TD><TD> 742.555</TD><TD> $81.681</TD></TR>
 <TR>
-<TD> LINE1_PS_CAST1_CI1</TD><TD> KWH</TD><TD> Upper Elevator Conveyor</TD><TD> any</TD><TD> 3.27531</TD><TD> $0.360284</TD></TR>
+</TR>
 <TR>
-<TD> LINE1_PS_CAST1_CI1</TD><TD> KWH</TD><TD> Lower Elevator Conveyor</TD><TD> any</TD><TD> 3.27531</TD><TD> $0.360284</TD></TR>
+<TD> LINE1_PS_CAST1_CI1</TD><TD> KWH</TD><TD> Upper Elevator Conveyor</TD><TD> any</TD><TD> 14.8511</TD><TD> $1.63362</TD></TR>
 <TR>
-<TD> LINE1_PS_CAST1_CI1</TD><TD> KWH</TD><TD> Exit Conveyor W/Blow Off</TD><TD> any</TD><TD> 3.27531</TD><TD> $0.360284</TD></TR>
+<TD> LINE1_PS_CAST1_CI1</TD><TD> KWH</TD><TD> Lower Elevator Conveyor</TD><TD> any</TD><TD> 14.8511</TD><TD> $1.63362</TD></TR>
 <TR>
-<TD> LINE1_PS_CAST1_CI1</TD><TD> KWH</TD><TD> Hydraulic Unit Pump</TD><TD> any</TD><TD> 245.649</TD><TD> $27.0214</TD></TR>
+<TD> LINE1_PS_CAST1_CI1</TD><TD> KWH</TD><TD> Exit Conveyor W/Blow Off</TD><TD> any</TD><TD> 14.8511</TD><TD> $1.63362</TD></TR>
 <TR>
-<TD> LINE1_PS_CAST1_CI1</TD><TD> KWH</TD><TD> Hydraulic Unit Recirc Pump</TD><TD> any</TD><TD> 9.82594</TD><TD> $1.08085</TD></TR>
+<TD> LINE1_PS_CAST1_CI1</TD><TD> KWH</TD><TD> Hydraulic Unit Pump</TD><TD> any</TD><TD> 1113.84</TD><TD> $122.522</TD></TR>
 <TR>
-<TD> LINE1_PS_CAST1_CVS1</TD><TD> KWH</TD><TD> Infeed Conveyor</TD><TD> any</TD><TD> 3.27531</TD><TD> $0.360284</TD></TR>
+<TD> LINE1_PS_CAST1_CI1</TD><TD> KWH</TD><TD> Hydraulic Unit Recirc Pump</TD><TD> any</TD><TD> 44.5534</TD><TD> $4.90087</TD></TR>
 <TR>
-<TD> LINE1_PS_CAST1_CVS1</TD><TD> KWH</TD><TD> Insertion Conveyor</TD><TD> any</TD><TD> 3.27531</TD><TD> $0.360284</TD></TR>
+</TR>
 <TR>
-<TD> LINE1_PS_CAST1_CVS1</TD><TD> KWH</TD><TD> Exit Conveyor</TD><TD> any</TD><TD> 3.27531</TD><TD> $0.360284</TD></TR>
+<TD> LINE1_PS_CAST1_CVS1</TD><TD> KWH</TD><TD> Infeed Conveyor</TD><TD> any</TD><TD> 14.8511</TD><TD> $1.63362</TD></TR>
 <TR>
-<TD> LINE1_PS_CAST1_LG1</TD><TD> KWH</TD><TD> XAxis Travel</TD><TD> any</TD><TD> 3.27531</TD><TD> $0.360284</TD></TR>
+<TD> LINE1_PS_CAST1_CVS1</TD><TD> KWH</TD><TD> Insertion Conveyor</TD><TD> any</TD><TD> 14.8511</TD><TD> $1.63362</TD></TR>
 <TR>
-<TD> LINE1_PS_CAST1_LG1</TD><TD> KWH</TD><TD> YAxis Travel</TD><TD> any</TD><TD> 81.8828</TD><TD> $9.00711</TD></TR>
+<TD> LINE1_PS_CAST1_CVS1</TD><TD> KWH</TD><TD> Exit Conveyor</TD><TD> any</TD><TD> 14.8511</TD><TD> $1.63362</TD></TR>
 <TR>
-<TD> LINE1_PS_CAST1_RO1</TD><TD> KWH</TD><TD> Index Table</TD><TD> any</TD><TD> 16.3765</TD><TD> $1.80142</TD></TR>
+</TR>
 <TR>
-<TD> LINE1_PS_CAST1_RO1</TD><TD> KWH</TD><TD> Hydraulic Motor 1</TD><TD> any</TD><TD> 49.1296</TD><TD> $5.40426</TD></TR>
+<TD> LINE1_PS_CAST1_LG1</TD><TD> KWH</TD><TD> XAxis Travel</TD><TD> any</TD><TD> 14.8511</TD><TD> $1.63362</TD></TR>
 <TR>
-<TD> LINE1_PS_CAST1_RO1</TD><TD> KWH</TD><TD> Hydraulic Motor 2</TD><TD> any</TD><TD> 49.1296</TD><TD> $5.40426</TD></TR>
+<TD> LINE1_PS_CAST1_LG1</TD><TD> KWH</TD><TD> YAxis Travel</TD><TD> any</TD><TD> 371.278</TD><TD> $40.8406</TD></TR>
 <TR>
-<TD> LINE1_PS_CAST1_RO1</TD><TD> KWH</TD><TD> Recirc Pump</TD><TD> any</TD><TD> 3.27531</TD><TD> $0.360284</TD></TR>
+</TR>
 <TR>
-<TD> LINE1_PS_CAST1_EMP1</TD><TD> KWH</TD><TD> Preheat Oven</TD><TD> any</TD><TD> 3.27531</TD><TD> $0.360284</TD></TR>
+<TD> LINE1_PS_CAST1_RO1</TD><TD> KWH</TD><TD> Index Table</TD><TD> any</TD><TD> 74.2555</TD><TD> $8.1681</TD></TR>
 <TR>
-<TD> LINE1_PS_CAST1_EMP1</TD><TD> KWH</TD><TD> Cooling Motor 1</TD><TD> any</TD><TD> 3.27531</TD><TD> $0.360284</TD></TR>
+<TD> LINE1_PS_CAST1_RO1</TD><TD> KWH</TD><TD> Hydraulic Motor 1</TD><TD> any</TD><TD> 222.766</TD><TD> $24.5043</TD></TR>
 <TR>
-<TD> LINE1_PS_CAST1_EMP1</TD><TD> KWH</TD><TD> Cooling Motor 2</TD><TD> any</TD><TD> 3.27531</TD><TD> $0.360284</TD></TR>
+<TD> LINE1_PS_CAST1_RO1</TD><TD> KWH</TD><TD> Hydraulic Motor 2</TD><TD> any</TD><TD> 222.766</TD><TD> $24.5043</TD></TR>
 <TR>
-<TD> LINE1_PS_CAST1_EG1</TD><TD> KWH</TD><TD> Unload Grantry XAxis Travel</TD><TD> any</TD><TD> 3.27531</TD><TD> $0.360284</TD></TR>
+<TD> LINE1_PS_CAST1_RO1</TD><TD> KWH</TD><TD> Recirc Pump</TD><TD> any</TD><TD> 14.8511</TD><TD> $1.63362</TD></TR>
 <TR>
-<TD> LINE1_PS_CAST1_EG1</TD><TD> KWH</TD><TD> Unload Grantry YAxis Trave</TD><TD> any</TD><TD> 81.8828</TD><TD> $9.00711</TD></TR>
+</TR>
 <TR>
-<TD> LINE1_PS_CAST1_EG1</TD><TD> KWH</TD><TD> Load/Unload Grantry Hydraulic Unit Pump</TD><TD> any</TD><TD> 163.765</TD><TD> $18.0142</TD></TR>
+<TD> LINE1_PS_CAST1_EMP1</TD><TD> KWH</TD><TD> Preheat Oven</TD><TD> any</TD><TD> 14.8511</TD><TD> $1.63362</TD></TR>
 <TR>
-<TD> LINE1_PS_CAST1_EG1</TD><TD> KWH</TD><TD> Load/Unload Grantry Hydraulic Unit Recirc Pump</TD><TD> any</TD><TD> 9.82594</TD><TD> $1.08085</TD></TR>
+<TD> LINE1_PS_CAST1_EMP1</TD><TD> KWH</TD><TD> Cooling Motor 1</TD><TD> any</TD><TD> 14.8511</TD><TD> $1.63362</TD></TR>
 <TR>
-<TD> LINE1_PS_CAST1_CE1</TD><TD> KWH</TD><TD> Inlet Conveyor</TD><TD> any</TD><TD> 3.27531</TD><TD> $0.360284</TD></TR>
+<TD> LINE1_PS_CAST1_EMP1</TD><TD> KWH</TD><TD> Cooling Motor 2</TD><TD> any</TD><TD> 14.8511</TD><TD> $1.63362</TD></TR>
 <TR>
-<TD> LINE1_PS_CAST1_CE1</TD><TD> KWH</TD><TD> Upper Elevator Conveyor</TD><TD> any</TD><TD> 3.27531</TD><TD> $0.360284</TD></TR>
+</TR>
 <TR>
-<TD> LINE1_PS_CAST1_CE1</TD><TD> KWH</TD><TD> Lower Elevator Conveyor</TD><TD> any</TD><TD> 3.27531</TD><TD> $0.360284</TD></TR>
+<TD> LINE1_PS_CAST1_EG1</TD><TD> KWH</TD><TD> Unload Grantry XAxis Travel</TD><TD> any</TD><TD> 14.8511</TD><TD> $1.63362</TD></TR>
 <TR>
-<TD> LINE1_PS_CAST1_CE1</TD><TD> KWH</TD><TD> Hydraulic Unit Pump</TD><TD> any</TD><TD> 245.649</TD><TD> $27.0214</TD></TR>
+<TD> LINE1_PS_CAST1_EG1</TD><TD> KWH</TD><TD> Unload Grantry YAxis Trave</TD><TD> any</TD><TD> 371.278</TD><TD> $40.8406</TD></TR>
 <TR>
-<TD> LINE1_PS_CAST1_CE1</TD><TD> KWH</TD><TD> Hyd. Unit Recirc Pump</TD><TD> any</TD><TD> 9.82594</TD><TD> $1.08085</TD></TR>
+<TD> LINE1_PS_CAST1_EG1</TD><TD> KWH</TD><TD> Load/Unload Grantry Hydraulic Unit Pump</TD><TD> any</TD><TD> 742.555</TD><TD> $81.681</TD></TR>
 <TR>
-<TD> LINE1_PS_CAST1_LWR1</TD><TD> KWH</TD><TD> Double Deck Exit Upper Conveyor 1</TD><TD> any</TD><TD> 3.27531</TD><TD> $0.360284</TD></TR>
+<TD> LINE1_PS_CAST1_EG1</TD><TD> KWH</TD><TD> Load/Unload Grantry Hydraulic Unit Recirc Pump</TD><TD> any</TD><TD> 44.5534</TD><TD> $4.90087</TD></TR>
 <TR>
-<TD> LINE1_PS_CAST1_LWR1</TD><TD> KWH</TD><TD> Double Deck Exit Upper Conveyor 2</TD><TD> any</TD><TD> 3.27531</TD><TD> $0.360284</TD></TR>
+</TR>
 <TR>
-<TD> LINE1_PS_CAST1_LWR1</TD><TD> KWH</TD><TD> Double Deck Exit Lower Conveyor 1</TD><TD> any</TD><TD> 3.27531</TD><TD> $0.360284</TD></TR>
+<TD> LINE1_PS_CAST1_CE1</TD><TD> KWH</TD><TD> Inlet Conveyor</TD><TD> any</TD><TD> 14.8511</TD><TD> $1.63362</TD></TR>
 <TR>
-<TD> LINE1_PS_CAST1_LWR1</TD><TD> KWH</TD><TD> Double Deck Exit Lower Conveyor 2</TD><TD> any</TD><TD> 3.27531</TD><TD> $0.360284</TD></TR>
+<TD> LINE1_PS_CAST1_CE1</TD><TD> KWH</TD><TD> Upper Elevator Conveyor</TD><TD> any</TD><TD> 14.8511</TD><TD> $1.63362</TD></TR>
 <TR>
-<TD> LINE1_PS_CAST1_LWR1</TD><TD> KWH</TD><TD> Hydraulic Unit Pump</TD><TD> any</TD><TD> 163.765</TD><TD> $18.0142</TD></TR>
+<TD> LINE1_PS_CAST1_CE1</TD><TD> KWH</TD><TD> Lower Elevator Conveyor</TD><TD> any</TD><TD> 14.8511</TD><TD> $1.63362</TD></TR>
 <TR>
-<TD> LINE1_PS_CAST1_LWR1</TD><TD> KWH</TD><TD> Hyd. Unit Recirc Pump</TD><TD> any</TD><TD> 9.82594</TD><TD> $1.08085</TD></TR>
+<TD> LINE1_PS_CAST1_CE1</TD><TD> KWH</TD><TD> Hydraulic Unit Pump</TD><TD> any</TD><TD> 1113.84</TD><TD> $122.522</TD></TR>
+<TR>
+<TD> LINE1_PS_CAST1_CE1</TD><TD> KWH</TD><TD> Hyd. Unit Recirc Pump</TD><TD> any</TD><TD> 44.5534</TD><TD> $4.90087</TD></TR>
+<TR>
+</TR>
+<TR>
+<TD> LINE1_PS_CAST1_LWR1</TD><TD> KWH</TD><TD> Double Deck Exit Upper Conveyor 1</TD><TD> any</TD><TD> 14.8511</TD><TD> $1.63362</TD></TR>
+<TR>
+<TD> LINE1_PS_CAST1_LWR1</TD><TD> KWH</TD><TD> Double Deck Exit Upper Conveyor 2</TD><TD> any</TD><TD> 14.8511</TD><TD> $1.63362</TD></TR>
+<TR>
+<TD> LINE1_PS_CAST1_LWR1</TD><TD> KWH</TD><TD> Double Deck Exit Lower Conveyor 1</TD><TD> any</TD><TD> 14.8511</TD><TD> $1.63362</TD></TR>
+<TR>
+<TD> LINE1_PS_CAST1_LWR1</TD><TD> KWH</TD><TD> Double Deck Exit Lower Conveyor 2</TD><TD> any</TD><TD> 14.8511</TD><TD> $1.63362</TD></TR>
+<TR>
+<TD> LINE1_PS_CAST1_LWR1</TD><TD> KWH</TD><TD> Hydraulic Unit Pump</TD><TD> any</TD><TD> 742.555</TD><TD> $81.681</TD></TR>
+<TR>
+<TD> LINE1_PS_CAST1_LWR1</TD><TD> KWH</TD><TD> Hyd. Unit Recirc Pump</TD><TD> any</TD><TD> 44.5534</TD><TD> $4.90087</TD></TR>
+<TR>
+</TR>
 </TABLE>
 <div id="holder";"></div>
 <table border="0">
 <tr><td><div id="InlinePieChart14"></div>
 <script type="text/javascript">
-var values = [  0.0000,  0.0000,  0.0000,  1.7496, 98.2504 ];
+var values = [ 10.4261, 15.3331,  0.0000,  9.8630, 64.3778 ];
 var r15 = Raphael("InlinePieChart14");
 var pie = r15.piechart(320, 240, 100, values,                { legend: ["%.%  -  blocked","%.%  -  down","%.%  -  off","%.%  -  production","%.%  -  starved"],	legendpos: "west"});
  r15.text(320, 100, "LINE1_PS_CAST1_ELV1, State Use").attr({ font: "20px sans-serif" });	            pie.hover(function () {
@@ -244,7 +304,7 @@ var pie = r15.piechart(320, 240, 100, values,                { legend: ["%.%  - 
 </script>
 </td><td><div id="InlinePieChart15"></div>
 <script type="text/javascript">
-var values = [  0.0000,  0.0000,  0.0000,  3.1476, 96.8524 ];
+var values = [ 10.2613, 15.3986,  0.0000, 17.5408, 56.7994 ];
 var r16 = Raphael("InlinePieChart15");
 var pie = r16.piechart(320, 240, 100, values,                { legend: ["%.%  -  blocked","%.%  -  down","%.%  -  off","%.%  -  production","%.%  -  starved"],	legendpos: "west"});
  r16.text(320, 100, "LINE1_PS_CAST1_CRS1, State Use").attr({ font: "20px sans-serif" });	            pie.hover(function () {
@@ -266,7 +326,7 @@ var pie = r16.piechart(320, 240, 100, values,                { legend: ["%.%  - 
 </script>
 </td><td><div id="InlinePieChart16"></div>
 <script type="text/javascript">
-var values = [  0.0000,  0.0000,  0.0000,  2.1278, 97.8722 ];
+var values = [ 11.0565, 15.3783,  0.0000,  9.6895, 63.8757 ];
 var r17 = Raphael("InlinePieChart16");
 var pie = r17.piechart(320, 240, 100, values,                { legend: ["%.%  -  blocked","%.%  -  down","%.%  -  off","%.%  -  production","%.%  -  starved"],	legendpos: "west"});
  r17.text(320, 100, "LINE1_PS_CAST1_CI1, State Use").attr({ font: "20px sans-serif" });	            pie.hover(function () {
@@ -289,7 +349,7 @@ var pie = r17.piechart(320, 240, 100, values,                { legend: ["%.%  - 
 </td></tr>
 <tr><td><div id="InlinePieChart17"></div>
 <script type="text/javascript">
-var values = [  0.0000,  0.0000,  0.0000,  0.0000,100.0000 ];
+var values = [  0.0000,  0.9764,  0.0000,  0.0000, 99.0236 ];
 var r18 = Raphael("InlinePieChart17");
 var pie = r18.piechart(320, 240, 100, values,                { legend: ["%.%  -  blocked","%.%  -  down","%.%  -  off","%.%  -  production","%.%  -  starved"],	legendpos: "west"});
  r18.text(320, 100, "LINE1_PS_CAST1_AS1, State Use").attr({ font: "20px sans-serif" });	            pie.hover(function () {
@@ -311,7 +371,7 @@ var pie = r18.piechart(320, 240, 100, values,                { legend: ["%.%  - 
 </script>
 </td><td><div id="InlinePieChart18"></div>
 <script type="text/javascript">
-var values = [  0.0000,  9.7480,  0.0000,  0.0000, 90.2520 ];
+var values = [  0.0000,  7.7132,  0.0000,  0.0000, 92.2868 ];
 var r19 = Raphael("InlinePieChart18");
 var pie = r19.piechart(320, 240, 100, values,                { legend: ["%.%  -  blocked","%.%  -  down","%.%  -  off","%.%  -  production","%.%  -  starved"],	legendpos: "west"});
  r19.text(320, 100, "LINE1_PS_CAST1_CVRDEL, State Use").attr({ font: "20px sans-serif" });	            pie.hover(function () {
@@ -333,7 +393,7 @@ var pie = r19.piechart(320, 240, 100, values,                { legend: ["%.%  - 
 </script>
 </td><td><div id="InlinePieChart19"></div>
 <script type="text/javascript">
-var values = [  0.0000,  0.0000,  0.0000,  2.1774, 97.8226 ];
+var values = [ 33.5506,  7.6995,  0.0000, 11.4572, 47.2927 ];
 var r20 = Raphael("InlinePieChart19");
 var pie = r20.piechart(320, 240, 100, values,                { legend: ["%.%  -  blocked","%.%  -  down","%.%  -  off","%.%  -  production","%.%  -  starved"],	legendpos: "west"});
  r20.text(320, 100, "LINE1_PS_CAST1_CVS1, State Use").attr({ font: "20px sans-serif" });	            pie.hover(function () {
@@ -356,7 +416,7 @@ var pie = r20.piechart(320, 240, 100, values,                { legend: ["%.%  - 
 </td></tr>
 <tr><td><div id="InlinePieChart20"></div>
 <script type="text/javascript">
-var values = [  0.0000, 39.3716,  0.0000,  5.8645, 54.7639 ];
+var values = [ 28.2349, 19.8508,  0.0000,  9.1435, 42.7708 ];
 var r21 = Raphael("InlinePieChart20");
 var pie = r21.piechart(320, 240, 100, values,                { legend: ["%.%  -  blocked","%.%  -  down","%.%  -  off","%.%  -  production","%.%  -  starved"],	legendpos: "west"});
  r21.text(320, 100, "LINE1_PS_CAST1_LG1, State Use").attr({ font: "20px sans-serif" });	            pie.hover(function () {
@@ -378,7 +438,7 @@ var pie = r21.piechart(320, 240, 100, values,                { legend: ["%.%  - 
 </script>
 </td><td><div id="InlinePieChart21"></div>
 <script type="text/javascript">
-var values = [  0.0000, 51.4560,  0.0000,  0.0000, 48.5440 ];
+var values = [  0.0000, 41.4707,  0.0000,  0.0000, 58.5293 ];
 var r22 = Raphael("InlinePieChart21");
 var pie = r22.piechart(320, 240, 100, values,                { legend: ["%.%  -  blocked","%.%  -  down","%.%  -  off","%.%  -  production","%.%  -  starved"],	legendpos: "west"});
  r22.text(320, 100, "LINE1_PS_CAST1_RO1, State Use").attr({ font: "20px sans-serif" });	            pie.hover(function () {
@@ -423,7 +483,7 @@ var pie = r23.piechart(320, 240, 100, values,                { legend: ["%.%  - 
 </td></tr>
 <tr><td><div id="InlinePieChart23"></div>
 <script type="text/javascript">
-var values = [  0.0000, 96.7388,  0.0000,  0.0000,  3.2612 ];
+var values = [  0.0000, 86.7032,  0.0000,  0.0000, 13.2968 ];
 var r24 = Raphael("InlinePieChart23");
 var pie = r24.piechart(320, 240, 100, values,                { legend: ["%.%  -  blocked","%.%  -  down","%.%  -  off","%.%  -  production","%.%  -  starved"],	legendpos: "west"});
  r24.text(320, 100, "LINE1_PS_CAST1_EMP1, State Use").attr({ font: "20px sans-serif" });	            pie.hover(function () {
@@ -445,7 +505,7 @@ var pie = r24.piechart(320, 240, 100, values,                { legend: ["%.%  - 
 </script>
 </td><td><div id="InlinePieChart24"></div>
 <script type="text/javascript">
-var values = [  0.0000, 72.2741,  0.0000,  3.4817, 24.2442 ];
+var values = [ 18.6151, 22.7385,  0.0000,  9.8249, 48.8214 ];
 var r25 = Raphael("InlinePieChart24");
 var pie = r25.piechart(320, 240, 100, values,                { legend: ["%.%  -  blocked","%.%  -  down","%.%  -  off","%.%  -  production","%.%  -  starved"],	legendpos: "west"});
  r25.text(320, 100, "LINE1_PS_CAST1_EG1, State Use").attr({ font: "20px sans-serif" });	            pie.hover(function () {
@@ -467,7 +527,7 @@ var pie = r25.piechart(320, 240, 100, values,                { legend: ["%.%  - 
 </script>
 </td><td><div id="InlinePieChart25"></div>
 <script type="text/javascript">
-var values = [  0.0000,  0.0000,  0.0000,  2.0816, 97.9184 ];
+var values = [ 13.6855, 15.4681,  0.0000, 11.3929, 59.4535 ];
 var r26 = Raphael("InlinePieChart25");
 var pie = r26.piechart(320, 240, 100, values,                { legend: ["%.%  -  blocked","%.%  -  down","%.%  -  off","%.%  -  production","%.%  -  starved"],	legendpos: "west"});
  r26.text(320, 100, "LINE1_PS_CAST1_CE1, State Use").attr({ font: "20px sans-serif" });	            pie.hover(function () {
@@ -490,7 +550,7 @@ var pie = r26.piechart(320, 240, 100, values,                { legend: ["%.%  - 
 </td></tr>
 <tr><td><div id="InlinePieChart26"></div>
 <script type="text/javascript">
-var values = [  0.0000,  0.0000,  0.0000,  1.9983, 98.0017 ];
+var values = [  0.2974, 15.4340,  0.0000,  9.2634, 75.0052 ];
 var r27 = Raphael("InlinePieChart26");
 var pie = r27.piechart(320, 240, 100, values,                { legend: ["%.%  -  blocked","%.%  -  down","%.%  -  off","%.%  -  production","%.%  -  starved"],	legendpos: "west"});
  r27.text(320, 100, "LINE1_PS_CAST1_LWR1, State Use").attr({ font: "20px sans-serif" });	            pie.hover(function () {

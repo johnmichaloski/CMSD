@@ -86,6 +86,7 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Start",                       ID_FILE_START
         MENUITEM "Run",                         ID_FILE_RUN
+        MENUITEM "Baseline",                    ID_FILE_BASELINE
         MENUITEM SEPARATOR
         MENUITEM "&Print...\tCtrl+P",           ID_FILE_PRINT
         MENUITEM "Print Pre&view",              ID_FILE_PRINT_PREVIEW

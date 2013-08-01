@@ -238,7 +238,7 @@ void CJobCommand::LoadResources(std::string partid)
 CJobCommands::CJobCommands(CCMSDIntegrator * _cmsd) 
 {
 	cmsd= _cmsd;
-	_dDeadline=3000;
+	_dDeadline=300000;
 	_dUpdateRateSec=0;
 }
 
@@ -270,7 +270,7 @@ void CJobCommands::InitAllJobs(Job *	job)
 	std::map<std::string, int> partcounts;
 	for(int i=0 ; i< job->partIds.size(); i++)
 	{
-		partcounts[(LPCSTR) job->partIds[i]]=ConvertString<int>((LPCSTR) job->partQuantity[i],9);
+		partcounts[(LPCSTR) job->partIds[i]]=ConvertString<int>((LPCSTR) job->partQuantity[i],99);
 	}
 	for(std::map<std::string, int>::iterator it=partcounts.begin(); it!= partcounts.end(); it++)
 	{		
@@ -344,11 +344,15 @@ void CJobCommands::InitJobsStats(Job *	job)
 	}
 }
 //
-void CJobCommands::IncPart(std::string partid)
+void CJobCommands::IncFinishedPart(std::string partid)
 {
-	numparts[ partid]= numparts[ partid]+1;
-	finishedparts[ partid]=finishedparts[ partid]+1;
+	finishedparts[partid]=finishedparts[partid]+1;
 }
+void CJobCommands::IncStartedPart(std::string partid)
+{
+	numparts[partid]= numparts[partid]+1;
+}
+
 int CJobCommands::PartsInProcess()
 {
 	int parts=0;
@@ -366,13 +370,23 @@ int CJobCommands::AllFinished()
 	}
 	return true;
 }
+
+int CJobCommands::AllDoneQueuing() 
+{			
+	for(std::map<std::string,int >::iterator it=numparts.begin(); it!=numparts.end(); it++)
+	{
+		if((*it).second < totnumparts[(*it).first])
+			return false;
+	}
+	return true;
+}
 void  CJobCommands::Newworkorder()
 {	
 	static std::string fcnname="JobCommands::Newworkorder() ";
 	while(IsNewWorkorder()) 
 	{
 		try {
-			if(AllFinished())
+			if(AllDoneQueuing()) // AllFinished())
 				break;
 			if(this->size() >0  )
 			{
@@ -422,7 +436,7 @@ void CJobCommands::Update() // CResourceHandlers * resourceHandlers)
 		{
 			at(i)->orderTime.Stop();
 			at(i)->factoryTime.Stop();
-			IncPart(at(i)->CurrentPartId());
+			IncFinishedPart(at(i)->CurrentPartId());
 			// Done with job
 			// for now erase
 
@@ -447,7 +461,9 @@ void CJobCommands::Update() // CResourceHandlers * resourceHandlers)
 
 				at(i)->factoryTime.Start();
 				job->_ResourceHandlers[0]->_statemachine->Push(job);  // start job
+				IncStartedPart(job->CurrentPartId());
 				job->_mttp=job->_ResourceHandlers[0]->_statemachine->MTTP;  // reset time to finish - new job
+				// Fixme: not 
 			}
 			continue; // maybe reset to zero - no more jobs?
 		}
@@ -508,7 +524,7 @@ void CJobCommands::process(CJobCommands * jobs)
 				dSpeedup = MIN(dSpeedup,dUp);
 				if(dSpeedup < 0)
 				{
-					OutputDebugString(StdStringFormat("Calamity neg uptime %s=%8.4f\n", Factory[i]->_statemachine->Name().c_str(), dUp).c_str());
+					OutputDebugString(StdStringFormat("Calamity neg uptime %s=%8.2f\n", Factory[i]->_statemachine->Name().c_str(), dUp).c_str());
 					DebugBreak();
 					Factory[i]->_statemachine->Speedup();
 				}
@@ -516,7 +532,7 @@ void CJobCommands::process(CJobCommands * jobs)
 			if(dSpeedup == 10000.0) dSpeedup=1.0;
 			if(dSpeedup <= 0.0) dSpeedup=1.0;
 			ControlThread::_dSpeedup=dSpeedup;
-			//OutputDebugString(StdStringFormat("\n Final Speed up %8.4f\n", dSpeedup).c_str());
+			//OutputDebugString(StdStringFormat("\n Final Speed up %8.2f\n", dSpeedup).c_str());
 		}
 
 

@@ -69,6 +69,7 @@ public:
 		MESSAGE_HANDLER(DISPLAY_SNAPSHOT, OnDisplaySnapshot)
 		MESSAGE_HANDLER(DISPLAY_KPISNAPSHOT, OnDisplayKPI)
 		MESSAGE_HANDLER(DISPLAY_RESOURCE, OnDisplayResource)
+		COMMAND_ID_HANDLER(ID_FILE_BASELINE, OnFileBaseline)
 		
 		COMMAND_ID_HANDLER(DISPLAY_MSG, OnDisplayAgent)
 		MESSAGE_HANDLER(LOG_MSG, OnLogMessage)
@@ -77,7 +78,6 @@ public:
 		COMMAND_ID_HANDLER(ID_FILE_START, OnStart)
 		COMMAND_ID_HANDLER(ID_FILE_MERGE, OnFileMerge)
 		COMMAND_ID_HANDLER(ID_FILE_RUN, OnFileRun)
-		
 		COMMAND_RANGE_HANDLER(ID_WINDOW_TABFIRST, ID_WINDOW_TABLAST, OnWindowActivate)
 		CHAIN_MSG_MAP(CUpdateUI<CMainFrame>)
 		CHAIN_MSG_MAP(CFrameWindowImpl<CMainFrame>)
@@ -110,13 +110,15 @@ LRESULT OnWindowActivate(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, B
 	LRESULT OnDisplaySnapshot(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
 	LRESULT OnDisplayKPI(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
 	LRESULT OnDisplayResource(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/);
-	
+	LRESULT OnFileBaseline(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
+	LRESULT OnFileProcess();
+
 	std::string										 m_FileTitle;
 	CCMSDIntegrator *								_cmsd;
-	//std::string										header;
+
 	double											_timeDivisor;
 	bool											_bMinutes,_bLastMinutes;
 	bool                                            _bZip, _bLastzip;
 	bool											_bFinish,_bLastFinish;
-
+	int GetActivePage();
 };

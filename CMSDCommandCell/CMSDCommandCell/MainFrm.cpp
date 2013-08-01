@@ -14,6 +14,16 @@
 #define ID_UNITS_PANE 405 //For minutes vs seconds
 #define ID_FINISH_PANE 406 //For minutes vs seconds
 
+static std::string CmsdPath("C:\\Users\\michalos\\Documents\\GitHub\\CMSD\\TESTBED DEMO\\AgentCmd\\GMCasting\\");
+
+int CMainFrame::GetActivePage()
+{
+
+	int nActivePage = m_view.GetActivePage();
+	if(nActivePage < 1 )
+		nActivePage=0;
+	return nActivePage;
+}
 
 CMainFrame::CMainFrame()
 {
@@ -26,7 +36,7 @@ CMainFrame::CMainFrame()
 	//_nLoopCounter=-1;
 	 _bSnapshot=_bPaused=_bStopped=false;
 	 _timeDivisor=1.0;
-	 _bMinutes=false;
+	 _bMinutes=true;
 	 _bKPISnapshot=false;
 	 _bZip=false;
 	 _bFinish=false;
@@ -131,15 +141,17 @@ LRESULT CMainFrame::OnFileExit(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCt
 
 LRESULT CMainFrame::OnFilePrint(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 {
+	CWtlHtmlView *	 _pView = _pages[GetActivePage()];
 	_variant_t vArg;
-	pHtmlView->ExecCommand(OLECMDID_PRINT,OLECMDEXECOPT_DODEFAULT, NULL, &vArg); 
+	_pView->ExecCommand(OLECMDID_PRINT,OLECMDEXECOPT_DODEFAULT, NULL, &vArg); 
 
 	return 0;
 }
 LRESULT CMainFrame::OnFilePrintPreview(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 {
+	CWtlHtmlView *	 _pView = _pages[GetActivePage()];
 	_variant_t vArg;
-	pHtmlView->ExecCommand(OLECMDID_PRINTPREVIEW,OLECMDEXECOPT_DODEFAULT, NULL, &vArg); 
+	_pView->ExecCommand(OLECMDID_PRINTPREVIEW,OLECMDEXECOPT_DODEFAULT, NULL, &vArg); 
 
 	return 0;
 }
@@ -225,11 +237,17 @@ void CMainFrame::MutexStep(std::string s)
 
 LRESULT CMainFrame::OnFileRun(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
 {
-	_cmsd->ParseCMSD("C:\\Users\\michalos\\Documents\\GitHub\\CMSD\\TESTBED DEMO\\AgentCmd\\GMCasting\\GMCastinglFactoryTestbed.xml");
-	_cmsd->MergeCMSD("C:\\Users\\michalos\\Documents\\GitHub\\CMSD\\TESTBED DEMO\\AgentCmd\\GMCasting\\GMCastinglPerfKPI.xml");
-	_cmsd->MergeCMSD("C:\\Users\\michalos\\Documents\\GitHub\\CMSD\\TESTBED DEMO\\AgentCmd\\GMCasting\\GMCastingJob.xml");
+	_cmsd->ParseCMSD(CmsdPath + "GMCastinglFactoryTestbed.xml");
+	_cmsd->MergeCMSD(CmsdPath + "GMCastinglPerfKPI.xml");
+	_cmsd->MergeCMSD(CmsdPath + "GMCastingJob.xml");
 
-	_cmsd->MergeCMSD("C:\\Users\\michalos\\Documents\\GitHub\\CMSD\\TESTBED DEMO\\AgentCmd\\GMCasting\\GMCastinglUtilities.xml");
+	_cmsd->MergeCMSD(CmsdPath + "GMCastinglUtilities.xml");
+	OnFileProcess();
+	return 0;
+}
+
+LRESULT CMainFrame::OnFileProcess()
+{
 	
 	pHtmlView = new CWtlHtmlView();
 
@@ -383,5 +401,16 @@ LRESULT CMainFrame::OnDisplayResource(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lPa
 		WS_EX_CLIENTEDGE);
 	m_view.AddPage(pView->m_hWnd,"Snapshot");
 	_pages.push_back(pView);
+	return 0;
+}
+LRESULT CMainFrame::OnFileBaseline(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/)
+{
+	_cmsd->ParseCMSD(CmsdPath + "GMCastinglFactoryTestbed.xml");
+	_cmsd->MergeCMSD(CmsdPath + "GMCastinglPerfKPI0.xml");
+	_cmsd->MergeCMSD(CmsdPath + "GMCastingJob.xml");
+
+	_cmsd->MergeCMSD(CmsdPath + "GMCastinglUtilities.xml");
+	OnFileProcess();
+
 	return 0;
 }

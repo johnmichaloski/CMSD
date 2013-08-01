@@ -85,14 +85,15 @@ void Reporting::AgentStatus(CJobCommands * jobs, std::string &JobStatus, std::st
 	////////////////////////////////////////////////////////////////
 	std::string units = _wndMain->_bMinutes ? "Minutes" : "Seconds";
 	double _timeDivisor = _wndMain->_bMinutes ? 60.0 : 1.0;
-	std::string	header = "#,Machine,State,InQ,InQ<BR>Max,At,MTP,TP<BR>Left," + Factory[0]->_statemachine->GenerateCSVHeader(units);
-	htmlTable.SetHeaderColumns( header);
+	std::string	header = "#,Machine,State,InQ,InQ<BR>Max,At,MTP,TP<BR>Left," + Factory[0]->_statemachine->GenerateCSVHeader(units) + ",Utilites,Description";
+	std::string	alignment = "center,left,center,right,right,right,right,right,right,right,right,right,right,right,right";
+	htmlTable.SetHeaderColumns(header);
+	htmlTable.SetAlignment(alignment);
 
 	for(int i=0;i<Factory.size() ; i++)
 	{
 		std::string html1=StdStringFormat("%d,",i);
 
-		//html1+= StdStringFormat("<A HREF=\"%s\">","http://www.microsoft.com" );
 		html1+= StdStringFormat("<A HREF=\"%s\">", ("http://"+Factory[i]->_statemachine->Name()).c_str() );
 		html1+=Factory[i]->_statemachine->Name() + "</A>,";
 
@@ -103,12 +104,16 @@ void Reporting::AgentStatus(CJobCommands * jobs, std::string &JobStatus, std::st
 		if(Factory[i]->_statemachine->Current()!=NULL) 
 			html1+="*,"; 
 		else html1+="-,";  
-		html1+=StdStringFormat("%8.4f", Factory[i]->_statemachine->MTTP)  + "," ;
+		html1+=StdStringFormat("%8.2f", Factory[i]->_statemachine->MTTP)  + "," ;
 		if(Factory[i]->_statemachine->Current()!=NULL)
-			html1+=StdStringFormat("%8.4f", Factory[i]->_statemachine->Current()->_mttp)  + "," ;
+			html1+=StdStringFormat("%8.2f", Factory[i]->_statemachine->Current()->_mttp)  + "," ;
 		else html1+=" ,";
 		
-		html1+= Factory[i]->_statemachine->GenerateCSVTiming(_timeDivisor)  ;
+		html1+= Factory[i]->_statemachine->GenerateCSVTiming(_timeDivisor)   + "," ;
+		
+		html1+= Factory[i]->_statemachine->GenerateTotalCosts("","");// Fixme: automatically appends ,
+		html1+=  (LPCSTR) Factory[i]->_resource->description;
+
 		htmlTable.AddRow(header, html1);
 	}
 
@@ -152,19 +157,19 @@ std::string Reporting::GenerateHtmlReport(CJobCommands * jobs,std::string filena
 		std::string html3;
 		Factory[i]->_statemachine->GenerateStateReport(rawstates,1.0 );
 		html3+=Factory[i]->_statemachine->Name() + ",";
-		html3+=StdStringFormat("%8.4f,%8.4f,%8.4f,%8.4f,%8.4f\n",
+		html3+=StdStringFormat("%8.2f,%8.2f,%8.2f,%8.2f,%8.2f\n",
 			rawstates["down"], rawstates["blocked"],rawstates["starved"],rawstates["production"],rawstates["off"]);
 		htmlRawTable.AddRows(headerRaw, html3);
 	}
 
 	CHtmlTable kpiTable; 
-	std::string kpiheader = "Machine,MTBF,MTTR,INQ, OUTQ";
+	std::string kpiheader = "Machine,MTBF,MTTR,INQ";
 	kpiTable.SetHeaderColumns( kpiheader);
 	for(int i=0;i<Factory.size() ; i++)
 	{
 		std::string machine=Factory[i]->_statemachine->Name() + ",";
-		machine+= StdStringFormat("%8.4f,",Factory[i]->_statemachine->MTBF  );
-		machine+= StdStringFormat("%8.4f,",Factory[i]->_statemachine->MTTR  );
+		machine+= StdStringFormat("%8.2f,",Factory[i]->_statemachine->MTBF  );
+		machine+= StdStringFormat("%8.2f,",Factory[i]->_statemachine->MTTR  );
 		machine+= StdStringFormat("%d,",Factory[i]->_statemachine->MaxSize()  );
 		kpiTable.AddRows(kpiheader, machine);
 	}
@@ -193,9 +198,9 @@ std::string Reporting::GenerateHtmlReport(CJobCommands * jobs,std::string filena
 
 	for( std::map<std::string, int >::iterator it = jobs->finishedparts.begin(); it!= jobs->finishedparts.end(); it++)
 		html+=StdStringFormat("<BR> Part %s Number Made = %d\n" , (*it).first.c_str(), (*it).second).c_str();
-	html+=	StdStringFormat("<br>Time elapsed %8.4f in hours\n", jobs->_dUpdateRateSec/3600.0);
-	html+=	StdStringFormat("<br>Time elapsed %8.4f in minutes\n", jobs->_dUpdateRateSec/60.0);
-	html+=	StdStringFormat("<br>Time elapsed %8.4f in seconds\n", jobs->_dUpdateRateSec);
+	html+=	StdStringFormat("<br>Time elapsed %8.2f in hours\n", jobs->_dUpdateRateSec/3600.0);
+	html+=	StdStringFormat("<br>Time elapsed %8.2f in minutes\n", jobs->_dUpdateRateSec/60.0);
+	html+=	StdStringFormat("<br>Time elapsed %8.2f in seconds\n", jobs->_dUpdateRateSec);
 	
 	html += htmlTable.CreateHtmlTable();
 	html+="<br>";
@@ -326,9 +331,9 @@ std::string Reporting::GenerateResourceReport(int i)
 	kpiTable.SetAlignment(alignment);
 
 	std::string machine=Factory[i]->_statemachine->Name() + ",";
-	machine+= StdStringFormat("%8.4f,",Factory[i]->_statemachine->MTTP  );
-	machine+= StdStringFormat("%8.4f,",Factory[i]->_statemachine->MTBF  );
-	machine+= StdStringFormat("%8.4f,",Factory[i]->_statemachine->MTTR  );
+	machine+= StdStringFormat("%8.2f,",Factory[i]->_statemachine->MTTP  );
+	machine+= StdStringFormat("%8.2f,",Factory[i]->_statemachine->MTBF  );
+	machine+= StdStringFormat("%8.2f,",Factory[i]->_statemachine->MTTR  );
 	machine+= StdStringFormat("%d",Factory[i]->_statemachine->MaxSize()  );
 	kpiTable.AddRows(kpiheader, machine);
 	html += kpiTable.CreateHtmlTable();
@@ -369,7 +374,7 @@ std::string Reporting::GenerateResourceReport(int i)
 //	tmp +="	             var r = Raphael(\"holder\"),\n";
 //	tmp +="	                pie = r.piechart(320, 240, 100, [";
 //	for(std::map<std::string,double>::iterator it = states.begin(); it!=states.end(); it++)
-//		tmp+=StdStringFormat("%8.4f,", (*it).second) ;
+//		tmp+=StdStringFormat("%8.2f,", (*it).second) ;
 //
 //	tmp=tmp.substr(0,tmp.size()-1); // skip last ,
 //	tmp +=" ],\n";

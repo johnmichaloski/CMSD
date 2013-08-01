@@ -312,6 +312,7 @@
     <None Include="res\ExampleItems.bmp" />
     <None Include="res\hand.cur" />
     <None Include="res\ListItems.bmp" />
+    <None Include="res\Merge.ico" />
     <None Include="res\toolbar.bmp" />
     <None Include="notes.txt" />
     <None Include="Todo.txt" />
