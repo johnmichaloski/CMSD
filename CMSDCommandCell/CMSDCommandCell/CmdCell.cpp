@@ -363,6 +363,10 @@ int CJobCommands::PartsInProcess()
 
 int CJobCommands::AllFinished() 
 {			
+	int n =PartsInProcess();
+	if(n>0)
+		return false;
+
 	for(std::map<std::string,int >::iterator it=finishedparts.begin(); it!=finishedparts.end(); it++)
 	{
 		if((*it).second < (totnumparts[(*it).first]-1))
@@ -372,7 +376,7 @@ int CJobCommands::AllFinished()
 }
 
 int CJobCommands::AllDoneQueuing() 
-{			
+{		
 	for(std::map<std::string,int >::iterator it=numparts.begin(); it!=numparts.end(); it++)
 	{
 		if((*it).second < totnumparts[(*it).first])
