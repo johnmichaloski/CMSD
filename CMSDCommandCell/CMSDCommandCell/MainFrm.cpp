@@ -9,6 +9,7 @@
 #include "StdStringFcn.h"
 #include "CmdCell.h"
 #include "HtmlTable.h"
+#include "KPI.h"
 
 #define ID_ZIP_PANE 404 //For zip
 #define ID_UNITS_PANE 405 //For minutes vs seconds
@@ -273,6 +274,8 @@ LRESULT CMainFrame::OnFileProcess()
 		"<input type=\"text\" id=\"Loop\" size=\"6\" >"
 		"<BUTTON id = \"Deadline\"  onClick=\"location.href='deadlinehost'\" >DEADLINE </BUTTON>\n"
 		"<input type=\"text\" id=\"ContinueLoop\" size=\"6\">\n"
+		"<BR>"
+		"<BUTTON id = \"KPIExplanation\"  onClick=\"kpiexplanation.href='unitshost'\" >KPI Explanation</BUTTON>"
 	);
 
 	m_view.AddPage(pHtmlView->m_hWnd,"Merged CMSD");
@@ -388,6 +391,27 @@ LRESULT CMainFrame::OnWindowActivate(WORD /*wNotifyCode*/, WORD wID, HWND /*hWnd
 	m_view.SetActivePage(nPage);
 	return 0;
 }
+
+LRESULT CMainFrame::OnDisplayKpiExplanation(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/)
+{
+	std::string html;
+	KPI kpi(Factory[i]->_statemachine->stats);
+	CHtmlTable kpiHtmlTable; 
+	kpiHtmlTable.SetHeaderColumns( "Value,Abbrev, KPI, Equation, Description");
+	//kpiHtmlTable.AddRows("Value,Abbrev, KPI, Equation", kpi.AbbrvCSVString());
+	kpiHtmlTable.AddRows("Value,Abbrev, KPI, Equation, Description", kpi.ByResources(Factory[i]->_statemachine->stats),"@");
+	html += kpiHtmlTable.CreateHtmlTable();
+
+	CWtlHtmlView * pView = new CWtlHtmlView();
+	pView->Create(m_view,rcDefault,
+		"about:blank", 
+		WS_CHILD | WS_VISIBLE | WS_VSCROLL,
+		WS_EX_CLIENTEDGE);
+	m_view.AddPage(pView->m_hWnd,"KPI Explanation");
+	_pages.push_back(pView);
+	return 0;
+}
+
 
 LRESULT CMainFrame::OnDisplayResource(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/)
 {	

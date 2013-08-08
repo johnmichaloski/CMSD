@@ -21,6 +21,7 @@
 #define DISPLAY_SNAPSHOT (WM_APP  + 4)
 #define DISPLAY_KPISNAPSHOT (WM_APP  + 5)
 #define DISPLAY_RESOURCE (WM_APP  + 6)
+#define DISPLAY_KPI_EXPLANATION (WM_APP  + 7)
 
 
 
@@ -72,6 +73,10 @@ public:
 		COMMAND_ID_HANDLER(ID_FILE_BASELINE, OnFileBaseline)
 		
 		COMMAND_ID_HANDLER(DISPLAY_MSG, OnDisplayAgent)
+		MESSAGE_HANDLER(DISPLAY_KPI_EXPLANATION, OnDisplayKpiExplanation)
+
+		
+
 		MESSAGE_HANDLER(LOG_MSG, OnLogMessage)
 		//MESSAGE_HANDLER(DISPLAY_SNAPSHOT, OnDisplaySnapshot)
 		
@@ -100,7 +105,7 @@ public:
 	LRESULT OnAppAbout(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
 	LRESULT OnWindowClose(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
 	LRESULT OnWindowCloseAll(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
-LRESULT OnWindowActivate(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
+	LRESULT OnWindowActivate(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
 	LRESULT OnLogMessage(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
 	
 	LRESULT OnFileMerge(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
@@ -112,6 +117,7 @@ LRESULT OnWindowActivate(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, B
 	LRESULT OnDisplayResource(UINT /*uMsg*/, WPARAM wParam, LPARAM /*lParam*/, BOOL& /*bHandled*/);
 	LRESULT OnFileBaseline(WORD /*wNotifyCode*/, WORD /*wID*/, HWND /*hWndCtl*/, BOOL& /*bHandled*/);
 	LRESULT OnFileProcess();
+	LRESULT OnDisplayKpiExplanation(UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/, BOOL& /*bHandled*/);
 
 	std::string										 m_FileTitle;
 	CCMSDIntegrator *								_cmsd;
