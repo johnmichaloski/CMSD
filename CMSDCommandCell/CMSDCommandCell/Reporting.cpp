@@ -31,9 +31,10 @@ void Reporting::AgentStatus(CJobCommands * jobs, std::string &JobStatus, std::st
 	DeviceStatus.clear();
 
 	//Job* job = (Job *)  _cmsd->jobs->at(0).get(); // there may be multiple jobs - but only 1st counts in our world
-	std::string  elapsedHeader="Date,Simulated<br>Time, Simulated<br>Seconds, Togo, Deadline";
+	std::string  elapsedHeader="Date,Actual Time, Simulated<br>Time, Simulated<br>Seconds, Togo, Deadline";
 	htmlElapsedTable.SetHeaderColumns( elapsedHeader);
  	std::string  jobElapsed=jobs->serviceTime.GetCurrentDateTime() + "," ;
+	jobElapsed += StdStringFormat("%s,", CTimestamp::ClockFormatofSeconds((double) jobs->serviceTime.Elapsed()).c_str());
 	jobElapsed+=CTimestamp::ClockFormatofSeconds(jobs->TimeElapsed()) + ",";
 
 	//jobElapsed += jobs->serviceTime.ElapsedString() + ",";

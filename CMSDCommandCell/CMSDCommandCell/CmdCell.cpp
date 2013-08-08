@@ -365,7 +365,7 @@ int CJobCommands::AllFinished()
 {			
 	for(std::map<std::string,int >::iterator it=finishedparts.begin(); it!=finishedparts.end(); it++)
 	{
-		if((*it).second < totnumparts[(*it).first])
+		if((*it).second < (totnumparts[(*it).first]-1))
 			return false;
 	}
 	return true;
